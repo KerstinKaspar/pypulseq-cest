@@ -79,9 +79,11 @@ for o in offsets:
         accum_phase = np.mod(accum_phase + o * 2 * np.pi * np.where(np.abs(rf_sat.signal) > 0)[0].size * 1e-6, 2 * np.pi)
         if n < n_pulses-1:
             seq.add_block(make_delay(t_d))
+        print(str(n) + '   of   ' + str(n_pulses))
     if spoiling:
         seq.add_block(gx_spoil, gy_spoil, gz_spoil)
     seq.add_block(pseudo_adc)
+    print(str(o) + '   of   ' + str(offsets))
 
 seq.set_definition('offsets_ppm', offsets_ppm)
 seq.set_definition('run_m0_scan', str(run_m0_scan))
