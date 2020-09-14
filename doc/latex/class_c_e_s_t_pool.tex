@@ -1,0 +1,171 @@
+\hypertarget{class_c_e_s_t_pool}{}\doxysection{C\+E\+S\+T\+Pool Class Reference}
+\label{class_c_e_s_t_pool}\index{CESTPool@{CESTPool}}
+
+
+C\+E\+ST Pool class.  
+
+
+
+
+{\ttfamily \#include $<$Simulation\+Parameters.\+h$>$}
+
+Inheritance diagram for C\+E\+S\+T\+Pool\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{class_c_e_s_t_pool}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_c_e_s_t_pool_a0e415b85802c33b25619a8a39356add2}\label{class_c_e_s_t_pool_a0e415b85802c33b25619a8a39356add2}} 
+\mbox{\hyperlink{class_c_e_s_t_pool_a0e415b85802c33b25619a8a39356add2}{C\+E\+S\+T\+Pool}} ()
+\begin{DoxyCompactList}\small\item\em Default Constructor. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_c_e_s_t_pool_a8a181e9cfdc00b088b8544350e14a450}{C\+E\+S\+T\+Pool}} (double n\+R1, double n\+R2, double nf, double ndw, double nk)
+\begin{DoxyCompactList}\small\item\em Constructor. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_c_e_s_t_pool_aeacde792d37a4b27194553370aa7f94c}{C\+E\+S\+T\+Pool}} (\mbox{\hyperlink{class_c_e_s_t_pool}{C\+E\+S\+T\+Pool}} $\ast$c)
+\begin{DoxyCompactList}\small\item\em Copy Constructor. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{class_c_e_s_t_pool_a948429040ec60845d53f67b80b670e7b}\label{class_c_e_s_t_pool_a948429040ec60845d53f67b80b670e7b}} 
+\mbox{\hyperlink{class_c_e_s_t_pool_a948429040ec60845d53f67b80b670e7b}{$\sim$\+C\+E\+S\+T\+Pool}} ()
+\begin{DoxyCompactList}\small\item\em Default destructor. \end{DoxyCompactList}\item 
+const double \mbox{\hyperlink{class_c_e_s_t_pool_a73b5e92ebfa147401222fa64c36805e7}{Get\+Shiftin\+P\+PM}} ()
+\begin{DoxyCompactList}\small\item\em Get chemical shift. \end{DoxyCompactList}\item 
+const double \mbox{\hyperlink{class_c_e_s_t_pool_a01243bcbb782225568b81e9e9d25a28f}{Get\+Exchange\+Rate\+In\+Hz}} ()
+\begin{DoxyCompactList}\small\item\em Get exchange rate. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_c_e_s_t_pool_a80e1f7b805dd8fd2864ed403778807fb}{Set\+Shiftin\+P\+PM}} (double ndw)
+\begin{DoxyCompactList}\small\item\em Set shift. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_c_e_s_t_pool_aa9a98597710896a38fc83ab8457260a8}{Set\+Exchange\+Rate\+In\+Hz}} (double nk)
+\begin{DoxyCompactList}\small\item\em Set exchange rate. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+double \mbox{\hyperlink{class_c_e_s_t_pool_a6904ec305c30ed2a0cbb34709acaefa1}{dw}}
+\item 
+double \mbox{\hyperlink{class_c_e_s_t_pool_ad7eeb2bf01d3faab83aad3726fc5bf04}{k}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+C\+E\+ST Pool class. 
+
+Class containing relaxation parameters and fraction of Pools and an additional chemical shift and an exchange rate 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_c_e_s_t_pool_a8a181e9cfdc00b088b8544350e14a450}\label{class_c_e_s_t_pool_a8a181e9cfdc00b088b8544350e14a450}} 
+\index{CESTPool@{CESTPool}!CESTPool@{CESTPool}}
+\index{CESTPool@{CESTPool}!CESTPool@{CESTPool}}
+\doxysubsubsection{\texorpdfstring{CESTPool()}{CESTPool()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily C\+E\+S\+T\+Pool\+::\+C\+E\+S\+T\+Pool (\begin{DoxyParamCaption}\item[{double}]{n\+R1,  }\item[{double}]{n\+R2,  }\item[{double}]{nf,  }\item[{double}]{ndw,  }\item[{double}]{nk }\end{DoxyParamCaption})}
+
+
+
+Constructor. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em n\+R1} & R1 of C\+E\+ST pool \mbox{[}1/s\mbox{]} \\
+\hline
+{\em n\+R2} & R2 of C\+E\+ST pool \mbox{[}1/s\mbox{]} \\
+\hline
+{\em nf} & fraction of C\+E\+ST pool \\
+\hline
+{\em ndw} & chemical shift of C\+E\+ST pool \mbox{[}ppm\mbox{]} \\
+\hline
+{\em nk} & exchange rate of C\+E\+ST pool \mbox{[}Hz\mbox{]} \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_c_e_s_t_pool_aeacde792d37a4b27194553370aa7f94c}\label{class_c_e_s_t_pool_aeacde792d37a4b27194553370aa7f94c}} 
+\index{CESTPool@{CESTPool}!CESTPool@{CESTPool}}
+\index{CESTPool@{CESTPool}!CESTPool@{CESTPool}}
+\doxysubsubsection{\texorpdfstring{CESTPool()}{CESTPool()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily C\+E\+S\+T\+Pool\+::\+C\+E\+S\+T\+Pool (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_c_e_s_t_pool}{C\+E\+S\+T\+Pool}} $\ast$}]{c }\end{DoxyParamCaption})}
+
+
+
+Copy Constructor. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em c} & pointer to existing \mbox{\hyperlink{class_c_e_s_t_pool}{C\+E\+S\+T\+Pool}} class object \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_c_e_s_t_pool_a01243bcbb782225568b81e9e9d25a28f}\label{class_c_e_s_t_pool_a01243bcbb782225568b81e9e9d25a28f}} 
+\index{CESTPool@{CESTPool}!GetExchangeRateInHz@{GetExchangeRateInHz}}
+\index{GetExchangeRateInHz@{GetExchangeRateInHz}!CESTPool@{CESTPool}}
+\doxysubsubsection{\texorpdfstring{GetExchangeRateInHz()}{GetExchangeRateInHz()}}
+{\footnotesize\ttfamily const double C\+E\+S\+T\+Pool\+::\+Get\+Exchange\+Rate\+In\+Hz (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Get exchange rate. 
+
+\begin{DoxyReturn}{Returns}
+exchage rate of pool in Hz 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_c_e_s_t_pool_a73b5e92ebfa147401222fa64c36805e7}\label{class_c_e_s_t_pool_a73b5e92ebfa147401222fa64c36805e7}} 
+\index{CESTPool@{CESTPool}!GetShiftinPPM@{GetShiftinPPM}}
+\index{GetShiftinPPM@{GetShiftinPPM}!CESTPool@{CESTPool}}
+\doxysubsubsection{\texorpdfstring{GetShiftinPPM()}{GetShiftinPPM()}}
+{\footnotesize\ttfamily const double C\+E\+S\+T\+Pool\+::\+Get\+Shiftin\+P\+PM (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Get chemical shift. 
+
+\begin{DoxyReturn}{Returns}
+chemical shift of pool in ppm 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_c_e_s_t_pool_aa9a98597710896a38fc83ab8457260a8}\label{class_c_e_s_t_pool_aa9a98597710896a38fc83ab8457260a8}} 
+\index{CESTPool@{CESTPool}!SetExchangeRateInHz@{SetExchangeRateInHz}}
+\index{SetExchangeRateInHz@{SetExchangeRateInHz}!CESTPool@{CESTPool}}
+\doxysubsubsection{\texorpdfstring{SetExchangeRateInHz()}{SetExchangeRateInHz()}}
+{\footnotesize\ttfamily void C\+E\+S\+T\+Pool\+::\+Set\+Exchange\+Rate\+In\+Hz (\begin{DoxyParamCaption}\item[{double}]{nk }\end{DoxyParamCaption})}
+
+
+
+Set exchange rate. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em nk} & new exchage rate of pool in Hz \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_c_e_s_t_pool_a80e1f7b805dd8fd2864ed403778807fb}\label{class_c_e_s_t_pool_a80e1f7b805dd8fd2864ed403778807fb}} 
+\index{CESTPool@{CESTPool}!SetShiftinPPM@{SetShiftinPPM}}
+\index{SetShiftinPPM@{SetShiftinPPM}!CESTPool@{CESTPool}}
+\doxysubsubsection{\texorpdfstring{SetShiftinPPM()}{SetShiftinPPM()}}
+{\footnotesize\ttfamily void C\+E\+S\+T\+Pool\+::\+Set\+Shiftin\+P\+PM (\begin{DoxyParamCaption}\item[{double}]{ndw }\end{DoxyParamCaption})}
+
+
+
+Set shift. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ndw} & new chemical shift of pool in ppm \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Data Documentation}
+\mbox{\Hypertarget{class_c_e_s_t_pool_a6904ec305c30ed2a0cbb34709acaefa1}\label{class_c_e_s_t_pool_a6904ec305c30ed2a0cbb34709acaefa1}} 
+\index{CESTPool@{CESTPool}!dw@{dw}}
+\index{dw@{dw}!CESTPool@{CESTPool}}
+\doxysubsubsection{\texorpdfstring{dw}{dw}}
+{\footnotesize\ttfamily double C\+E\+S\+T\+Pool\+::dw\hspace{0.3cm}{\ttfamily [protected]}}
+
+Offset from Water resonance \mbox{[}ppm\mbox{]} \mbox{\Hypertarget{class_c_e_s_t_pool_ad7eeb2bf01d3faab83aad3726fc5bf04}\label{class_c_e_s_t_pool_ad7eeb2bf01d3faab83aad3726fc5bf04}} 
+\index{CESTPool@{CESTPool}!k@{k}}
+\index{k@{k}!CESTPool@{CESTPool}}
+\doxysubsubsection{\texorpdfstring{k}{k}}
+{\footnotesize\ttfamily double C\+E\+S\+T\+Pool\+::k\hspace{0.3cm}{\ttfamily [protected]}}
+
+Exchange rate \mbox{[}Hz\mbox{]} 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+Simulation\+Parameters.\+h\item 
+Simulation\+Parameters.\+cpp\end{DoxyCompactItemize}

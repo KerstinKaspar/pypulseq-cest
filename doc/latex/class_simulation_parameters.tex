@@ -1,0 +1,535 @@
+\hypertarget{class_simulation_parameters}{}\doxysection{Simulation\+Parameters Class Reference}
+\label{class_simulation_parameters}\index{SimulationParameters@{SimulationParameters}}
+
+
+\mbox{\hyperlink{class_simulation_parameters}{Simulation\+Parameters}} class.  
+
+
+
+
+{\ttfamily \#include $<$Simulation\+Parameters.\+h$>$}
+
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_simulation_parameters_a683bc20c3aa7a0ac8217afa4d1c34c0f}\label{class_simulation_parameters_a683bc20c3aa7a0ac8217afa4d1c34c0f}} 
+\mbox{\hyperlink{class_simulation_parameters_a683bc20c3aa7a0ac8217afa4d1c34c0f}{Simulation\+Parameters}} ()
+\begin{DoxyCompactList}\small\item\em Constructor. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{class_simulation_parameters_ac5c14422a6ab446475b95141eaf40be9}\label{class_simulation_parameters_ac5c14422a6ab446475b95141eaf40be9}} 
+\mbox{\hyperlink{class_simulation_parameters_ac5c14422a6ab446475b95141eaf40be9}{$\sim$\+Simulation\+Parameters}} ()
+\begin{DoxyCompactList}\small\item\em Destructor. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_simulation_parameters_a595c7854f08e8bcc16a8298a968bc8a1}{Set\+External\+Sequence}} (External\+Sequence seq)
+\begin{DoxyCompactList}\small\item\em Set external sequence object. \end{DoxyCompactList}\item 
+External\+Sequence $\ast$ \mbox{\hyperlink{class_simulation_parameters_ac12c52f7c444c237c307d014c3d3a62c}{Get\+External\+Sequence}} ()
+\begin{DoxyCompactList}\small\item\em Get external sequence object. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_simulation_parameters_abf924a3724404922e8c4f14c8e86b26f}{Init\+Magnetization\+Vectors}} (Vector\+Xd \&M, unsigned int num\+Output)
+\begin{DoxyCompactList}\small\item\em Init Magnetitazion Vector Array. \end{DoxyCompactList}\item 
+Matrix\+Xd $\ast$ \mbox{\hyperlink{class_simulation_parameters_a3218a231caf4a5e7218acc2ef9993730}{Get\+Magnetization\+Vectors}} ()
+\begin{DoxyCompactList}\small\item\em Get Magnetization vectors. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_simulation_parameters_abc27af7ae116706bf0138038ecd612fb}{Set\+Water\+Pool}} (\mbox{\hyperlink{class_water_pool}{Water\+Pool}} \mbox{\hyperlink{class_simulation_parameters_ab894bc3516437df72a9de3850385661d}{water\+Pool}})
+\begin{DoxyCompactList}\small\item\em Set Water Pool. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_water_pool}{Water\+Pool}} $\ast$ \mbox{\hyperlink{class_simulation_parameters_a2fb4d258bdfdd7f7c99526bb18abadc6}{Get\+Water\+Pool}} ()
+\begin{DoxyCompactList}\small\item\em Get Water Pool. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_simulation_parameters_a98ec071185dfdc4c241e758d57194a87}{Init\+C\+E\+S\+T\+Pool\+Memory}} (unsigned int num\+Pools)
+\begin{DoxyCompactList}\small\item\em Init C\+E\+ST pools. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_simulation_parameters_a4b8d5a5a3a4a897676d3f1640a57f07b}{Set\+C\+E\+S\+T\+Pool}} (\mbox{\hyperlink{class_c_e_s_t_pool}{C\+E\+S\+T\+Pool}} cp, unsigned int pool\+Idx)
+\begin{DoxyCompactList}\small\item\em Set C\+E\+ST Pool. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_c_e_s_t_pool}{C\+E\+S\+T\+Pool}} $\ast$ \mbox{\hyperlink{class_simulation_parameters_a9997e65e9b3b29af0910d90a65765dad}{Get\+C\+E\+S\+T\+Pool}} (unsigned int pool\+Idx)
+\begin{DoxyCompactList}\small\item\em Get C\+E\+ST Pool. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_simulation_parameters_af2036948e60ce19a1474e00caf6f4bfd}{Set\+M\+T\+Pool}} (\mbox{\hyperlink{class_m_t_pool}{M\+T\+Pool}} cp)
+\begin{DoxyCompactList}\small\item\em Set MT Pool. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_m_t_pool}{M\+T\+Pool}} $\ast$ \mbox{\hyperlink{class_simulation_parameters_a24bd408c609bc18d4f2f6ec096c6bb5d}{Get\+M\+T\+Pool}} ()
+\begin{DoxyCompactList}\small\item\em Get MT Pool. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_simulation_parameters_a75213d504a67c73ac15c126a22955323}{Init\+Scanner}} (double b0, double b1=1.\+0, double b0\+Inh=0.\+0, double gamma=42.\+577 $\ast$2 $\ast$M\+\_\+\+PI)
+\begin{DoxyCompactList}\small\item\em Init \mbox{\hyperlink{struct_scanner}{Scanner}} variables. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{class_simulation_parameters_ad8162fc7bfa62d26c00679a748d54ec0}{Get\+Scanner\+B0}} ()
+\begin{DoxyCompactList}\small\item\em Get \mbox{\hyperlink{struct_scanner}{Scanner}} B0. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{class_simulation_parameters_adca4ba015584dc9b86e849afe52b9cb6}{Get\+Scanner\+Rel\+B1}} ()
+\begin{DoxyCompactList}\small\item\em Get \mbox{\hyperlink{struct_scanner}{Scanner}} relative B1. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{class_simulation_parameters_a66b949884ac638cd314b72e7f006cac5}{Get\+Scanner\+B0\+Inhom}} ()
+\begin{DoxyCompactList}\small\item\em Get \mbox{\hyperlink{struct_scanner}{Scanner}} B0 inhomogeneity. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{class_simulation_parameters_ae1e841da91e86e04525a952d7715a920}{Get\+Scanner\+Gamma}} ()
+\begin{DoxyCompactList}\small\item\em Get \mbox{\hyperlink{struct_scanner}{Scanner}} Gamma. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_simulation_parameters_a66bce529f9b172b955acb5bf3b2bfd17}{Is\+M\+T\+Active}} ()
+\begin{DoxyCompactList}\small\item\em Get bool if MT should be simulated. \end{DoxyCompactList}\item 
+unsigned int \mbox{\hyperlink{class_simulation_parameters_a24607aa454f67ab06cdd506b4e0e80df}{Get\+Number\+Of\+C\+E\+S\+T\+Pools}} ()
+\begin{DoxyCompactList}\small\item\em Get Number of C\+E\+ST Pools. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_simulation_parameters_a3cbe284bbff27db41a0c2f4de2d25e99}{Set\+Verbose}} (bool v)
+\begin{DoxyCompactList}\small\item\em Set Verbose mode. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_simulation_parameters_aa762d3220e5647643b4a960f6f0e821d}{Is\+Verbose}} ()
+\begin{DoxyCompactList}\small\item\em Get verbose mode. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_simulation_parameters_a614a7a424d43519848b96f29daf79cb1}{Set\+Use\+Init\+Magnetization}} (bool init\+Mag)
+\begin{DoxyCompactList}\small\item\em Set Use init magnetization. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{class_simulation_parameters_a6deb72f0a2ebbb669cd58bc1f6ed7a88}{Get\+Use\+Init\+Magnetization}} ()
+\begin{DoxyCompactList}\small\item\em Get Use init magnetization. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_simulation_parameters_a4a2ef3f82048d142e0429b11678ac0a2}{Set\+Max\+Number\+Of\+Pulse\+Samples}} (unsigned int num\+Samples)
+\begin{DoxyCompactList}\small\item\em Set number of max pulse samples. \end{DoxyCompactList}\item 
+unsigned int \mbox{\hyperlink{class_simulation_parameters_a666d30654f7b67b26546fbc1c16a6287}{Get\+Max\+Number\+Of\+Pulse\+Samples}} ()
+\begin{DoxyCompactList}\small\item\em Get number of max pulse samples. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+External\+Sequence \mbox{\hyperlink{class_simulation_parameters_a24064eca2ac1750ab10f90cb73bfb9ea}{sequence}}
+\item 
+Matrix\+Xd \mbox{\hyperlink{class_simulation_parameters_a94044f4c7163b933d84068162a8e87aa}{Mvec}}
+\item 
+\mbox{\hyperlink{class_water_pool}{Water\+Pool}} \mbox{\hyperlink{class_simulation_parameters_ab894bc3516437df72a9de3850385661d}{water\+Pool}}
+\item 
+\mbox{\hyperlink{class_m_t_pool}{M\+T\+Pool}} \mbox{\hyperlink{class_simulation_parameters_a808ccdb6d6baaa46783cef11aa020baa}{mt\+Pool}}
+\item 
+\mbox{\hyperlink{class_c_e_s_t_pool}{C\+E\+S\+T\+Pool}} $\ast$ \mbox{\hyperlink{class_simulation_parameters_ae1ebe093495590a2889dfe166714c6a4}{cest\+Pools}}
+\item 
+\mbox{\hyperlink{struct_scanner}{Scanner}} \mbox{\hyperlink{class_simulation_parameters_a55057dd40ad159b731ae402a7c74298d}{scanner}}
+\item 
+bool \mbox{\hyperlink{class_simulation_parameters_a58ba3f52ad3d67d35f2ca0b79f042d8a}{simulate\+M\+T\+Pool}}
+\item 
+unsigned int \mbox{\hyperlink{class_simulation_parameters_a762cf508b878f801632f07005b85de73}{number\+Of\+C\+E\+S\+T\+Pools}}
+\item 
+bool \mbox{\hyperlink{class_simulation_parameters_ab64e6d494169963f64af7b4c55661997}{cest\+Mem\+Allocated}}
+\item 
+bool \mbox{\hyperlink{class_simulation_parameters_a5e288b469ef1921b71f211d7be6d282c}{verbose\+Mode}}
+\item 
+bool \mbox{\hyperlink{class_simulation_parameters_afd6a4eaf9d19b48ea337e092e4c1062e}{use\+Init\+Magnetization}}
+\item 
+unsigned int \mbox{\hyperlink{class_simulation_parameters_a05f881344626715148b7cc3a13401e57}{max\+Number\+Of\+Pulse\+Samples}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\mbox{\hyperlink{class_simulation_parameters}{Simulation\+Parameters}} class. 
+
+Container for all the relevant simulation parameters 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_simulation_parameters_a9997e65e9b3b29af0910d90a65765dad}\label{class_simulation_parameters_a9997e65e9b3b29af0910d90a65765dad}} 
+\index{SimulationParameters@{SimulationParameters}!GetCESTPool@{GetCESTPool}}
+\index{GetCESTPool@{GetCESTPool}!SimulationParameters@{SimulationParameters}}
+\doxysubsubsection{\texorpdfstring{GetCESTPool()}{GetCESTPool()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_c_e_s_t_pool}{C\+E\+S\+T\+Pool}} $\ast$ Simulation\+Parameters\+::\+Get\+C\+E\+S\+T\+Pool (\begin{DoxyParamCaption}\item[{unsigned int}]{pool\+Idx }\end{DoxyParamCaption})}
+
+
+
+Get C\+E\+ST Pool. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em pool\+Idx} & id of cest pool \mbox{[}0 ... number\+Of\+C\+E\+S\+T\+Pools-\/1\mbox{]} \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+pointer to cest pool at pool\+Idx 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_simulation_parameters_ac12c52f7c444c237c307d014c3d3a62c}\label{class_simulation_parameters_ac12c52f7c444c237c307d014c3d3a62c}} 
+\index{SimulationParameters@{SimulationParameters}!GetExternalSequence@{GetExternalSequence}}
+\index{GetExternalSequence@{GetExternalSequence}!SimulationParameters@{SimulationParameters}}
+\doxysubsubsection{\texorpdfstring{GetExternalSequence()}{GetExternalSequence()}}
+{\footnotesize\ttfamily External\+Sequence $\ast$ Simulation\+Parameters\+::\+Get\+External\+Sequence (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Get external sequence object. 
+
+\begin{DoxyReturn}{Returns}
+External\+Sequence object that should be simulated 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_simulation_parameters_a3218a231caf4a5e7218acc2ef9993730}\label{class_simulation_parameters_a3218a231caf4a5e7218acc2ef9993730}} 
+\index{SimulationParameters@{SimulationParameters}!GetMagnetizationVectors@{GetMagnetizationVectors}}
+\index{GetMagnetizationVectors@{GetMagnetizationVectors}!SimulationParameters@{SimulationParameters}}
+\doxysubsubsection{\texorpdfstring{GetMagnetizationVectors()}{GetMagnetizationVectors()}}
+{\footnotesize\ttfamily Matrix\+Xd $\ast$ Simulation\+Parameters\+::\+Get\+Magnetization\+Vectors (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Get Magnetization vectors. 
+
+\begin{DoxyReturn}{Returns}
+Magnetization vectors at each A\+DC event 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_simulation_parameters_a666d30654f7b67b26546fbc1c16a6287}\label{class_simulation_parameters_a666d30654f7b67b26546fbc1c16a6287}} 
+\index{SimulationParameters@{SimulationParameters}!GetMaxNumberOfPulseSamples@{GetMaxNumberOfPulseSamples}}
+\index{GetMaxNumberOfPulseSamples@{GetMaxNumberOfPulseSamples}!SimulationParameters@{SimulationParameters}}
+\doxysubsubsection{\texorpdfstring{GetMaxNumberOfPulseSamples()}{GetMaxNumberOfPulseSamples()}}
+{\footnotesize\ttfamily unsigned int Simulation\+Parameters\+::\+Get\+Max\+Number\+Of\+Pulse\+Samples (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Get number of max pulse samples. 
+
+\begin{DoxyReturn}{Returns}
+max samples of shaped pulses 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_simulation_parameters_a24bd408c609bc18d4f2f6ec096c6bb5d}\label{class_simulation_parameters_a24bd408c609bc18d4f2f6ec096c6bb5d}} 
+\index{SimulationParameters@{SimulationParameters}!GetMTPool@{GetMTPool}}
+\index{GetMTPool@{GetMTPool}!SimulationParameters@{SimulationParameters}}
+\doxysubsubsection{\texorpdfstring{GetMTPool()}{GetMTPool()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_m_t_pool}{M\+T\+Pool}} $\ast$ Simulation\+Parameters\+::\+Get\+M\+T\+Pool (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Get MT Pool. 
+
+\begin{DoxyReturn}{Returns}
+pointer to mt pool 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_simulation_parameters_a24607aa454f67ab06cdd506b4e0e80df}\label{class_simulation_parameters_a24607aa454f67ab06cdd506b4e0e80df}} 
+\index{SimulationParameters@{SimulationParameters}!GetNumberOfCESTPools@{GetNumberOfCESTPools}}
+\index{GetNumberOfCESTPools@{GetNumberOfCESTPools}!SimulationParameters@{SimulationParameters}}
+\doxysubsubsection{\texorpdfstring{GetNumberOfCESTPools()}{GetNumberOfCESTPools()}}
+{\footnotesize\ttfamily unsigned int Simulation\+Parameters\+::\+Get\+Number\+Of\+C\+E\+S\+T\+Pools (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Get Number of C\+E\+ST Pools. 
+
+\begin{DoxyReturn}{Returns}
+total number of C\+E\+ST pools that should be simulates 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_simulation_parameters_ad8162fc7bfa62d26c00679a748d54ec0}\label{class_simulation_parameters_ad8162fc7bfa62d26c00679a748d54ec0}} 
+\index{SimulationParameters@{SimulationParameters}!GetScannerB0@{GetScannerB0}}
+\index{GetScannerB0@{GetScannerB0}!SimulationParameters@{SimulationParameters}}
+\doxysubsubsection{\texorpdfstring{GetScannerB0()}{GetScannerB0()}}
+{\footnotesize\ttfamily double Simulation\+Parameters\+::\+Get\+Scanner\+B0 (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Get \mbox{\hyperlink{struct_scanner}{Scanner}} B0. 
+
+\begin{DoxyReturn}{Returns}
+static field of scanner \mbox{[}T\mbox{]} 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_simulation_parameters_a66b949884ac638cd314b72e7f006cac5}\label{class_simulation_parameters_a66b949884ac638cd314b72e7f006cac5}} 
+\index{SimulationParameters@{SimulationParameters}!GetScannerB0Inhom@{GetScannerB0Inhom}}
+\index{GetScannerB0Inhom@{GetScannerB0Inhom}!SimulationParameters@{SimulationParameters}}
+\doxysubsubsection{\texorpdfstring{GetScannerB0Inhom()}{GetScannerB0Inhom()}}
+{\footnotesize\ttfamily double Simulation\+Parameters\+::\+Get\+Scanner\+B0\+Inhom (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Get \mbox{\hyperlink{struct_scanner}{Scanner}} B0 inhomogeneity. 
+
+\begin{DoxyReturn}{Returns}
+field inhomogeneity \mbox{[}ppm\mbox{]} of scanner 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_simulation_parameters_ae1e841da91e86e04525a952d7715a920}\label{class_simulation_parameters_ae1e841da91e86e04525a952d7715a920}} 
+\index{SimulationParameters@{SimulationParameters}!GetScannerGamma@{GetScannerGamma}}
+\index{GetScannerGamma@{GetScannerGamma}!SimulationParameters@{SimulationParameters}}
+\doxysubsubsection{\texorpdfstring{GetScannerGamma()}{GetScannerGamma()}}
+{\footnotesize\ttfamily double Simulation\+Parameters\+::\+Get\+Scanner\+Gamma (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Get \mbox{\hyperlink{struct_scanner}{Scanner}} Gamma. 
+
+\begin{DoxyReturn}{Returns}
+gyromagnetic ratio of simulated nucleus \mbox{[}rad/uT\mbox{]} 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_simulation_parameters_adca4ba015584dc9b86e849afe52b9cb6}\label{class_simulation_parameters_adca4ba015584dc9b86e849afe52b9cb6}} 
+\index{SimulationParameters@{SimulationParameters}!GetScannerRelB1@{GetScannerRelB1}}
+\index{GetScannerRelB1@{GetScannerRelB1}!SimulationParameters@{SimulationParameters}}
+\doxysubsubsection{\texorpdfstring{GetScannerRelB1()}{GetScannerRelB1()}}
+{\footnotesize\ttfamily double Simulation\+Parameters\+::\+Get\+Scanner\+Rel\+B1 (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Get \mbox{\hyperlink{struct_scanner}{Scanner}} relative B1. 
+
+\begin{DoxyReturn}{Returns}
+relative b1 of scanner 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_simulation_parameters_a6deb72f0a2ebbb669cd58bc1f6ed7a88}\label{class_simulation_parameters_a6deb72f0a2ebbb669cd58bc1f6ed7a88}} 
+\index{SimulationParameters@{SimulationParameters}!GetUseInitMagnetization@{GetUseInitMagnetization}}
+\index{GetUseInitMagnetization@{GetUseInitMagnetization}!SimulationParameters@{SimulationParameters}}
+\doxysubsubsection{\texorpdfstring{GetUseInitMagnetization()}{GetUseInitMagnetization()}}
+{\footnotesize\ttfamily bool Simulation\+Parameters\+::\+Get\+Use\+Init\+Magnetization (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Get Use init magnetization. 
+
+\begin{DoxyReturn}{Returns}
+info about freshly initialized magnetization after A\+DC 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_simulation_parameters_a2fb4d258bdfdd7f7c99526bb18abadc6}\label{class_simulation_parameters_a2fb4d258bdfdd7f7c99526bb18abadc6}} 
+\index{SimulationParameters@{SimulationParameters}!GetWaterPool@{GetWaterPool}}
+\index{GetWaterPool@{GetWaterPool}!SimulationParameters@{SimulationParameters}}
+\doxysubsubsection{\texorpdfstring{GetWaterPool()}{GetWaterPool()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_water_pool}{Water\+Pool}} $\ast$ Simulation\+Parameters\+::\+Get\+Water\+Pool (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Get Water Pool. 
+
+\begin{DoxyReturn}{Returns}
+pointer to water pool 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_simulation_parameters_a98ec071185dfdc4c241e758d57194a87}\label{class_simulation_parameters_a98ec071185dfdc4c241e758d57194a87}} 
+\index{SimulationParameters@{SimulationParameters}!InitCESTPoolMemory@{InitCESTPoolMemory}}
+\index{InitCESTPoolMemory@{InitCESTPoolMemory}!SimulationParameters@{SimulationParameters}}
+\doxysubsubsection{\texorpdfstring{InitCESTPoolMemory()}{InitCESTPoolMemory()}}
+{\footnotesize\ttfamily void Simulation\+Parameters\+::\+Init\+C\+E\+S\+T\+Pool\+Memory (\begin{DoxyParamCaption}\item[{unsigned int}]{num\+Pools }\end{DoxyParamCaption})}
+
+
+
+Init C\+E\+ST pools. 
+
+Init C\+E\+ST pool memory.
+
+Allocate heap memory for C\+E\+ST pools 
+\begin{DoxyParams}{Parameters}
+{\em num\+Pools} & number of C\+E\+ST pools that should be simulated \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_simulation_parameters_abf924a3724404922e8c4f14c8e86b26f}\label{class_simulation_parameters_abf924a3724404922e8c4f14c8e86b26f}} 
+\index{SimulationParameters@{SimulationParameters}!InitMagnetizationVectors@{InitMagnetizationVectors}}
+\index{InitMagnetizationVectors@{InitMagnetizationVectors}!SimulationParameters@{SimulationParameters}}
+\doxysubsubsection{\texorpdfstring{InitMagnetizationVectors()}{InitMagnetizationVectors()}}
+{\footnotesize\ttfamily void Simulation\+Parameters\+::\+Init\+Magnetization\+Vectors (\begin{DoxyParamCaption}\item[{Vector\+Xd \&}]{M,  }\item[{unsigned int}]{num\+Output }\end{DoxyParamCaption})}
+
+
+
+Init Magnetitazion Vector Array. 
+
+Replicate the initial Magnetization vector for output 
+\begin{DoxyParams}{Parameters}
+{\em M} & initial magnetization vector after A\+DC \\
+\hline
+{\em num\+Output} & number of A\+DC events in external sequence \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_simulation_parameters_a75213d504a67c73ac15c126a22955323}\label{class_simulation_parameters_a75213d504a67c73ac15c126a22955323}} 
+\index{SimulationParameters@{SimulationParameters}!InitScanner@{InitScanner}}
+\index{InitScanner@{InitScanner}!SimulationParameters@{SimulationParameters}}
+\doxysubsubsection{\texorpdfstring{InitScanner()}{InitScanner()}}
+{\footnotesize\ttfamily void Simulation\+Parameters\+::\+Init\+Scanner (\begin{DoxyParamCaption}\item[{double}]{b0,  }\item[{double}]{b1 = {\ttfamily 1.0},  }\item[{double}]{b0\+Inh = {\ttfamily 0.0},  }\item[{double}]{gamma = {\ttfamily 42.577~$\ast$~2~$\ast$~M\+\_\+PI} }\end{DoxyParamCaption})}
+
+
+
+Init \mbox{\hyperlink{struct_scanner}{Scanner}} variables. 
+
+Set \mbox{\hyperlink{struct_scanner}{Scanner}} related info.
+
+
+\begin{DoxyParams}{Parameters}
+{\em b0} & static field \mbox{[}T\mbox{]} \\
+\hline
+{\em rel\+B1} & relative B1 \\
+\hline
+{\em B0\+Inhomogeneity} & field inhomogeneity \mbox{[}ppm\mbox{]} \\
+\hline
+{\em Gamma} & gyromagnetic ratio \mbox{[}rad/uT\mbox{]} \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_simulation_parameters_a66bce529f9b172b955acb5bf3b2bfd17}\label{class_simulation_parameters_a66bce529f9b172b955acb5bf3b2bfd17}} 
+\index{SimulationParameters@{SimulationParameters}!IsMTActive@{IsMTActive}}
+\index{IsMTActive@{IsMTActive}!SimulationParameters@{SimulationParameters}}
+\doxysubsubsection{\texorpdfstring{IsMTActive()}{IsMTActive()}}
+{\footnotesize\ttfamily bool Simulation\+Parameters\+::\+Is\+M\+T\+Active (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Get bool if MT should be simulated. 
+
+\begin{DoxyReturn}{Returns}
+true, if an MT pool should be simulated 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_simulation_parameters_aa762d3220e5647643b4a960f6f0e821d}\label{class_simulation_parameters_aa762d3220e5647643b4a960f6f0e821d}} 
+\index{SimulationParameters@{SimulationParameters}!IsVerbose@{IsVerbose}}
+\index{IsVerbose@{IsVerbose}!SimulationParameters@{SimulationParameters}}
+\doxysubsubsection{\texorpdfstring{IsVerbose()}{IsVerbose()}}
+{\footnotesize\ttfamily bool Simulation\+Parameters\+::\+Is\+Verbose (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Get verbose mode. 
+
+\begin{DoxyReturn}{Returns}
+info about verbosity (true/false) 
+\end{DoxyReturn}
+\mbox{\Hypertarget{class_simulation_parameters_a4b8d5a5a3a4a897676d3f1640a57f07b}\label{class_simulation_parameters_a4b8d5a5a3a4a897676d3f1640a57f07b}} 
+\index{SimulationParameters@{SimulationParameters}!SetCESTPool@{SetCESTPool}}
+\index{SetCESTPool@{SetCESTPool}!SimulationParameters@{SimulationParameters}}
+\doxysubsubsection{\texorpdfstring{SetCESTPool()}{SetCESTPool()}}
+{\footnotesize\ttfamily void Simulation\+Parameters\+::\+Set\+C\+E\+S\+T\+Pool (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_c_e_s_t_pool}{C\+E\+S\+T\+Pool}}}]{cp,  }\item[{unsigned int}]{pool\+Idx }\end{DoxyParamCaption})}
+
+
+
+Set C\+E\+ST Pool. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em cp} & new C\+E\+ST pool \\
+\hline
+{\em pool\+Idx} & id of cest pool \mbox{[}0 ... number\+Of\+C\+E\+S\+T\+Pools-\/1\mbox{]} \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_simulation_parameters_a595c7854f08e8bcc16a8298a968bc8a1}\label{class_simulation_parameters_a595c7854f08e8bcc16a8298a968bc8a1}} 
+\index{SimulationParameters@{SimulationParameters}!SetExternalSequence@{SetExternalSequence}}
+\index{SetExternalSequence@{SetExternalSequence}!SimulationParameters@{SimulationParameters}}
+\doxysubsubsection{\texorpdfstring{SetExternalSequence()}{SetExternalSequence()}}
+{\footnotesize\ttfamily void Simulation\+Parameters\+::\+Set\+External\+Sequence (\begin{DoxyParamCaption}\item[{External\+Sequence}]{seq }\end{DoxyParamCaption})}
+
+
+
+Set external sequence object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em seq} & External\+Sequence object that should be simulated \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_simulation_parameters_a4a2ef3f82048d142e0429b11678ac0a2}\label{class_simulation_parameters_a4a2ef3f82048d142e0429b11678ac0a2}} 
+\index{SimulationParameters@{SimulationParameters}!SetMaxNumberOfPulseSamples@{SetMaxNumberOfPulseSamples}}
+\index{SetMaxNumberOfPulseSamples@{SetMaxNumberOfPulseSamples}!SimulationParameters@{SimulationParameters}}
+\doxysubsubsection{\texorpdfstring{SetMaxNumberOfPulseSamples()}{SetMaxNumberOfPulseSamples()}}
+{\footnotesize\ttfamily void Simulation\+Parameters\+::\+Set\+Max\+Number\+Of\+Pulse\+Samples (\begin{DoxyParamCaption}\item[{unsigned int}]{num\+Samples }\end{DoxyParamCaption})}
+
+
+
+Set number of max pulse samples. 
+
+pulseq samples pulses at each us. For simulation these pulses are resampled to $<$= max\+Number\+Of\+Pulse\+Samples (default = 100) 
+\begin{DoxyParams}{Parameters}
+{\em num\+Samples} & max samples for shaped pulses \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_simulation_parameters_af2036948e60ce19a1474e00caf6f4bfd}\label{class_simulation_parameters_af2036948e60ce19a1474e00caf6f4bfd}} 
+\index{SimulationParameters@{SimulationParameters}!SetMTPool@{SetMTPool}}
+\index{SetMTPool@{SetMTPool}!SimulationParameters@{SimulationParameters}}
+\doxysubsubsection{\texorpdfstring{SetMTPool()}{SetMTPool()}}
+{\footnotesize\ttfamily void Simulation\+Parameters\+::\+Set\+M\+T\+Pool (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_m_t_pool}{M\+T\+Pool}}}]{mp }\end{DoxyParamCaption})}
+
+
+
+Set MT Pool. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em mp} & new mt pool \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_simulation_parameters_a614a7a424d43519848b96f29daf79cb1}\label{class_simulation_parameters_a614a7a424d43519848b96f29daf79cb1}} 
+\index{SimulationParameters@{SimulationParameters}!SetUseInitMagnetization@{SetUseInitMagnetization}}
+\index{SetUseInitMagnetization@{SetUseInitMagnetization}!SimulationParameters@{SimulationParameters}}
+\doxysubsubsection{\texorpdfstring{SetUseInitMagnetization()}{SetUseInitMagnetization()}}
+{\footnotesize\ttfamily void Simulation\+Parameters\+::\+Set\+Use\+Init\+Magnetization (\begin{DoxyParamCaption}\item[{bool}]{init\+Mag }\end{DoxyParamCaption})}
+
+
+
+Set Use init magnetization. 
+
+True, if the magnetization should be reset to the initial M vector after each A\+DC This can be set to false if the readout is simulated as well e.\+g. for M\+RF sequences where a transient magnetization is important 
+\begin{DoxyParams}{Parameters}
+{\em init\+Mag} & true if magnetizytion should be initialized after A\+DC \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_simulation_parameters_a3cbe284bbff27db41a0c2f4de2d25e99}\label{class_simulation_parameters_a3cbe284bbff27db41a0c2f4de2d25e99}} 
+\index{SimulationParameters@{SimulationParameters}!SetVerbose@{SetVerbose}}
+\index{SetVerbose@{SetVerbose}!SimulationParameters@{SimulationParameters}}
+\doxysubsubsection{\texorpdfstring{SetVerbose()}{SetVerbose()}}
+{\footnotesize\ttfamily void Simulation\+Parameters\+::\+Set\+Verbose (\begin{DoxyParamCaption}\item[{bool}]{v }\end{DoxyParamCaption})}
+
+
+
+Set Verbose mode. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em v} & info about verbosity (true/false) \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_simulation_parameters_abc27af7ae116706bf0138038ecd612fb}\label{class_simulation_parameters_abc27af7ae116706bf0138038ecd612fb}} 
+\index{SimulationParameters@{SimulationParameters}!SetWaterPool@{SetWaterPool}}
+\index{SetWaterPool@{SetWaterPool}!SimulationParameters@{SimulationParameters}}
+\doxysubsubsection{\texorpdfstring{SetWaterPool()}{SetWaterPool()}}
+{\footnotesize\ttfamily void Simulation\+Parameters\+::\+Set\+Water\+Pool (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_water_pool}{Water\+Pool}}}]{wp }\end{DoxyParamCaption})}
+
+
+
+Set Water Pool. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em wp} & new water pool \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Data Documentation}
+\mbox{\Hypertarget{class_simulation_parameters_ab64e6d494169963f64af7b4c55661997}\label{class_simulation_parameters_ab64e6d494169963f64af7b4c55661997}} 
+\index{SimulationParameters@{SimulationParameters}!cestMemAllocated@{cestMemAllocated}}
+\index{cestMemAllocated@{cestMemAllocated}!SimulationParameters@{SimulationParameters}}
+\doxysubsubsection{\texorpdfstring{cestMemAllocated}{cestMemAllocated}}
+{\footnotesize\ttfamily bool Simulation\+Parameters\+::cest\+Mem\+Allocated\hspace{0.3cm}{\ttfamily [protected]}}
+
+true if memory for cest pools was allocated \mbox{\Hypertarget{class_simulation_parameters_ae1ebe093495590a2889dfe166714c6a4}\label{class_simulation_parameters_ae1ebe093495590a2889dfe166714c6a4}} 
+\index{SimulationParameters@{SimulationParameters}!cestPools@{cestPools}}
+\index{cestPools@{cestPools}!SimulationParameters@{SimulationParameters}}
+\doxysubsubsection{\texorpdfstring{cestPools}{cestPools}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_c_e_s_t_pool}{C\+E\+S\+T\+Pool}}$\ast$ Simulation\+Parameters\+::cest\+Pools\hspace{0.3cm}{\ttfamily [protected]}}
+
+C\+E\+ST Pool(s) \mbox{\Hypertarget{class_simulation_parameters_a05f881344626715148b7cc3a13401e57}\label{class_simulation_parameters_a05f881344626715148b7cc3a13401e57}} 
+\index{SimulationParameters@{SimulationParameters}!maxNumberOfPulseSamples@{maxNumberOfPulseSamples}}
+\index{maxNumberOfPulseSamples@{maxNumberOfPulseSamples}!SimulationParameters@{SimulationParameters}}
+\doxysubsubsection{\texorpdfstring{maxNumberOfPulseSamples}{maxNumberOfPulseSamples}}
+{\footnotesize\ttfamily unsigned int Simulation\+Parameters\+::max\+Number\+Of\+Pulse\+Samples\hspace{0.3cm}{\ttfamily [protected]}}
+
+number of pulse samples for shaped pulses \mbox{\Hypertarget{class_simulation_parameters_a808ccdb6d6baaa46783cef11aa020baa}\label{class_simulation_parameters_a808ccdb6d6baaa46783cef11aa020baa}} 
+\index{SimulationParameters@{SimulationParameters}!mtPool@{mtPool}}
+\index{mtPool@{mtPool}!SimulationParameters@{SimulationParameters}}
+\doxysubsubsection{\texorpdfstring{mtPool}{mtPool}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_m_t_pool}{M\+T\+Pool}} Simulation\+Parameters\+::mt\+Pool\hspace{0.3cm}{\ttfamily [protected]}}
+
+MT Pool \mbox{\Hypertarget{class_simulation_parameters_a94044f4c7163b933d84068162a8e87aa}\label{class_simulation_parameters_a94044f4c7163b933d84068162a8e87aa}} 
+\index{SimulationParameters@{SimulationParameters}!Mvec@{Mvec}}
+\index{Mvec@{Mvec}!SimulationParameters@{SimulationParameters}}
+\doxysubsubsection{\texorpdfstring{Mvec}{Mvec}}
+{\footnotesize\ttfamily Matrix\+Xd Simulation\+Parameters\+::\+Mvec\hspace{0.3cm}{\ttfamily [protected]}}
+
+Matrix containing all magnetization vectors \mbox{\Hypertarget{class_simulation_parameters_a762cf508b878f801632f07005b85de73}\label{class_simulation_parameters_a762cf508b878f801632f07005b85de73}} 
+\index{SimulationParameters@{SimulationParameters}!numberOfCESTPools@{numberOfCESTPools}}
+\index{numberOfCESTPools@{numberOfCESTPools}!SimulationParameters@{SimulationParameters}}
+\doxysubsubsection{\texorpdfstring{numberOfCESTPools}{numberOfCESTPools}}
+{\footnotesize\ttfamily unsigned int Simulation\+Parameters\+::number\+Of\+C\+E\+S\+T\+Pools\hspace{0.3cm}{\ttfamily [protected]}}
+
+number of C\+E\+ST Pools \mbox{\Hypertarget{class_simulation_parameters_a55057dd40ad159b731ae402a7c74298d}\label{class_simulation_parameters_a55057dd40ad159b731ae402a7c74298d}} 
+\index{SimulationParameters@{SimulationParameters}!scanner@{scanner}}
+\index{scanner@{scanner}!SimulationParameters@{SimulationParameters}}
+\doxysubsubsection{\texorpdfstring{scanner}{scanner}}
+{\footnotesize\ttfamily \mbox{\hyperlink{struct_scanner}{Scanner}} Simulation\+Parameters\+::scanner\hspace{0.3cm}{\ttfamily [protected]}}
+
+Sruct with field related info \mbox{\Hypertarget{class_simulation_parameters_a24064eca2ac1750ab10f90cb73bfb9ea}\label{class_simulation_parameters_a24064eca2ac1750ab10f90cb73bfb9ea}} 
+\index{SimulationParameters@{SimulationParameters}!sequence@{sequence}}
+\index{sequence@{sequence}!SimulationParameters@{SimulationParameters}}
+\doxysubsubsection{\texorpdfstring{sequence}{sequence}}
+{\footnotesize\ttfamily External\+Sequence Simulation\+Parameters\+::sequence\hspace{0.3cm}{\ttfamily [protected]}}
+
+pulseq sequence \mbox{\Hypertarget{class_simulation_parameters_a58ba3f52ad3d67d35f2ca0b79f042d8a}\label{class_simulation_parameters_a58ba3f52ad3d67d35f2ca0b79f042d8a}} 
+\index{SimulationParameters@{SimulationParameters}!simulateMTPool@{simulateMTPool}}
+\index{simulateMTPool@{simulateMTPool}!SimulationParameters@{SimulationParameters}}
+\doxysubsubsection{\texorpdfstring{simulateMTPool}{simulateMTPool}}
+{\footnotesize\ttfamily bool Simulation\+Parameters\+::simulate\+M\+T\+Pool\hspace{0.3cm}{\ttfamily [protected]}}
+
+true if MT should be simulated \mbox{\Hypertarget{class_simulation_parameters_afd6a4eaf9d19b48ea337e092e4c1062e}\label{class_simulation_parameters_afd6a4eaf9d19b48ea337e092e4c1062e}} 
+\index{SimulationParameters@{SimulationParameters}!useInitMagnetization@{useInitMagnetization}}
+\index{useInitMagnetization@{useInitMagnetization}!SimulationParameters@{SimulationParameters}}
+\doxysubsubsection{\texorpdfstring{useInitMagnetization}{useInitMagnetization}}
+{\footnotesize\ttfamily bool Simulation\+Parameters\+::use\+Init\+Magnetization\hspace{0.3cm}{\ttfamily [protected]}}
+
+true, if the magnetization vector should be reset to the initial magnetization after each adc \mbox{\Hypertarget{class_simulation_parameters_a5e288b469ef1921b71f211d7be6d282c}\label{class_simulation_parameters_a5e288b469ef1921b71f211d7be6d282c}} 
+\index{SimulationParameters@{SimulationParameters}!verboseMode@{verboseMode}}
+\index{verboseMode@{verboseMode}!SimulationParameters@{SimulationParameters}}
+\doxysubsubsection{\texorpdfstring{verboseMode}{verboseMode}}
+{\footnotesize\ttfamily bool Simulation\+Parameters\+::verbose\+Mode\hspace{0.3cm}{\ttfamily [protected]}}
+
+true, if you want to have some output information \mbox{\Hypertarget{class_simulation_parameters_ab894bc3516437df72a9de3850385661d}\label{class_simulation_parameters_ab894bc3516437df72a9de3850385661d}} 
+\index{SimulationParameters@{SimulationParameters}!waterPool@{waterPool}}
+\index{waterPool@{waterPool}!SimulationParameters@{SimulationParameters}}
+\doxysubsubsection{\texorpdfstring{waterPool}{waterPool}}
+{\footnotesize\ttfamily \mbox{\hyperlink{class_water_pool}{Water\+Pool}} Simulation\+Parameters\+::water\+Pool\hspace{0.3cm}{\ttfamily [protected]}}
+
+Water Pool 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+Simulation\+Parameters.\+h\item 
+Simulation\+Parameters.\+cpp\end{DoxyCompactItemize}

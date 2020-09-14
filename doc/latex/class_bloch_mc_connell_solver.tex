@@ -1,0 +1,145 @@
+\hypertarget{class_bloch_mc_connell_solver}{}\doxysection{Bloch\+Mc\+Connell\+Solver$<$ size $>$ Class Template Reference}
+\label{class_bloch_mc_connell_solver}\index{BlochMcConnellSolver$<$ size $>$@{BlochMcConnellSolver$<$ size $>$}}
+
+
+\mbox{\hyperlink{_bloch_mc_connell_solver_8h_source}{Bloch\+Mc\+Connell\+Solver.\+h}}.  
+
+
+
+
+{\ttfamily \#include $<$Bloch\+Mc\+Connell\+Solver.\+h$>$}
+
+\doxysubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_bloch_mc_connell_solver_ac4d1eb59bb639e180624d19a69f1b6d6}\label{class_bloch_mc_connell_solver_ac4d1eb59bb639e180624d19a69f1b6d6}} 
+typedef Matrix$<$ double, size, 1 $>$ {\bfseries Vector\+Nd}
+\item 
+\mbox{\Hypertarget{class_bloch_mc_connell_solver_a43f55dd0b098e34a0c5f56ca22f0d036}\label{class_bloch_mc_connell_solver_a43f55dd0b098e34a0c5f56ca22f0d036}} 
+typedef Matrix$<$ double, size, size $>$ {\bfseries Matrix\+Nd}
+\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_bloch_mc_connell_solver_ac5c66e3ab555f724d5c07a736500bf20}{Bloch\+Mc\+Connell\+Solver}} (\mbox{\hyperlink{class_simulation_parameters}{Simulation\+Parameters}} \&sp)
+\begin{DoxyCompactList}\small\item\em Constructor. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{class_bloch_mc_connell_solver_a85d3b8343d47669aa78b82ba5443781e}{$\sim$\+Bloch\+Mc\+Connell\+Solver}} ()
+\begin{DoxyCompactList}\small\item\em Destructor. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_bloch_mc_connell_solver_acc95f7b08100aa09fca00eb008ab2b5b}{Update\+Bloch\+Matrix}} (\mbox{\hyperlink{class_simulation_parameters}{Simulation\+Parameters}} \&sp, double rf\+Amplitude, double rf\+Frequency, double rf\+Phase)
+\begin{DoxyCompactList}\small\item\em Update Matrix with pulse info. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_bloch_mc_connell_solver_ad3b43762c43e17f0aafc723033b2f157}{Solve\+Bloch\+Equation}} (Vector\+Nd \&M, float \&t)
+\begin{DoxyCompactList}\small\item\em Solve Bloch Mc\+Connell equation. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_bloch_mc_connell_solver_a397390e9c564fbc50cf15b270903a250}{Set\+Num\+Steps\+For\+Pade\+Approx}} (unsigned int n\+Approx)
+\begin{DoxyCompactList}\small\item\em Set number of steps for pade approximation. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$int size$>$\newline
+class Bloch\+Mc\+Connell\+Solver$<$ size $>$}
+
+\mbox{\hyperlink{_bloch_mc_connell_solver_8h_source}{Bloch\+Mc\+Connell\+Solver.\+h}}. 
+
+Class to solve the Bloch-\/\+Mc\+Connell equations for multiple pools
+
+\href{mailto:kai.herz@tuebingen.mpg.de}{\texttt{ kai.\+herz@tuebingen.\+mpg.\+de}}
+
+Copyright 2020 Kai Herz
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \char`\"{}\+Software\char`\"{}), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions\+:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+T\+HE S\+O\+F\+T\+W\+A\+RE IS P\+R\+O\+V\+I\+D\+ED \char`\"{}\+A\+S I\+S\char`\"{}, W\+I\+T\+H\+O\+UT W\+A\+R\+R\+A\+N\+TY OF A\+NY K\+I\+ND, E\+X\+P\+R\+E\+SS OR I\+M\+P\+L\+I\+ED, I\+N\+C\+L\+U\+D\+I\+NG B\+UT N\+OT L\+I\+M\+I\+T\+ED TO T\+HE W\+A\+R\+R\+A\+N\+T\+I\+ES OF M\+E\+R\+C\+H\+A\+N\+T\+A\+B\+I\+L\+I\+TY, F\+I\+T\+N\+E\+SS F\+OR A P\+A\+R\+T\+I\+C\+U\+L\+AR P\+U\+R\+P\+O\+SE A\+ND N\+O\+N\+I\+N\+F\+R\+I\+N\+G\+E\+M\+E\+NT. IN NO E\+V\+E\+NT S\+H\+A\+LL T\+HE A\+U\+T\+H\+O\+RS OR C\+O\+P\+Y\+R\+I\+G\+HT H\+O\+L\+D\+E\+RS BE L\+I\+A\+B\+LE F\+OR A\+NY C\+L\+A\+IM, D\+A\+M\+A\+G\+ES OR O\+T\+H\+ER L\+I\+A\+B\+I\+L\+I\+TY, W\+H\+E\+T\+H\+ER IN AN A\+C\+T\+I\+ON OF C\+O\+N\+T\+R\+A\+CT, T\+O\+RT OR O\+T\+H\+E\+R\+W\+I\+SE, A\+R\+I\+S\+I\+NG F\+R\+OM, O\+UT OF OR IN C\+O\+N\+N\+E\+C\+T\+I\+ON W\+I\+TH T\+HE S\+O\+F\+T\+W\+A\+RE OR T\+HE U\+SE OR O\+T\+H\+ER D\+E\+A\+L\+I\+N\+GS IN T\+HE S\+O\+F\+T\+W\+A\+RE. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_bloch_mc_connell_solver_ac5c66e3ab555f724d5c07a736500bf20}\label{class_bloch_mc_connell_solver_ac5c66e3ab555f724d5c07a736500bf20}} 
+\index{BlochMcConnellSolver$<$ size $>$@{BlochMcConnellSolver$<$ size $>$}!BlochMcConnellSolver@{BlochMcConnellSolver}}
+\index{BlochMcConnellSolver@{BlochMcConnellSolver}!BlochMcConnellSolver$<$ size $>$@{BlochMcConnellSolver$<$ size $>$}}
+\doxysubsubsection{\texorpdfstring{BlochMcConnellSolver()}{BlochMcConnellSolver()}}
+{\footnotesize\ttfamily template$<$int size$>$ \\
+\mbox{\hyperlink{class_bloch_mc_connell_solver}{Bloch\+Mc\+Connell\+Solver}}$<$ size $>$\+::\mbox{\hyperlink{class_bloch_mc_connell_solver}{Bloch\+Mc\+Connell\+Solver}} (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_simulation_parameters}{Simulation\+Parameters}} \&}]{sp }\end{DoxyParamCaption})}
+
+
+
+Constructor. 
+
+Sets fixed parameters such as fraction, exchange rate etc. 
+\begin{DoxyParams}{Parameters}
+{\em sp} & Simulation\+Paramter object containing pool informations \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_bloch_mc_connell_solver_a85d3b8343d47669aa78b82ba5443781e}\label{class_bloch_mc_connell_solver_a85d3b8343d47669aa78b82ba5443781e}} 
+\index{BlochMcConnellSolver$<$ size $>$@{BlochMcConnellSolver$<$ size $>$}!````~BlochMcConnellSolver@{$\sim$BlochMcConnellSolver}}
+\index{````~BlochMcConnellSolver@{$\sim$BlochMcConnellSolver}!BlochMcConnellSolver$<$ size $>$@{BlochMcConnellSolver$<$ size $>$}}
+\doxysubsubsection{\texorpdfstring{$\sim$BlochMcConnellSolver()}{~BlochMcConnellSolver()}}
+{\footnotesize\ttfamily template$<$int size$>$ \\
+\mbox{\hyperlink{class_bloch_mc_connell_solver}{Bloch\+Mc\+Connell\+Solver}}$<$ size $>$\+::$\sim$\mbox{\hyperlink{class_bloch_mc_connell_solver}{Bloch\+Mc\+Connell\+Solver}}}
+
+
+
+Destructor. 
+
+Desctuctor. 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_bloch_mc_connell_solver_a397390e9c564fbc50cf15b270903a250}\label{class_bloch_mc_connell_solver_a397390e9c564fbc50cf15b270903a250}} 
+\index{BlochMcConnellSolver$<$ size $>$@{BlochMcConnellSolver$<$ size $>$}!SetNumStepsForPadeApprox@{SetNumStepsForPadeApprox}}
+\index{SetNumStepsForPadeApprox@{SetNumStepsForPadeApprox}!BlochMcConnellSolver$<$ size $>$@{BlochMcConnellSolver$<$ size $>$}}
+\doxysubsubsection{\texorpdfstring{SetNumStepsForPadeApprox()}{SetNumStepsForPadeApprox()}}
+{\footnotesize\ttfamily template$<$int size$>$ \\
+void \mbox{\hyperlink{class_bloch_mc_connell_solver}{Bloch\+Mc\+Connell\+Solver}}$<$ size $>$\+::Set\+Num\+Steps\+For\+Pade\+Approx (\begin{DoxyParamCaption}\item[{unsigned int}]{n\+Approx }\end{DoxyParamCaption})}
+
+
+
+Set number of steps for pade approximation. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em n\+Approx} & Number of approximations (default = 6) \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_bloch_mc_connell_solver_ad3b43762c43e17f0aafc723033b2f157}\label{class_bloch_mc_connell_solver_ad3b43762c43e17f0aafc723033b2f157}} 
+\index{BlochMcConnellSolver$<$ size $>$@{BlochMcConnellSolver$<$ size $>$}!SolveBlochEquation@{SolveBlochEquation}}
+\index{SolveBlochEquation@{SolveBlochEquation}!BlochMcConnellSolver$<$ size $>$@{BlochMcConnellSolver$<$ size $>$}}
+\doxysubsubsection{\texorpdfstring{SolveBlochEquation()}{SolveBlochEquation()}}
+{\footnotesize\ttfamily template$<$int size$>$ \\
+void \mbox{\hyperlink{class_bloch_mc_connell_solver}{Bloch\+Mc\+Connell\+Solver}}$<$ size $>$\+::Solve\+Bloch\+Equation (\begin{DoxyParamCaption}\item[{Vector\+Nd \&}]{M,  }\item[{float \&}]{t }\end{DoxyParamCaption})}
+
+
+
+Solve Bloch Mc\+Connell equation. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em M} & Simulation\+Paramter Vector\+Nd for which the equation should be solved \\
+\hline
+{\em t} & timestep for which the equation should be solved \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_bloch_mc_connell_solver_acc95f7b08100aa09fca00eb008ab2b5b}\label{class_bloch_mc_connell_solver_acc95f7b08100aa09fca00eb008ab2b5b}} 
+\index{BlochMcConnellSolver$<$ size $>$@{BlochMcConnellSolver$<$ size $>$}!UpdateBlochMatrix@{UpdateBlochMatrix}}
+\index{UpdateBlochMatrix@{UpdateBlochMatrix}!BlochMcConnellSolver$<$ size $>$@{BlochMcConnellSolver$<$ size $>$}}
+\doxysubsubsection{\texorpdfstring{UpdateBlochMatrix()}{UpdateBlochMatrix()}}
+{\footnotesize\ttfamily template$<$int size$>$ \\
+void \mbox{\hyperlink{class_bloch_mc_connell_solver}{Bloch\+Mc\+Connell\+Solver}}$<$ size $>$\+::Update\+Bloch\+Matrix (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{class_simulation_parameters}{Simulation\+Parameters}} \&}]{sp,  }\item[{double}]{rf\+Amplitude,  }\item[{double}]{rf\+Frequency,  }\item[{double}]{rf\+Phase }\end{DoxyParamCaption})}
+
+
+
+Update Matrix with pulse info. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em sp} & Simulation\+Paramter object containing pool informations \\
+\hline
+{\em rf\+Amplitude} & B1 amplitude \mbox{[}Hz\mbox{]} \\
+\hline
+{\em rf\+Frequency} & B1 frequency offset from f0 \mbox{[}Hz\mbox{]} \\
+\hline
+{\em rf\+Phase} & B1 phase offset \mbox{[}rad\mbox{]} \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+Bloch\+Mc\+Connell\+Solver.\+h\end{DoxyCompactItemize}
