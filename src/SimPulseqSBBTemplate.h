@@ -18,11 +18,6 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 
 */
 
-%module SimPulseqSBBTemplate
-%{
-#include "SimPulseqSBBTemplate.h"
-%}
-
 #pragma once
 
 #include "BlochMcConnellSolver.h"
@@ -34,7 +29,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 /*!
    \param sp SimulationParameters object containing pool and pulse info
 */
-template <int size> void SimPulseqSBB(SimulationParameters& sp)
+template <int size> void SimPulseqSBBTemplate(SimulationParameters& sp)
 {
 
 	//init solver
@@ -153,4 +148,3 @@ template <int size> void SimPulseqSBB(SimulationParameters& sp)
 	}
 }
 
-%template(SimPulseqSBBTemplate) SimPulseqSBBTemplate<>;

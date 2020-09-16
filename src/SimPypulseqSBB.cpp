@@ -10,13 +10,11 @@ adapted from MATLAB version: https://github.com/kherz/pulseq-cest
 
 #define MAX_CEST_POOLS 100
 
-void SimPypulseq
+void SimPulseqSBB(SimulationParameters& sp)
 	/* For a small number of pools the matrix size can be set at compile time. This ensures allocation on the stack and therefore a faster simulation. 
 	   This speed advantade vanishes for more pools and can even result in a stack overflow for very large matrices
 	   In this case more than 3 pools are simulated with dynamic matrices, but this could be expanded eventually
 	*/
-	SimulationParameters sp;
-	sp
 	switch (sp.GetNumberOfCESTPools())
 	{
 	case 0:
@@ -35,6 +33,4 @@ void SimPypulseq
 		SimPulseqSBBTemplate<Dynamic>(sp); // > three pools
 		break;
 	}
-
-	ReturnResultToMATLAB(plhs, sp.GetMagnetizationVectors()); // return results after simulation
 }
