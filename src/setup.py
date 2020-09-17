@@ -14,18 +14,18 @@ from distutils.core import setup, Extension
 #except AttributeError:
     #numpy_include = numpy.get_numpy_include()
 
-parameters_module = Extension('_SimulationParameters', sources=['SimulationParameters_wrap.cxx',
-                                                      'SimulationParameters.cpp'],
+SimPulseqSBB_module = Extension('_SimPulseqSBB', sources=['SimPulseqSBB_wrap.cxx',
+                                                      'SimPulseqSBB.cpp'],
                               # extra_compile_args=['-Xpreprocessor', '-fopenmp'],
                               # extra_link_args=['-lomp'], # '-lomp' for Mac,  -lgomp for Linux
                               # swig_opts=['-threads'],
                               #include_dirs=[numpy_include, numpy_include + '/numpy']
                               )
 
-setup(name='SimulationParameters',
+setup(name='SimPulseqSBB',
       version='0.1',
       author="K Heinecke",
       description="""Definition of simulation parameters""",
-      ext_modules=[parameters_module],
-      py_modules=["SimulationParameters"],
+      ext_modules=[SimPulseqSBB_module],
+      py_modules=["SimPulseqSBB"],
       )
