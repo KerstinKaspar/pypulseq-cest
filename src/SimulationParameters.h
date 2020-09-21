@@ -22,7 +22,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 
 #include "3rdParty/src_ext_seq/ExternalSequence.h"
 #include "3rdParty/Eigen/Eigen"
-using namespace Eigen;
+//using namespace Eigen;
 
 #define _USE_MATH_DEFINES
 #include <cmath>
