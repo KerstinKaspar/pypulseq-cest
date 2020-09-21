@@ -38,7 +38,7 @@ template <int size> void SimPulseqSBBTemplate(SimulationParameters& sp)
 	unsigned int currentADC = 0;
 	float accummPhase = 0; // since we simulate in reference frame, we need to take care of the accummulated phase
 	// loop through event blocks
-	Matrix<double, size, 1> M = sp.GetMagnetizationVectors()->col(currentADC);
+	Eigen::Matrix<double, size, 1> M = sp.GetMagnetizationVectors()->col(currentADC);
 	for (unsigned int nSample = 0; nSample < sp.GetExternalSequence()->GetNumberOfBlocks(); nSample++)
 	{
 		// get current event block

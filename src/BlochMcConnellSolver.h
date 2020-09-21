@@ -24,8 +24,8 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 template <int size> class BlochMcConnellSolver
 {
 public:
-	typedef Matrix<double, size, 1> VectorNd; // typedef for Magnetization Vector
-	typedef Matrix<double, size, size> MatrixNd; // typedef for Bloch Matrix
+	typedef Eigen::Matrix<double, size, 1> VectorNd; // typedef for Magnetization Vector
+	typedef Eigen::Matrix<double, size, size> MatrixNd; // typedef for Bloch Matrix
 
 	//! Constructor
 	BlochMcConnellSolver(SimulationParameters &sp);
@@ -44,8 +44,8 @@ public:
 
 private:
 
-	Matrix<double, size, size> A;               /*!< Matrix containing pool and pulse paramters   */
-	Matrix<double, size, 1> C;               /*!< Vector containing pool relaxation parameters */
+	Eigen::Matrix<double, size, size> A;               /*!< Matrix containing pool and pulse paramters   */
+	Eigen::Matrix<double, size, 1> C;               /*!< Vector containing pool relaxation parameters */
 	unsigned int N;           /*!< Number of CEST pools */
 	unsigned int numApprox;   /*!< number of steps for pade approximation       */
 	double w0;                /*!< scanner larmor frequency [rad]                  */
@@ -64,7 +64,7 @@ private:
 template<int size> BlochMcConnellSolver<size>::BlochMcConnellSolver(SimulationParameters &sp)
 {
 	// fill A matrix with constant pool exchange and concentration parameters ////
-	if (size == Dynamic)
+	if (size == Eigen::Dynamic)
 	{
 		A.resize(sp.GetMagnetizationVectors()->rows(), sp.GetMagnetizationVectors()->rows()); // allocate space for dynamic matrices
 	}

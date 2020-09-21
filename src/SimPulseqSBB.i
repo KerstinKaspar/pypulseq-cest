@@ -23,7 +23,7 @@
 %include "SimPulseqSBB.cpp"
 //%include "SimPulseqSBBTemplate.h"
 //%template(SimPulseqSBBT) SimPulseqSBBTemplate<int>;
-//using namespace Eigen;
+// using namespace Eigen;
 %include "SimulationParameters.cpp"
 %include "SimulationParameters.h"
 

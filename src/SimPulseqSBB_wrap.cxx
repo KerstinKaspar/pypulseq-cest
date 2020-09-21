@@ -2658,12 +2658,12 @@ SWIGINTERN PyObject *SWIG_PyStaticMethod_New(PyObject *SWIGUNUSEDPARM(self), PyO
 /* -------- TYPES TABLE (BEGIN) -------- */
 
 #define SWIGTYPE_p_CESTPool swig_types[0]
-#define SWIGTYPE_p_ExternalSequence swig_types[1]
-#define SWIGTYPE_p_MTPool swig_types[2]
-#define SWIGTYPE_p_MatrixXd swig_types[3]
-#define SWIGTYPE_p_Scanner swig_types[4]
-#define SWIGTYPE_p_SimulationParameters swig_types[5]
-#define SWIGTYPE_p_VectorXd swig_types[6]
+#define SWIGTYPE_p_Eigen__MatrixXd swig_types[1]
+#define SWIGTYPE_p_Eigen__VectorXd swig_types[2]
+#define SWIGTYPE_p_ExternalSequence swig_types[3]
+#define SWIGTYPE_p_MTPool swig_types[4]
+#define SWIGTYPE_p_Scanner swig_types[5]
+#define SWIGTYPE_p_SimulationParameters swig_types[6]
 #define SWIGTYPE_p_WaterPool swig_types[7]
 #define SWIGTYPE_p_char swig_types[8]
 static swig_type_info *swig_types[10];
@@ -4433,7 +4433,7 @@ fail:
 SWIGINTERN PyObject *_wrap_SimulationParameters_InitMagnetizationVectors(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   SimulationParameters *arg1 = (SimulationParameters *) 0 ;
-  VectorXd *arg2 = 0 ;
+  Eigen::VectorXd *arg2 = 0 ;
   unsigned int arg3 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
@@ -4449,14 +4449,14 @@ SWIGINTERN PyObject *_wrap_SimulationParameters_InitMagnetizationVectors(PyObjec
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SimulationParameters_InitMagnetizationVectors" "', argument " "1"" of type '" "SimulationParameters *""'"); 
   }
   arg1 = reinterpret_cast< SimulationParameters * >(argp1);
-  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_VectorXd,  0 );
+  res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_Eigen__VectorXd,  0 );
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SimulationParameters_InitMagnetizationVectors" "', argument " "2"" of type '" "VectorXd &""'"); 
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SimulationParameters_InitMagnetizationVectors" "', argument " "2"" of type '" "Eigen::VectorXd &""'"); 
   }
   if (!argp2) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "SimulationParameters_InitMagnetizationVectors" "', argument " "2"" of type '" "VectorXd &""'"); 
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "SimulationParameters_InitMagnetizationVectors" "', argument " "2"" of type '" "Eigen::VectorXd &""'"); 
   }
-  arg2 = reinterpret_cast< VectorXd * >(argp2);
+  arg2 = reinterpret_cast< Eigen::VectorXd * >(argp2);
   ecode3 = SWIG_AsVal_unsigned_SS_int(swig_obj[2], &val3);
   if (!SWIG_IsOK(ecode3)) {
     SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "SimulationParameters_InitMagnetizationVectors" "', argument " "3"" of type '" "unsigned int""'");
@@ -4476,7 +4476,7 @@ SWIGINTERN PyObject *_wrap_SimulationParameters_GetMagnetizationVectors(PyObject
   void *argp1 = 0 ;
   int res1 = 0 ;
   PyObject *swig_obj[1] ;
-  MatrixXd *result = 0 ;
+  Eigen::MatrixXd *result = 0 ;
   
   if (!args) SWIG_fail;
   swig_obj[0] = args;
@@ -4485,8 +4485,8 @@ SWIGINTERN PyObject *_wrap_SimulationParameters_GetMagnetizationVectors(PyObject
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SimulationParameters_GetMagnetizationVectors" "', argument " "1"" of type '" "SimulationParameters *""'"); 
   }
   arg1 = reinterpret_cast< SimulationParameters * >(argp1);
-  result = (MatrixXd *)(arg1)->GetMagnetizationVectors();
-  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_MatrixXd, 0 |  0 );
+  result = (Eigen::MatrixXd *)(arg1)->GetMagnetizationVectors();
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_Eigen__MatrixXd, 0 |  0 );
   return resultobj;
 fail:
   return NULL;
@@ -5386,45 +5386,45 @@ static void *_p_MTPoolTo_p_WaterPool(void *x, int *SWIGUNUSEDPARM(newmemory)) {
     return (void *)((WaterPool *) (CESTPool *) ((MTPool *) x));
 }
 static swig_type_info _swigt__p_CESTPool = {"_p_CESTPool", "CESTPool *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_Eigen__MatrixXd = {"_p_Eigen__MatrixXd", "Eigen::MatrixXd *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_Eigen__VectorXd = {"_p_Eigen__VectorXd", "Eigen::VectorXd *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_ExternalSequence = {"_p_ExternalSequence", "ExternalSequence *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_MTPool = {"_p_MTPool", "MTPool *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_MatrixXd = {"_p_MatrixXd", "MatrixXd *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_Scanner = {"_p_Scanner", "Scanner *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_SimulationParameters = {"_p_SimulationParameters", "SimulationParameters *", 0, 0, (void*)0, 0};
-static swig_type_info _swigt__p_VectorXd = {"_p_VectorXd", "VectorXd *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_WaterPool = {"_p_WaterPool", "WaterPool *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_char = {"_p_char", "char *", 0, 0, (void*)0, 0};
 
 static swig_type_info *swig_type_initial[] = {
   &_swigt__p_CESTPool,
+  &_swigt__p_Eigen__MatrixXd,
+  &_swigt__p_Eigen__VectorXd,
   &_swigt__p_ExternalSequence,
   &_swigt__p_MTPool,
-  &_swigt__p_MatrixXd,
   &_swigt__p_Scanner,
   &_swigt__p_SimulationParameters,
-  &_swigt__p_VectorXd,
   &_swigt__p_WaterPool,
   &_swigt__p_char,
 };
 
 static swig_cast_info _swigc__p_CESTPool[] = {  {&_swigt__p_CESTPool, 0, 0, 0},  {&_swigt__p_MTPool, _p_MTPoolTo_p_CESTPool, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_Eigen__MatrixXd[] = {  {&_swigt__p_Eigen__MatrixXd, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_Eigen__VectorXd[] = {  {&_swigt__p_Eigen__VectorXd, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_ExternalSequence[] = {  {&_swigt__p_ExternalSequence, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_MTPool[] = {  {&_swigt__p_MTPool, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_MatrixXd[] = {  {&_swigt__p_MatrixXd, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_Scanner[] = {  {&_swigt__p_Scanner, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_SimulationParameters[] = {  {&_swigt__p_SimulationParameters, 0, 0, 0},{0, 0, 0, 0}};
-static swig_cast_info _swigc__p_VectorXd[] = {  {&_swigt__p_VectorXd, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_WaterPool[] = {  {&_swigt__p_CESTPool, _p_CESTPoolTo_p_WaterPool, 0, 0},  {&_swigt__p_WaterPool, 0, 0, 0},  {&_swigt__p_MTPool, _p_MTPoolTo_p_WaterPool, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_char[] = {  {&_swigt__p_char, 0, 0, 0},{0, 0, 0, 0}};
 
 static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_CESTPool,
+  _swigc__p_Eigen__MatrixXd,
+  _swigc__p_Eigen__VectorXd,
   _swigc__p_ExternalSequence,
   _swigc__p_MTPool,
-  _swigc__p_MatrixXd,
   _swigc__p_Scanner,
   _swigc__p_SimulationParameters,
-  _swigc__p_VectorXd,
   _swigc__p_WaterPool,
   _swigc__p_char,
 };

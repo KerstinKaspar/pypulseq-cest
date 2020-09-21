@@ -190,10 +190,10 @@ public: // TODO: write get and set methods for member variables and make them pr
 	ExternalSequence* GetExternalSequence();
 
 	//! Init Magnetitazion Vector Array
-	void InitMagnetizationVectors(VectorXd &M, unsigned int numOutput);
+	void InitMagnetizationVectors(Eigen::VectorXd &M, unsigned int numOutput);
 
 	//! Get Magnetization vectors
-	MatrixXd* GetMagnetizationVectors();
+	Eigen::MatrixXd* GetMagnetizationVectors();
 
 	//! Set Water Pool
 	void SetWaterPool(WaterPool waterPool);
@@ -261,7 +261,7 @@ protected:
 
 	ExternalSequence sequence; /*!< pulseq sequence */
 
-	MatrixXd Mvec;  /*!< Matrix containing all magnetization vectors */
+	Eigen::MatrixXd Mvec;  /*!< Matrix containing all magnetization vectors */
 
 	WaterPool waterPool; /*!< Water Pool */
 	MTPool mtPool;       /*!< MT Pool */

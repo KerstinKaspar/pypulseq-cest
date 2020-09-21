@@ -17,8 +17,8 @@ except AttributeError:
 SimPulseqSBB_module = Extension('_SimPulseqSBB', sources=['SimPulseqSBB_wrap.cxx',
                                                       'SimPulseqSBB.cpp'],
                                extra_compile_args=['-Xpreprocessor', '-fopenmp'],
-                               extra_link_args=['-lomp'], # '-lomp' for Mac,  -lgomp for Linux
-                               swig_opts=['-threads'],
+                               extra_link_args=['-lgomp'], # '-lomp' for Mac,  -lgomp for Linux
+                               #swig_opts=['-threads'],
                                include_dirs=[numpy_include, numpy_include + '/numpy']
                               )
 
