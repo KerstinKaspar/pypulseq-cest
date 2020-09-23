@@ -277,14 +277,14 @@ ExternalSequence* SimulationParameters::GetExternalSequence()
 	\param M initial magnetization vector after ADC
 	\param numOutput number of ADC events in external sequence
 */
-void SimulationParameters::InitMagnetizationVectors(VectorXd &M, unsigned int numOutput)
+void SimulationParameters::InitMagnetizationVectors(Eigen::VectorXd &M, unsigned int numOutput)
 {
 	Mvec = M.rowwise().replicate(numOutput);
 }
 
 //! Get Magnetization vectors
 /*!	\return Magnetization vectors at each ADC event */
-MatrixXd* SimulationParameters::GetMagnetizationVectors()
+Eigen::MatrixXd* SimulationParameters::GetMagnetizationVectors()
 {
 	return &Mvec;
 }

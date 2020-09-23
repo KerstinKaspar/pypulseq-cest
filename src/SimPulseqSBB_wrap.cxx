@@ -2666,8 +2666,9 @@ SWIGINTERN PyObject *SWIG_PyStaticMethod_New(PyObject *SWIGUNUSEDPARM(self), PyO
 #define SWIGTYPE_p_SimulationParameters swig_types[6]
 #define SWIGTYPE_p_WaterPool swig_types[7]
 #define SWIGTYPE_p_char swig_types[8]
-static swig_type_info *swig_types[10];
-static swig_module_info swig_module = {swig_types, 9, 0, 0, 0, 0};
+#define SWIGTYPE_p_std__string swig_types[9]
+static swig_type_info *swig_types[11];
+static swig_module_info swig_module = {swig_types, 10, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -2679,16 +2680,16 @@ static swig_module_info swig_module = {swig_types, 9, 0, 0, 0, 0};
 #define SWIG_TypeQuery SWIG_Python_TypeQuery
 
 /*-----------------------------------------------
-              @(target):= _SimulationParameters.so
+              @(target):= _SimPulseqSBB.so
   ------------------------------------------------*/
 #if PY_VERSION_HEX >= 0x03000000
-#  define SWIG_init    PyInit__SimulationParameters
+#  define SWIG_init    PyInit__SimPulseqSBB
 
 #else
-#  define SWIG_init    init_SimulationParameters
+#  define SWIG_init    init_SimPulseqSBB
 
 #endif
-#define SWIG_name    "_SimulationParameters"
+#define SWIG_name    "_SimPulseqSBB"
 
 #define SWIGVERSION 0x040001 
 #define SWIG_VERSION SWIGVERSION
@@ -2777,10 +2778,12 @@ namespace swig {
 #include <functional>
 #include <numeric>
 #include <vector>
-//#include "3rdParty/Eigen/Eigen"
+#include "3rdParty/Eigen/Eigen"
 //using namespace Eigen;
 #include "SimulationParameters.h"
-#include "3rdParty/src_ext_seq/ExternalSequence.h"
+#include "SimPulseqSBB.h"
+//typedef  SimulationParameters
+#include "ExternalSequence.h"
 #define _USE_MATH_DEFINES
 #include <cmath>
 
@@ -2801,166 +2804,7 @@ namespace swig {
 #include <complex> 
 
 
-SWIGINTERNINLINE PyObject*
-  SWIG_From_int  (int value)
-{
-  return PyInt_FromLong((long) value);
-}
-
-
-SWIGINTERN swig_type_info*
-SWIG_pchar_descriptor(void)
-{
-  static int init = 0;
-  static swig_type_info* info = 0;
-  if (!init) {
-    info = SWIG_TypeQuery("_p_char");
-    init = 1;
-  }
-  return info;
-}
-
-
-SWIGINTERN int
-SWIG_AsCharPtrAndSize(PyObject *obj, char** cptr, size_t* psize, int *alloc)
-{
-#if PY_VERSION_HEX>=0x03000000
-#if defined(SWIG_PYTHON_STRICT_BYTE_CHAR)
-  if (PyBytes_Check(obj))
-#else
-  if (PyUnicode_Check(obj))
-#endif
-#else  
-  if (PyString_Check(obj))
-#endif
-  {
-    char *cstr; Py_ssize_t len;
-    int ret = SWIG_OK;
-#if PY_VERSION_HEX>=0x03000000
-#if !defined(SWIG_PYTHON_STRICT_BYTE_CHAR)
-    if (!alloc && cptr) {
-        /* We can't allow converting without allocation, since the internal
-           representation of string in Python 3 is UCS-2/UCS-4 but we require
-           a UTF-8 representation.
-           TODO(bhy) More detailed explanation */
-        return SWIG_RuntimeError;
-    }
-    obj = PyUnicode_AsUTF8String(obj);
-    if (!obj)
-      return SWIG_TypeError;
-    if (alloc)
-      *alloc = SWIG_NEWOBJ;
-#endif
-    PyBytes_AsStringAndSize(obj, &cstr, &len);
-#else
-    PyString_AsStringAndSize(obj, &cstr, &len);
-#endif
-    if (cptr) {
-      if (alloc) {
-	if (*alloc == SWIG_NEWOBJ) {
-	  *cptr = reinterpret_cast< char* >(memcpy(new char[len + 1], cstr, sizeof(char)*(len + 1)));
-	  *alloc = SWIG_NEWOBJ;
-	} else {
-	  *cptr = cstr;
-	  *alloc = SWIG_OLDOBJ;
-	}
-      } else {
-#if PY_VERSION_HEX>=0x03000000
-#if defined(SWIG_PYTHON_STRICT_BYTE_CHAR)
-	*cptr = PyBytes_AsString(obj);
-#else
-	assert(0); /* Should never reach here with Unicode strings in Python 3 */
-#endif
-#else
-	*cptr = SWIG_Python_str_AsChar(obj);
-        if (!*cptr)
-          ret = SWIG_TypeError;
-#endif
-      }
-    }
-    if (psize) *psize = len + 1;
-#if PY_VERSION_HEX>=0x03000000 && !defined(SWIG_PYTHON_STRICT_BYTE_CHAR)
-    Py_XDECREF(obj);
-#endif
-    return ret;
-  } else {
-#if defined(SWIG_PYTHON_2_UNICODE)
-#if defined(SWIG_PYTHON_STRICT_BYTE_CHAR)
-#error "Cannot use both SWIG_PYTHON_2_UNICODE and SWIG_PYTHON_STRICT_BYTE_CHAR at once"
-#endif
-#if PY_VERSION_HEX<0x03000000
-    if (PyUnicode_Check(obj)) {
-      char *cstr; Py_ssize_t len;
-      if (!alloc && cptr) {
-        return SWIG_RuntimeError;
-      }
-      obj = PyUnicode_AsUTF8String(obj);
-      if (!obj)
-        return SWIG_TypeError;
-      if (PyString_AsStringAndSize(obj, &cstr, &len) != -1) {
-        if (cptr) {
-          if (alloc) *alloc = SWIG_NEWOBJ;
-          *cptr = reinterpret_cast< char* >(memcpy(new char[len + 1], cstr, sizeof(char)*(len + 1)));
-        }
-        if (psize) *psize = len + 1;
-
-        Py_XDECREF(obj);
-        return SWIG_OK;
-      } else {
-        Py_XDECREF(obj);
-      }
-    }
-#endif
-#endif
-
-    swig_type_info* pchar_descriptor = SWIG_pchar_descriptor();
-    if (pchar_descriptor) {
-      void* vptr = 0;
-      if (SWIG_ConvertPtr(obj, &vptr, pchar_descriptor, 0) == SWIG_OK) {
-	if (cptr) *cptr = (char *) vptr;
-	if (psize) *psize = vptr ? (strlen((char *)vptr) + 1) : 0;
-	if (alloc) *alloc = SWIG_OLDOBJ;
-	return SWIG_OK;
-      }
-    }
-  }
-  return SWIG_TypeError;
-}
-
-
-SWIGINTERN int
-SWIG_AsCharArray(PyObject * obj, char *val, size_t size)
-{ 
-  char* cptr = 0; size_t csize = 0; int alloc = SWIG_OLDOBJ;
-  int res = SWIG_AsCharPtrAndSize(obj, &cptr, &csize, &alloc);
-  if (SWIG_IsOK(res)) {
-    /* special case of single char conversion when we don't need space for NUL */
-    if (size == 1 && csize == 2 && cptr && !cptr[1]) --csize;
-    if (csize <= size) {
-      if (val) {
-	if (csize) memcpy(val, cptr, csize*sizeof(char));
-	if (csize < size) memset(val + csize, 0, (size - csize)*sizeof(char));
-      }
-      if (alloc == SWIG_NEWOBJ) {
-	delete[] cptr;
-	res = SWIG_DelNewMask(res);
-      }      
-      return res;
-    }
-    if (alloc == SWIG_NEWOBJ) delete[] cptr;
-  }
-  return SWIG_TypeError;
-}
-
-
-#include <limits.h>
-#if !defined(SWIG_NO_LLONG_MAX)
-# if !defined(LLONG_MAX) && defined(__GNUC__) && defined (__LONG_LONG_MAX__)
-#   define LLONG_MAX __LONG_LONG_MAX__
-#   define LLONG_MIN (-LLONG_MAX - 1LL)
-#   define ULLONG_MAX (LLONG_MAX * 2ULL + 1ULL)
-# endif
-#endif
+  #define SWIG_From_double   PyFloat_FromDouble 
 
 
 SWIGINTERN int
@@ -3007,6 +2851,23 @@ SWIG_AsVal_double (PyObject *obj, double *val)
 #endif
   return res;
 }
+
+
+SWIGINTERNINLINE PyObject*
+  SWIG_From_int  (int value)
+{
+  return PyInt_FromLong((long) value);
+}
+
+
+#include <limits.h>
+#if !defined(SWIG_NO_LLONG_MAX)
+# if !defined(LLONG_MAX) && defined(__GNUC__) && defined (__LONG_LONG_MAX__)
+#   define LLONG_MAX __LONG_LONG_MAX__
+#   define LLONG_MIN (-LLONG_MAX - 1LL)
+#   define ULLONG_MAX (LLONG_MAX * 2ULL + 1ULL)
+# endif
+#endif
 
 
 #include <float.h>
@@ -3086,28 +2947,6 @@ SWIG_AsVal_long (PyObject *obj, long* val)
 #endif
   return SWIG_TypeError;
 }
-
-
-SWIGINTERN int
-SWIG_AsVal_char (PyObject * obj, char *val)
-{    
-  int res = SWIG_AsCharArray(obj, val, 1);
-  if (!SWIG_IsOK(res)) {
-    long v;
-    res = SWIG_AddCast(SWIG_AsVal_long (obj, &v));
-    if (SWIG_IsOK(res)) {
-      if ((CHAR_MIN <= v) && (v <= CHAR_MAX)) {
-	if (val) *val = static_cast< char >(v);
-      } else {
-	res = SWIG_OverflowError;
-      }
-    }
-  }
-  return res;
-}
-
-
-  #define SWIG_From_double   PyFloat_FromDouble 
 
 
 SWIGINTERN int
@@ -3220,38 +3059,6 @@ SWIG_AsVal_bool (PyObject *obj, bool *val)
 #ifdef __cplusplus
 extern "C" {
 #endif
-SWIGINTERN PyObject *_wrap_SimPulseqSBB(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
-  PyObject *resultobj = 0;
-  SimulationParameters *arg1 = 0 ;
-  char arg2 ;
-  void *argp1 = 0 ;
-  int res1 = 0 ;
-  char val2 ;
-  int ecode2 = 0 ;
-  PyObject *swig_obj[2] ;
-  
-  if (!SWIG_Python_UnpackTuple(args, "SimPulseqSBB", 2, 2, swig_obj)) SWIG_fail;
-  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1, SWIGTYPE_p_SimulationParameters,  0 );
-  if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SimPulseqSBB" "', argument " "1"" of type '" "SimulationParameters &""'"); 
-  }
-  if (!argp1) {
-    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "SimPulseqSBB" "', argument " "1"" of type '" "SimulationParameters &""'"); 
-  }
-  arg1 = reinterpret_cast< SimulationParameters * >(argp1);
-  ecode2 = SWIG_AsVal_char(swig_obj[1], &val2);
-  if (!SWIG_IsOK(ecode2)) {
-    SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "SimPulseqSBB" "', argument " "2"" of type '" "char""'");
-  } 
-  arg2 = static_cast< char >(val2);
-  SimPulseqSBB(*arg1,arg2);
-  resultobj = SWIG_Py_Void();
-  return resultobj;
-fail:
-  return NULL;
-}
-
-
 SWIGINTERN PyObject *_wrap_Scanner_B0_set(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   Scanner *arg1 = (Scanner *) 0 ;
@@ -5298,9 +5105,48 @@ SWIGINTERN PyObject *SimulationParameters_swiginit(PyObject *SWIGUNUSEDPARM(self
   return SWIG_Python_InitShadowInstance(args);
 }
 
+SWIGINTERN PyObject *_wrap_SimPulseqSBB(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  SimulationParameters *arg1 = 0 ;
+  std::string arg2 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  void *argp2 ;
+  int res2 = 0 ;
+  PyObject *swig_obj[2] ;
+  
+  if (!SWIG_Python_UnpackTuple(args, "SimPulseqSBB", 2, 2, swig_obj)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(swig_obj[0], &argp1, SWIGTYPE_p_SimulationParameters,  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "SimPulseqSBB" "', argument " "1"" of type '" "SimulationParameters &""'"); 
+  }
+  if (!argp1) {
+    SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "SimPulseqSBB" "', argument " "1"" of type '" "SimulationParameters &""'"); 
+  }
+  arg1 = reinterpret_cast< SimulationParameters * >(argp1);
+  {
+    res2 = SWIG_ConvertPtr(swig_obj[1], &argp2, SWIGTYPE_p_std__string,  0  | 0);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "SimPulseqSBB" "', argument " "2"" of type '" "std::string""'"); 
+    }  
+    if (!argp2) {
+      SWIG_exception_fail(SWIG_ValueError, "invalid null reference " "in method '" "SimPulseqSBB" "', argument " "2"" of type '" "std::string""'");
+    } else {
+      std::string * temp = reinterpret_cast< std::string * >(argp2);
+      arg2 = *temp;
+      if (SWIG_IsNewObj(res2)) delete temp;
+    }
+  }
+  SimPulseqSBB(*arg1,arg2);
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 static PyMethodDef SwigMethods[] = {
 	 { "SWIG_PyInstanceMethod_New", SWIG_PyInstanceMethod_New, METH_O, NULL},
-	 { "SimPulseqSBB", _wrap_SimPulseqSBB, METH_VARARGS, NULL},
 	 { "Scanner_B0_set", _wrap_Scanner_B0_set, METH_VARARGS, NULL},
 	 { "Scanner_B0_get", _wrap_Scanner_B0_get, METH_O, NULL},
 	 { "Scanner_relB1_set", _wrap_Scanner_relB1_set, METH_VARARGS, NULL},
@@ -5366,6 +5212,7 @@ static PyMethodDef SwigMethods[] = {
 	 { "SimulationParameters_GetMaxNumberOfPulseSamples", _wrap_SimulationParameters_GetMaxNumberOfPulseSamples, METH_O, NULL},
 	 { "SimulationParameters_swigregister", SimulationParameters_swigregister, METH_O, NULL},
 	 { "SimulationParameters_swiginit", SimulationParameters_swiginit, METH_VARARGS, NULL},
+	 { "SimPulseqSBB", _wrap_SimPulseqSBB, METH_VARARGS, NULL},
 	 { NULL, NULL, 0, NULL }
 };
 
@@ -5394,6 +5241,7 @@ static swig_type_info _swigt__p_Scanner = {"_p_Scanner", "Scanner *", 0, 0, (voi
 static swig_type_info _swigt__p_SimulationParameters = {"_p_SimulationParameters", "SimulationParameters *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_WaterPool = {"_p_WaterPool", "WaterPool *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_char = {"_p_char", "char *", 0, 0, (void*)0, 0};
+static swig_type_info _swigt__p_std__string = {"_p_std__string", "std::string *", 0, 0, (void*)0, 0};
 
 static swig_type_info *swig_type_initial[] = {
   &_swigt__p_CESTPool,
@@ -5405,6 +5253,7 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_SimulationParameters,
   &_swigt__p_WaterPool,
   &_swigt__p_char,
+  &_swigt__p_std__string,
 };
 
 static swig_cast_info _swigc__p_CESTPool[] = {  {&_swigt__p_CESTPool, 0, 0, 0},  {&_swigt__p_MTPool, _p_MTPoolTo_p_CESTPool, 0, 0},{0, 0, 0, 0}};
@@ -5416,6 +5265,7 @@ static swig_cast_info _swigc__p_Scanner[] = {  {&_swigt__p_Scanner, 0, 0, 0},{0,
 static swig_cast_info _swigc__p_SimulationParameters[] = {  {&_swigt__p_SimulationParameters, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_WaterPool[] = {  {&_swigt__p_CESTPool, _p_CESTPoolTo_p_WaterPool, 0, 0},  {&_swigt__p_WaterPool, 0, 0, 0},  {&_swigt__p_MTPool, _p_MTPoolTo_p_WaterPool, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_char[] = {  {&_swigt__p_char, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_std__string[] = {  {&_swigt__p_std__string, 0, 0, 0},{0, 0, 0, 0}};
 
 static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_CESTPool,
@@ -5427,6 +5277,7 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_SimulationParameters,
   _swigc__p_WaterPool,
   _swigc__p_char,
+  _swigc__p_std__string,
 };
 
 
@@ -6159,11 +6010,11 @@ SWIG_init(void) {
   
   import_array();
   
-  SWIG_Python_SetConstant(d, "MAX_CEST_POOLS",SWIG_From_int(static_cast< int >(100)));
   SWIG_Python_SetConstant(d, "M_PI",SWIG_From_double(static_cast< double >(3.14159265358979323846)));
   SWIG_Python_SetConstant(d, "SuperLorentzian",SWIG_From_int(static_cast< int >(SuperLorentzian)));
   SWIG_Python_SetConstant(d, "Lorentzian",SWIG_From_int(static_cast< int >(Lorentzian)));
   SWIG_Python_SetConstant(d, "_None",SWIG_From_int(static_cast< int >(None)));
+  SWIG_Python_SetConstant(d, "MAX_CEST_POOLS",SWIG_From_int(static_cast< int >(100)));
 #if PY_VERSION_HEX >= 0x03000000
   return m;
 #else

@@ -61,10 +61,6 @@ class _SwigNonDynamicMeta(type):
     __setattr__ = _swig_setattr_nondynamic_class_variable(type.__setattr__)
 
 
-MAX_CEST_POOLS = _SimulationParameters.MAX_CEST_POOLS
-
-def SimPulseqSBB(sp, seq_filename):
-    return _SimulationParameters.SimPulseqSBB(sp, seq_filename)
 M_PI = _SimulationParameters.M_PI
 class Scanner(object):
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
@@ -239,5 +235,8 @@ class SimulationParameters(object):
 # Register SimulationParameters in _SimulationParameters:
 _SimulationParameters.SimulationParameters_swigregister(SimulationParameters)
 
+
+def SimPulseqSBB(sp, seq_filename):
+    return _SimulationParameters.SimPulseqSBB(sp, seq_filename)
 
 

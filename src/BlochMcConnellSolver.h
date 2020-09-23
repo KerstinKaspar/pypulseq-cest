@@ -121,7 +121,7 @@ template<int size> BlochMcConnellSolver<size>::BlochMcConnellSolver(SimulationPa
 	}
 
 	// Fill relaxation vector ////
-	if (size == Dynamic) { // alocate space for dynamic matrices
+	if (size == Eigen::Dynamic) { // alocate space for dynamic matrices
 		C.resize(sp.GetMagnetizationVectors()->rows());
 	}
 
@@ -210,7 +210,7 @@ template<int size> void BlochMcConnellSolver<size>::SolveBlochEquation(VectorNd 
 	//solve exponential with pade method
 	int infExp; //infinity exponent of the matrix
 	int j;
-	std::frexp(At.template lpNorm<Infinity>(), &infExp); // pade method is only stable if ||A||inf / 2^j <= 0.5
+	std::frexp(At.template lpNorm<Eigen::Infinity>(), &infExp); // pade method is only stable if ||A||inf / 2^j <= 0.5
 	j = std::max(0, infExp + 1);
 	At = At * (1.0 / (pow(2, j)));
 	//the algorithm usually starts with D = X = N = Identity and c = 1

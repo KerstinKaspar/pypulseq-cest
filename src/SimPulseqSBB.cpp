@@ -6,12 +6,13 @@ adapted from MATLAB version: https://github.com/kherz/pulseq-cest
 
 #include "SimulationParameters.h"
 #include "SimPulseqSBBTemplate.h"
-#include <matrix.h>
+#include "SimPulseqSBB.h"
+//#include <matrix.h>
 
 #define MAX_CEST_POOLS 100
 
 
-void SimPulseqSBB(SimulationParameters& sp, char seq_filename)
+void SimPulseqSBB(SimulationParameters& sp, std::string seq_filename)
 {
     ExternalSequence seq;
     seq.load(seq_filename);
@@ -35,7 +36,7 @@ void SimPulseqSBB(SimulationParameters& sp, char seq_filename)
 		sp.IsMTActive() ? SimPulseqSBBTemplate<13>(sp) : SimPulseqSBBTemplate<12>(sp); // three cest pools
 		break;
 	default:
-		SimPulseqSBBTemplate<Dynamic>(sp); // > three pools
+		SimPulseqSBBTemplate<Eigen::Dynamic>(sp); // > three pools
 		break;
 	}
 }
