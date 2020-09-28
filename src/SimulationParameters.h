@@ -20,7 +20,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 
 #pragma once
 
-#include "3rdParty/src_ext_seq/ExternalSequence.h"
+#include "ExternalSequence.h"
 #include "3rdParty/Eigen/Eigen"
 //using namespace Eigen;
 

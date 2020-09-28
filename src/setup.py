@@ -19,7 +19,7 @@ SimPulseqSBB_module = Extension('_SimPulseqSBB', sources=['SimPulseqSBB_wrap.cxx
                                extra_compile_args=['-Xpreprocessor', '-fopenmp', '-fPIC'],
                                extra_link_args=['-lgomp'], # '-lomp' for Mac,  -lgomp for Linux
                                #swig_opts=['-threads'],
-                               include_dirs=[numpy_include, numpy_include + '/numpy', './3rdParty/src_ext_seq/ExternalSequence.cpp'],
+                               include_dirs=[numpy_include, numpy_include + '/numpy'], #'./3rdParty/src_ext_seq/ExternalSequence.cpp'],
                                language="c++",
                               )
 

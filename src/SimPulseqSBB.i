@@ -11,17 +11,17 @@
 #include <vector>
 #include "3rdParty/Eigen/Eigen"
 //using namespace Eigen;
+#include "ExternalSequence.h"
 #include "SimulationParameters.h"
 #include "SimPulseqSBB.h"
 //typedef  SimulationParameters
-#include "ExternalSequence.h"
 #define _USE_MATH_DEFINES
 #include <cmath>
 
 %}
 
 %include "eigen.i"
-%include "SimulationParameters.cpp"
+//%include "SimulationParameters.cpp"
 %include "SimulationParameters.h"
 %include "SimPulseqSBB.cpp"
 //%include "SimPulseqSBBTemplate.h"
