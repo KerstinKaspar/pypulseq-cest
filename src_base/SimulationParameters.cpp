@@ -291,6 +291,11 @@ Eigen::MatrixXd* SimulationParameters::GetMagnetizationVectors()
 	return &Mvec;
 }
 
+Eigen::MatrixXd SimulationParameters::GetFinalMagnetizationVectors()
+{
+	return Mvec;
+}
+
 //! Set Water Pool
 /*!	\param wp new water pool */
 void SimulationParameters::SetWaterPool(WaterPool wp)

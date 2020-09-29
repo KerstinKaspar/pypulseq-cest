@@ -105,9 +105,9 @@ class Params:
 
     def set_options(self, verbose: bool = None, reset_init_mag: bool = None, max_pulse_samples: int = None):
         options = {}
-        if verbose:
+        if type(verbose) == bool:
             options.update({'verbose': verbose})
-        if reset_init_mag:
+        if type(reset_init_mag) == bool:
             options.update({'reset_init_mag': reset_init_mag})
         if max_pulse_samples:
             options.update({'max_pulse_samples': max_pulse_samples})

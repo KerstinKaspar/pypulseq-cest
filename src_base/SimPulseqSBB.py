@@ -61,6 +61,279 @@ class _SwigNonDynamicMeta(type):
     __setattr__ = _swig_setattr_nondynamic_class_variable(type.__setattr__)
 
 
+class SwigPyIterator(object):
+    thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
+
+    def __init__(self, *args, **kwargs):
+        raise AttributeError("No constructor defined - class is abstract")
+    __repr__ = _swig_repr
+    __swig_destroy__ = _SimPulseqSBB.delete_SwigPyIterator
+
+    def value(self):
+        return _SimPulseqSBB.SwigPyIterator_value(self)
+
+    def incr(self, n=1):
+        return _SimPulseqSBB.SwigPyIterator_incr(self, n)
+
+    def decr(self, n=1):
+        return _SimPulseqSBB.SwigPyIterator_decr(self, n)
+
+    def distance(self, x):
+        return _SimPulseqSBB.SwigPyIterator_distance(self, x)
+
+    def equal(self, x):
+        return _SimPulseqSBB.SwigPyIterator_equal(self, x)
+
+    def copy(self):
+        return _SimPulseqSBB.SwigPyIterator_copy(self)
+
+    def next(self):
+        return _SimPulseqSBB.SwigPyIterator_next(self)
+
+    def __next__(self):
+        return _SimPulseqSBB.SwigPyIterator___next__(self)
+
+    def previous(self):
+        return _SimPulseqSBB.SwigPyIterator_previous(self)
+
+    def advance(self, n):
+        return _SimPulseqSBB.SwigPyIterator_advance(self, n)
+
+    def __eq__(self, x):
+        return _SimPulseqSBB.SwigPyIterator___eq__(self, x)
+
+    def __ne__(self, x):
+        return _SimPulseqSBB.SwigPyIterator___ne__(self, x)
+
+    def __iadd__(self, n):
+        return _SimPulseqSBB.SwigPyIterator___iadd__(self, n)
+
+    def __isub__(self, n):
+        return _SimPulseqSBB.SwigPyIterator___isub__(self, n)
+
+    def __add__(self, n):
+        return _SimPulseqSBB.SwigPyIterator___add__(self, n)
+
+    def __sub__(self, *args):
+        return _SimPulseqSBB.SwigPyIterator___sub__(self, *args)
+    def __iter__(self):
+        return self
+
+# Register SwigPyIterator in _SimPulseqSBB:
+_SimPulseqSBB.SwigPyIterator_swigregister(SwigPyIterator)
+
+class vectorMatrixXd(object):
+    thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
+    __repr__ = _swig_repr
+
+    def iterator(self):
+        return _SimPulseqSBB.vectorMatrixXd_iterator(self)
+    def __iter__(self):
+        return self.iterator()
+
+    def __nonzero__(self):
+        return _SimPulseqSBB.vectorMatrixXd___nonzero__(self)
+
+    def __bool__(self):
+        return _SimPulseqSBB.vectorMatrixXd___bool__(self)
+
+    def __len__(self):
+        return _SimPulseqSBB.vectorMatrixXd___len__(self)
+
+    def __getslice__(self, i, j):
+        return _SimPulseqSBB.vectorMatrixXd___getslice__(self, i, j)
+
+    def __setslice__(self, *args):
+        return _SimPulseqSBB.vectorMatrixXd___setslice__(self, *args)
+
+    def __delslice__(self, i, j):
+        return _SimPulseqSBB.vectorMatrixXd___delslice__(self, i, j)
+
+    def __delitem__(self, *args):
+        return _SimPulseqSBB.vectorMatrixXd___delitem__(self, *args)
+
+    def __getitem__(self, *args):
+        return _SimPulseqSBB.vectorMatrixXd___getitem__(self, *args)
+
+    def __setitem__(self, *args):
+        return _SimPulseqSBB.vectorMatrixXd___setitem__(self, *args)
+
+    def pop(self):
+        return _SimPulseqSBB.vectorMatrixXd_pop(self)
+
+    def append(self, x):
+        return _SimPulseqSBB.vectorMatrixXd_append(self, x)
+
+    def empty(self):
+        return _SimPulseqSBB.vectorMatrixXd_empty(self)
+
+    def size(self):
+        return _SimPulseqSBB.vectorMatrixXd_size(self)
+
+    def swap(self, v):
+        return _SimPulseqSBB.vectorMatrixXd_swap(self, v)
+
+    def begin(self):
+        return _SimPulseqSBB.vectorMatrixXd_begin(self)
+
+    def end(self):
+        return _SimPulseqSBB.vectorMatrixXd_end(self)
+
+    def rbegin(self):
+        return _SimPulseqSBB.vectorMatrixXd_rbegin(self)
+
+    def rend(self):
+        return _SimPulseqSBB.vectorMatrixXd_rend(self)
+
+    def clear(self):
+        return _SimPulseqSBB.vectorMatrixXd_clear(self)
+
+    def get_allocator(self):
+        return _SimPulseqSBB.vectorMatrixXd_get_allocator(self)
+
+    def pop_back(self):
+        return _SimPulseqSBB.vectorMatrixXd_pop_back(self)
+
+    def erase(self, *args):
+        return _SimPulseqSBB.vectorMatrixXd_erase(self, *args)
+
+    def __init__(self, *args):
+        _SimPulseqSBB.vectorMatrixXd_swiginit(self, _SimPulseqSBB.new_vectorMatrixXd(*args))
+
+    def push_back(self, x):
+        return _SimPulseqSBB.vectorMatrixXd_push_back(self, x)
+
+    def front(self):
+        return _SimPulseqSBB.vectorMatrixXd_front(self)
+
+    def back(self):
+        return _SimPulseqSBB.vectorMatrixXd_back(self)
+
+    def assign(self, n, x):
+        return _SimPulseqSBB.vectorMatrixXd_assign(self, n, x)
+
+    def resize(self, *args):
+        return _SimPulseqSBB.vectorMatrixXd_resize(self, *args)
+
+    def insert(self, *args):
+        return _SimPulseqSBB.vectorMatrixXd_insert(self, *args)
+
+    def reserve(self, n):
+        return _SimPulseqSBB.vectorMatrixXd_reserve(self, n)
+
+    def capacity(self):
+        return _SimPulseqSBB.vectorMatrixXd_capacity(self)
+    __swig_destroy__ = _SimPulseqSBB.delete_vectorMatrixXd
+
+# Register vectorMatrixXd in _SimPulseqSBB:
+_SimPulseqSBB.vectorMatrixXd_swigregister(vectorMatrixXd)
+
+class vectorVectorXd(object):
+    thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
+    __repr__ = _swig_repr
+
+    def iterator(self):
+        return _SimPulseqSBB.vectorVectorXd_iterator(self)
+    def __iter__(self):
+        return self.iterator()
+
+    def __nonzero__(self):
+        return _SimPulseqSBB.vectorVectorXd___nonzero__(self)
+
+    def __bool__(self):
+        return _SimPulseqSBB.vectorVectorXd___bool__(self)
+
+    def __len__(self):
+        return _SimPulseqSBB.vectorVectorXd___len__(self)
+
+    def __getslice__(self, i, j):
+        return _SimPulseqSBB.vectorVectorXd___getslice__(self, i, j)
+
+    def __setslice__(self, *args):
+        return _SimPulseqSBB.vectorVectorXd___setslice__(self, *args)
+
+    def __delslice__(self, i, j):
+        return _SimPulseqSBB.vectorVectorXd___delslice__(self, i, j)
+
+    def __delitem__(self, *args):
+        return _SimPulseqSBB.vectorVectorXd___delitem__(self, *args)
+
+    def __getitem__(self, *args):
+        return _SimPulseqSBB.vectorVectorXd___getitem__(self, *args)
+
+    def __setitem__(self, *args):
+        return _SimPulseqSBB.vectorVectorXd___setitem__(self, *args)
+
+    def pop(self):
+        return _SimPulseqSBB.vectorVectorXd_pop(self)
+
+    def append(self, x):
+        return _SimPulseqSBB.vectorVectorXd_append(self, x)
+
+    def empty(self):
+        return _SimPulseqSBB.vectorVectorXd_empty(self)
+
+    def size(self):
+        return _SimPulseqSBB.vectorVectorXd_size(self)
+
+    def swap(self, v):
+        return _SimPulseqSBB.vectorVectorXd_swap(self, v)
+
+    def begin(self):
+        return _SimPulseqSBB.vectorVectorXd_begin(self)
+
+    def end(self):
+        return _SimPulseqSBB.vectorVectorXd_end(self)
+
+    def rbegin(self):
+        return _SimPulseqSBB.vectorVectorXd_rbegin(self)
+
+    def rend(self):
+        return _SimPulseqSBB.vectorVectorXd_rend(self)
+
+    def clear(self):
+        return _SimPulseqSBB.vectorVectorXd_clear(self)
+
+    def get_allocator(self):
+        return _SimPulseqSBB.vectorVectorXd_get_allocator(self)
+
+    def pop_back(self):
+        return _SimPulseqSBB.vectorVectorXd_pop_back(self)
+
+    def erase(self, *args):
+        return _SimPulseqSBB.vectorVectorXd_erase(self, *args)
+
+    def __init__(self, *args):
+        _SimPulseqSBB.vectorVectorXd_swiginit(self, _SimPulseqSBB.new_vectorVectorXd(*args))
+
+    def push_back(self, x):
+        return _SimPulseqSBB.vectorVectorXd_push_back(self, x)
+
+    def front(self):
+        return _SimPulseqSBB.vectorVectorXd_front(self)
+
+    def back(self):
+        return _SimPulseqSBB.vectorVectorXd_back(self)
+
+    def assign(self, n, x):
+        return _SimPulseqSBB.vectorVectorXd_assign(self, n, x)
+
+    def resize(self, *args):
+        return _SimPulseqSBB.vectorVectorXd_resize(self, *args)
+
+    def insert(self, *args):
+        return _SimPulseqSBB.vectorVectorXd_insert(self, *args)
+
+    def reserve(self, n):
+        return _SimPulseqSBB.vectorVectorXd_reserve(self, n)
+
+    def capacity(self):
+        return _SimPulseqSBB.vectorVectorXd_capacity(self)
+    __swig_destroy__ = _SimPulseqSBB.delete_vectorVectorXd
+
+# Register vectorVectorXd in _SimPulseqSBB:
+_SimPulseqSBB.vectorVectorXd_swigregister(vectorVectorXd)
+
 M_PI = _SimPulseqSBB.M_PI
 class Scanner(object):
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
@@ -79,7 +352,7 @@ _SimPulseqSBB.Scanner_swigregister(Scanner)
 
 SuperLorentzian = _SimPulseqSBB.SuperLorentzian
 Lorentzian = _SimPulseqSBB.Lorentzian
-_None = _SimPulseqSBB._None
+NoLineshape = _SimPulseqSBB.NoLineshape
 class WaterPool(object):
     thisown = property(lambda x: x.this.own(), lambda x, v: x.this.own(v), doc="The membership flag")
     __repr__ = _swig_repr
@@ -171,6 +444,9 @@ class SimulationParameters(object):
 
     def GetMagnetizationVectors(self):
         return _SimPulseqSBB.SimulationParameters_GetMagnetizationVectors(self)
+
+    def GetFinalMagnetizationVectors(self):
+        return _SimPulseqSBB.SimulationParameters_GetFinalMagnetizationVectors(self)
 
     def SetWaterPool(self, waterPool):
         return _SimPulseqSBB.SimulationParameters_SetWaterPool(self, waterPool)

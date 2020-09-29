@@ -9,8 +9,9 @@ function M_z = Standard_pulseq_cest_Simulation(seq_fn, B0)
  Kai Herz, 2020
  kai.herz @ tuebingen.mpg.de
 """
+import numpy as np
+
 from SimPulseqSBB import SimPulseqSBB
-from params import Params
 from parser import parse_sp
 from simulation_params import *
 
@@ -24,9 +25,11 @@ sp.set_m_vec(scale)
 sp.set_scanner(b0, gamma, b0_inhom, rel_b1)
 sp.set_options(verbose, reset_init_mag, max_pulse_samples)
 
-sp_sim = parse_sp(sp)
+num_adc_events = 1
+sp_sim = parse_sp(sp, num_adc_events)
 
-m_out = SimPulseqSBB(sp_sim, seq)
+SimPulseqSBB(sp_sim, seq)
+m_out = sp_sim.GetFinalMagnetizationVectors()
 
 # if 0:
 #     seq = mr.Sequence
