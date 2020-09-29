@@ -1,3 +1,4 @@
+/** @file ExternalSequence.cpp */
 #include "ExternalSequence.h"
 
 #include <stdio.h>		// sscanf
@@ -7,6 +8,7 @@
 #include <algorithm>	// for std::max_element
 
 #include <math.h>		// fabs etc
+#include <functional>
 
 ExternalSequence::PrintFunPtr ExternalSequence::print_fun = &ExternalSequence::defaultPrint;
 const int ExternalSequence::MAX_LINE_SIZE = 256;
@@ -21,7 +23,6 @@ ExternalSequence::ExternalSequence()
 	version_revision=0;
 	version_combined=0;
 }
-
 
 
 /***********************************************************/
@@ -381,7 +382,7 @@ bool ExternalSequence::load(std::string path)
 				else if (0==strcmp("ROTATIONS",szStrID))
 					nKnownID=EXT_ROTATION;
 				if (nKnownID!=EXT_UNKNOWN)
-					m_extensionNameIDs[nInternalID]=std::make_pair<std::string,int>(szStrID,nKnownID);
+					m_extensionNameIDs[nInternalID]=std::make_pair(szStrID,nKnownID); //<std::string,int>
 				else {
 					print_msg(WARNING_MSG, std::ostringstream().flush() << "*** WARNING: unknown extension ignored\n" << buffer << std::endl );
 				}

@@ -195,6 +195,9 @@ public: // TODO: write get and set methods for member variables and make them pr
 	//! Get Magnetization vectors
 	Eigen::MatrixXd* GetMagnetizationVectors();
 
+	//! Get Magnetization vectors as an object (not a pointer)
+	Eigen::MatrixXd SimulationParameters::GetFinalMagnetizationVectors();
+
 	//! Set Water Pool
 	void SetWaterPool(WaterPool waterPool);
 

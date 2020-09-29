@@ -667,4 +667,3 @@ inline void ExternalSequence::SetPrintFunction(PrintFunPtr fun) { print_fun=fun;
 
 
 #endif	//_EXTERNAL_SEQUENCE_H_
-
