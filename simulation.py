@@ -12,7 +12,7 @@ function M_z = Standard_pulseq_cest_Simulation(seq_fn, B0)
 import numpy as np
 
 from SimPulseqSBB import SimPulseqSBB
-from parser import parse_sp
+from parse_params import parse_sp
 from simulation_params import *
 
 # set parameter values
@@ -30,7 +30,7 @@ sp_sim = parse_sp(sp, num_adc_events)
 
 SimPulseqSBB(sp_sim, seq)
 m_out = sp_sim.GetFinalMagnetizationVectors()
-
+print(m_out)
 # if 0:
 #     seq = mr.Sequence
 #     seq.read(seq_fn)
