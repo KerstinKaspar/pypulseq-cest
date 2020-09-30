@@ -1,6 +1,6 @@
 from params import Params
 # path to seq-file
-seq_file = 'example/example_APTw_small.seq'
+seq_file = 'example/example_APTw_m.seq'
 # scanner parameters
 b0 = 3  # field strength [T]
 gamma = 267.5153  # gyromagnetic ratio [rad / uT]
@@ -53,12 +53,12 @@ k_c = 1100  # exchange rate[Hz]
 #  k_n  = 16  # exchange rate[Hz]
 
 # OPTIONAL MT pool
-# r1_mt = 1
-# r2_mt = 1e5
-# k_mt = 23
-# f_mt = 0.0500
-# dw_mt = 0
-# lineshape_mt = 'SuperLorentzian'
+r1_mt = 1
+r2_mt = 1e5
+k_mt = 23
+f_mt = 0.0500
+dw_mt = 0
+lineshape_mt = 'SuperLorentzian'
 
 # say you have a magnetization Mi of 50 after the readout. Scale the M vector here according to that(ca. 0.5 for FLASH)
 scale = 0.5

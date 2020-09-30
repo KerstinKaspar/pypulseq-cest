@@ -1,13 +1,14 @@
 from SimPulseqSBB import SimulationParameters, WaterPool, MTPool, CESTPool
 from params import Params
 from SimPulseqSBB import Lorentzian, SuperLorentzian, NoLineshape
+from pypulseq.Sequence.sequence import Sequence
 
 
 def parse_sp(sp: Params, seq_file: str):
     # sp = Params()
     sp_sim = SimulationParameters()
     # init magnetization vector
-    num_adc_events = get_num_adc_events(seq_file)
+    num_adc_events = get_num_adc_events(seq_file) +1
     sp_sim.InitMagnetizationVectors(sp.m_vec, num_adc_events)
     # constructwater pool
     water_pool = WaterPool(sp.water_pool['r1'], sp.water_pool['r2'], sp.water_pool['f'])
@@ -42,16 +43,23 @@ def set_lineshape(ls):
 
 
 def get_offsets(seq_file):
-    with open(seq_file) as search:
-        num_lines = 0
-        while True:
-            num_lines += 1
-            line = search.readline()
-            if 'offsets_ppm' in line:
-                offsets = line.replace('offsets_ppm', '').strip().split()
-                break
-            if num_lines == 20:
-                print('Could not read offsets from seq-file.')
+    seq = Sequence(version=1.3)
+    seq.read(seq_file)
+    try:
+        offsets = list(seq.definitions['offsets_ppm'])
+    except ValueError:
+        print('Could not read offsets from seq-file.')
+    # with open(seq_file) as search:
+    #     num_lines = 0
+    #     while True:
+    #         num_lines += 1
+    #         line = search.readline()
+    #         if 'offsets_ppm' in line:
+    #             o = line.replace('offsets_ppm', '').strip().split()
+    #             offsets = [float(x) for x in o]
+    #             break
+    #         if num_lines == 20:
+    #             print('Could not read offsets from seq-file.')
     return offsets
 
 
@@ -59,5 +67,16 @@ def get_num_adc_events(seq_file):
     offsets = get_offsets(seq_file)
     num_adc_events = len(offsets)
     return num_adc_events
+
+
+def check_m0(seq_file):
+    seq = Sequence()
+    seq.read(seq_file)
+    if seq.definitions['run_m0_scan'] == 'True':
+        return True
+    else:
+        return False
+
+
 
 

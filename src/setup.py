@@ -29,6 +29,14 @@ setup(name='SimPulseqSBB',
       version='0.1',
       author="K Heinecke",
       description="SimPulseqSBB",
-      ext_modules=[SimPulseqSBB_module, ExternalSequence_module],
-      py_modules=["SimPulseqSBB", "ExternalSequence"],
+      ext_modules=[SimPulseqSBB_module],
+      py_modules=["SimPulseqSBB"],
+      )
+
+setup(name='ExternalSequence',
+      version='0.1',
+      author="K Heinecke",
+      description="""test""",
+      ext_modules=[ExternalSequence_module],
+      py_modules=["ExternalSequence"],
       )
