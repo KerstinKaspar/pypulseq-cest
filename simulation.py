@@ -64,7 +64,7 @@ mtr_asym = z[::-1] - z
 fig = plt.figure()
 plt.plot(offsets, z, label='$Z$')
 plt.gca().invert_xaxis()
-#plt.plot(offsets, mtr_asym, label='$MTR_{asym}$')
+plt.plot(offsets, mtr_asym, label='$MTR_{asym}$')
 plt.legend()
 plt.xlabel('Offset')
 

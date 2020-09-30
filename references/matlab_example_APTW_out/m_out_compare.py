@@ -1,4 +1,4 @@
-import numpy as np
+import numpy
 import pandas as pd
 
 df_M_out = pd.read_csv('references/matlab_example_APTW_out/M_out.csv')
