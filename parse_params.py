@@ -41,7 +41,7 @@ def set_lineshape(ls):
         print(ls + ' is not a valid lineshape for MT Pool.')
 
 
-def get_num_adc_events(seq_file):
+def get_offsets(seq_file):
     with open(seq_file) as search:
         num_lines = 0
         while True:
@@ -52,5 +52,12 @@ def get_num_adc_events(seq_file):
                 break
             if num_lines == 20:
                 print('Could not read offsets from seq-file.')
+    return offsets
+
+
+def get_num_adc_events(seq_file):
+    offsets = get_offsets(seq_file)
     num_adc_events = len(offsets)
     return num_adc_events
+
+

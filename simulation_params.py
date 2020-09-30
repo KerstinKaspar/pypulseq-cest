@@ -1,5 +1,4 @@
 from params import Params
-
 # path to seq-file
 seq_file = 'example/example_APTw_small.seq'
 # scanner parameters
@@ -53,19 +52,19 @@ k_c = 1100  # exchange rate[Hz]
 #  dw_n = -3.5  # chemical shift from water[ppm]
 #  k_n  = 16  # exchange rate[Hz]
 
-# # MT pool
-r1_mt = 1
-r2_mt = 1e5
-k_mt = 23
-f_mt = 0.0500
-dw_mt = 0
-lineshape_mt = 'SuperLorentzian'
+# OPTIONAL MT pool
+# r1_mt = 1
+# r2_mt = 1e5
+# k_mt = 23
+# f_mt = 0.0500
+# dw_mt = 0
+# lineshape_mt = 'SuperLorentzian'
 
 # say you have a magnetization Mi of 50 after the readout. Scale the M vector here according to that(ca. 0.5 for FLASH)
 scale = 0.5
 
 # optional params
-verbose = False # for verbose output, defalut false
-reset_init_mag = True # true if magnetization should be set to MEX.M after each ADC, defaultrue
-max_pulse_samples = 500 # max samples for shaped pulses
+# verbose = False # for verbose output, defalut false
+# reset_init_mag = True # true if magnetization should be set to MEX.M after each ADC, defaultrue
+# max_pulse_samples = 500 # max samples for shaped pulses
 

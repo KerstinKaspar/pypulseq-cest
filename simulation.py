@@ -12,74 +12,54 @@ function M_z = Standard_pulseq_cest_Simulation(seq_fn, B0)
 import numpy as np
 
 from SimPulseqSBB import SimPulseqSBB
-from parse_params import parse_sp
+from parse_params import parse_sp, get_offsets
 from simulation_params import *
+import matplotlib.pyplot as plt
+import pypulseq
+from pypulseq.Sequence.sequence import Sequence
 
 # set parameter values
 sp = Params()
 sp.set_water_pool(r1_w, r2_w, f_w)
-sp.set_cest_pool(r1_a, r2_a, k_a, f_a, dw_a)
-#sp.set_cest_pool(r1_c, r2_c, k_c, f_c, dw_c)
-#sp.set_mt_pool(r1_mt, r2_mt, k_mt, f_mt, dw_mt, lineshape_mt)
+# for each cest pool set a pool in the params
+r1 = [x for x in dir() if 'r1_' in x and x != 'r1_w' and x != 'r1_mt']
+r2 = [x for x in dir() if 'r2_' in x and x != 'r2_w' and x != 'r2_mt']
+k = [x for x in dir() if 'k_' in x and x != 'k_w' and x != 'k_mt']
+f = [x for x in dir() if 'f_' in x and x != 'f_w' and x != 'f_mt']
+dw = [x for x in dir() if 'dw_' in x and x != 'dw_w' and x != 'dw_mt']
+for pool in range(len(r1)):
+    sp.set_cest_pool(eval(r1[pool]), eval(r2[pool]), eval(k[pool]), eval(f[pool]), eval(dw[pool]))
+if 'r1_mt' in dir():
+    sp.set_mt_pool(r1_mt, r2_mt, k_mt, f_mt, dw_mt, lineshape_mt)
 sp.set_m_vec(scale)
 sp.set_scanner(b0, gamma, b0_inhom, rel_b1)
-sp.set_options(verbose, reset_init_mag, max_pulse_samples)
+if 'verbose' in dir():
+    sp.set_options(verbose)
+if 'reset_init_mag' in dir():
+    sp.set_options(reset_init_mag)
+if 'max_pulse_samples' in dir():
+    sp.set_options(max_pulse_samples)
 
 sp_sim = parse_sp(sp, seq_file)
 
 SimPulseqSBB(sp_sim, seq_file)
 m_out = sp_sim.GetFinalMagnetizationVectors()
 print(m_out)
+mz = m_out[2, :]
+
+plt.figure()
+offsets = get_offsets(seq_file)
+plt.title('Z-spec')
+plt.ylabel('M')
+plt.xlabel('Offsets')
+plt.plot(offsets, mz, '.--')
+plt.show()
+
+seq = Sequence()
+seq.read(seq_file)
 
 
 
 
-# if 0:
-#     seq = mr.Sequence
-#     seq.read(seq_fn)
-#     [ppm_sort, idx] = sort(seq.definitions('offsets_ppm'))
-#
-#     tic
-#     # t2star
-#     decay, see
-#     DOI
-#     10.1002 / mrm
-#     .22406
-#     eq.
-#     6
-#     num_spins = 63
-#     spin_dist = linspace(-.5, .5, num_spins)
-#     spin_dist = spin_dist. * 0.95  # to
-#     avoid
-#     extremely
-#     large
-#     values
-#     for tan(.5 * ppi)
-#         R2star = 30
-#     dw_spins = R2star * tan(pi * spin_dist)
-#     dw_spins = dw_spins. / (sp.Scanner.b0 * sp.Scanner.Gamma)
-#
-#     Z_sim = zeros(num_spins, size(M_out, 1), size(M_out, 2))
-# parfor
-# ii = 1:num_spins
-#  sp_local =  sp  # local
-# variable
-# for parfor loop
-#      sp_local.Scanner.B0Inhomogeneity = dw_spins(ii)
-# M_out = Sim_pulseqSBB( sp_local, seq_fn)  # run
-# sim
-# Z_sim(ii,:,:)=M_out
-# end
-#
-# # figure, plot(squeeze(Z_sim(:, nTotalPools * 2 + 1,:))' )
-#                                                        # hold
-# on,
-#
-# toc
-# M_out = squeeze(mean(Z_sim, 1))
-# # plot(M_out(nTotalPools * 2 + 1,:), 'ok')
-# end
-#
-# M_z = M_out(nTotalPools * 2 + 1,:)
-#
-#
+
+
