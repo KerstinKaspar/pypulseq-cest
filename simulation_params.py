@@ -1,7 +1,7 @@
 from params import Params
 
 # path to seq-file
-seq = 'example_APTw_m.seq'
+seq_file = 'example/example_APTw_small.seq'
 # scanner parameters
 b0 = 3  # field strength [T]
 gamma = 267.5153  # gyromagnetic ratio [rad / uT]

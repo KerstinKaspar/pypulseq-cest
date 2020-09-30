@@ -19,18 +19,21 @@ from simulation_params import *
 sp = Params()
 sp.set_water_pool(r1_w, r2_w, f_w)
 sp.set_cest_pool(r1_a, r2_a, k_a, f_a, dw_a)
-sp.set_cest_pool(r1_c, r2_c, k_c, f_c, dw_c)
-sp.set_mt_pool(r1_mt, r2_mt, k_mt, f_mt, dw_mt, lineshape_mt)
+#sp.set_cest_pool(r1_c, r2_c, k_c, f_c, dw_c)
+#sp.set_mt_pool(r1_mt, r2_mt, k_mt, f_mt, dw_mt, lineshape_mt)
 sp.set_m_vec(scale)
 sp.set_scanner(b0, gamma, b0_inhom, rel_b1)
 sp.set_options(verbose, reset_init_mag, max_pulse_samples)
 
-num_adc_events = 1
-sp_sim = parse_sp(sp, num_adc_events)
+sp_sim = parse_sp(sp, seq_file)
 
-SimPulseqSBB(sp_sim, seq)
+SimPulseqSBB(sp_sim, seq_file)
 m_out = sp_sim.GetFinalMagnetizationVectors()
 print(m_out)
+
+
+
+
 # if 0:
 #     seq = mr.Sequence
 #     seq.read(seq_fn)

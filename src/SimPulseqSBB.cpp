@@ -11,7 +11,6 @@ adapted from MATLAB version: https://github.com/kherz/pulseq-cest
 
 #define MAX_CEST_POOLS 100
 
-
 void SimPulseqSBB(SimulationParameters& sp, std::string seq_filename)
 {
     ExternalSequence seq;
@@ -21,6 +20,7 @@ void SimPulseqSBB(SimulationParameters& sp, std::string seq_filename)
 	   This speed advantade vanishes for more pools and can even result in a stack overflow for very large matrices
 	   In this case more than 3 pools are simulated with dynamic matrices, but this could be expanded eventually
 	*/
+
 	switch (sp.GetNumberOfCESTPools())
 	{
 	case 0:

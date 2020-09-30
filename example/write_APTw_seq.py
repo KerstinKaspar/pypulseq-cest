@@ -26,7 +26,7 @@ from pypulseq.opts import Opts
 seq = Sequence()
 
 offset_range = 10  # [ppm]
-num_offsets = 40  # number of measurements (not including M0)
+num_offsets = 10  # number of measurements (not including M0)
 run_m0_scan = True  # if you want an M0 scan at the beginning
 t_rec = 2.4  # recovery time between scans [s]
 m0_t_rec = 12  # recovery time before m0 scan [s]
@@ -37,7 +37,7 @@ n_pulses = 20  # number of sat pulses per measurement
 b0 = 3  # B0 [T]
 spoiling = 1  # 0=no spoiling, 1=before readout, Gradient in x,y,z
 
-seq_filename = 'example_APTw.seq'  # filename
+seq_filename = 'example_APTw_small.seq'  # filename
 
 # scanner limits
 sys = Opts(max_grad=40, grad_unit='mT/m', max_slew=130, slew_unit='T/m/s', rf_ringdown_time=30e-6, rf_dead_time=100e-6,

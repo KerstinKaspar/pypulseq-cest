@@ -15,6 +15,7 @@
 #include <functional>
 
 %}
+%include <std_string.i>
 
 %include "ExternalSequence.h"
 
