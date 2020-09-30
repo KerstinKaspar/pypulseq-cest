@@ -1,2 +1,5 @@
 **/.idea
 *long*
+**/__pycache_
+**/build
+*wrap*

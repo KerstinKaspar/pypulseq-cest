@@ -14,19 +14,12 @@ except AttributeError:
 eigen_include = '3rdParty/Eigen'
 
 SimPulseqSBB_module = Extension('_SimPulseqSBB', sources=['SimPulseqSBB_wrap.cxx', 'SimPulseqSBB.cpp',
-                                                     'SimulationParameters.cpp', 'ExternalSequence.cpp'],
-                               #extra_compile_args=['-Xpreprocessor', '-fopenmp'], #, '-fPIC'
-                            include_dirs=[numpy_include, numpy_include + '/numpy', eigen_include],
-                            # extra_link_args=['-lomp'],
-                                # swig_opts=['-threads'],
-                               language="c++",
-                              )
+                                                          'SimulationParameters.cpp', 'ExternalSequence.cpp'],
+                                include_dirs=[numpy_include, numpy_include + '/numpy', eigen_include],
+                                language="c++",
+                                )
 
 ExternalSequence_module = Extension('_SimPulseqSBB', sources=['ExternalSequence_wrap.cxx', 'ExternalSequence.cpp'],
-                               #extra_compile_args=['-Xpreprocessor', '-fopenmp'], #, '-fPIC'
-                            #include_dirs=[numpy_include, numpy_include + '/numpy', eigen_include],
-                            # extra_link_args=['-lomp'],
-                                # swig_opts=['-threads'],
                                language="c++",
                               )
 

@@ -3,7 +3,8 @@
 2. navigate to this folder, then use the following commands:
 
 ```
-swig -c++ -python SimPulseqSBB.i ExternalSequence.i
+swig -c++ -python SimPulseqSBB.i 
+swig -c++ -python ExternalSequence.i
 python setup.py install
 ```
 
