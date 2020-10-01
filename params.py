@@ -78,7 +78,7 @@ class Params:
         if not self.water_pool:
             raise Exception('No water pool defined before assignment of magnetization vector.')
         if self.cest_pools:
-            n_total_pools = len(self.cest_pools) +1
+            n_total_pools = len(self.cest_pools) + 1
         else:
             n_total_pools = 1
         m_vec = np.zeros(n_total_pools * 3)
