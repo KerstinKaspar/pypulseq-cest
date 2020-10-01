@@ -78,7 +78,7 @@ class Params:
         if not self.water_pool:
             raise Exception('No water pool defined before assignment of magnetization vector.')
         if self.cest_pools:
-            n_total_pools = len(self.cest_pools) + 1
+            n_total_pools = len(self.cest_pools) +1
         else:
             n_total_pools = 1
         m_vec = np.zeros(n_total_pools * 3)
@@ -94,6 +94,7 @@ class Params:
                 m_vec = m_vec * scale
             except Exception:
                 print('Scaling of magnetization vector not possible with scale ', scale)
+        #TODO fix too large vector properly
         self.m_vec = m_vec
         return m_vec
 
@@ -135,8 +136,20 @@ class Params:
 
 # test main functionality
 if __name__ == "__main__":
-    params = Params(set_defaults=True)
-    params.print_settings()
+    from set_params import *
+    sp = Params()
+    sp.set_water_pool(r1_w, r2_w, f_w)
+    r1 = [x for x in dir() if x[:2] == 'r1' and x != 'r1_w' and x != 'r1_mt']
+    r2 = [x for x in dir() if x[:2] == 'r2' and x != 'r2_w' and x != 'r2_mt']
+    k = [x for x in dir() if x[0] == 'k' and x != 'k_w' and x != 'k_mt']
+    f = [x for x in dir() if x[0] == 'f' and x != 'f_w' and x != 'f_mt']
+    dw = [x for x in dir() if x[:2] == 'dw' and x != 'dw_w' and x != 'dw_mt']
+    for pool in range(len(r1)):
+        sp.set_cest_pool(eval(r1[pool]), eval(r2[pool]), eval(k[pool]), eval(f[pool]), eval(dw[pool]))
+    if 'r1_mt' in dir():
+        sp.set_mt_pool(r1_mt, r2_mt, k_mt, f_mt, dw_mt, lineshape_mt)
+
+    sp.set_m_vec(0.5)
 
 
 

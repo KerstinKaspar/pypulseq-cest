@@ -24,6 +24,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 #include <functional>
 #include <numeric>
 #include <vector>
+#include <iostream>
 
 //! Runs the Z-spectrum simulation
 /*!
@@ -34,11 +35,14 @@ template <int size> void SimPulseqSBBTemplate(SimulationParameters& sp)
 
 	//init solver
 	BlochMcConnellSolver<size> bm_solver = BlochMcConnellSolver<size>(sp);
+	//std::cout << "size " << size << "\n";
 
 	unsigned int currentADC = 0;
 	float accummPhase = 0; // since we simulate in reference frame, we need to take care of the accummulated phase
 	// loop through event blocks
 	Eigen::Matrix<double, size, 1> M = sp.GetMagnetizationVectors()->col(currentADC);
+	//print_msg(DEBUG_LOW_LEVEL, std::ostringstream().flush() << "Decoding block " << block->index << " events: "
+	//std::cout << "Mvec \n" << M << "\n"; //debug
 	for (unsigned int nSample = 0; nSample < sp.GetExternalSequence()->GetNumberOfBlocks(); nSample++)
 	{
 		// get current event block
@@ -145,6 +149,8 @@ template <int size> void SimPulseqSBBTemplate(SimulationParameters& sp)
 			bm_solver.SolveBlochEquation(M, timestep);
 		}
 		delete seqBlock; // pointer gets allocated with new in the GetBlock() function
+		//std::cout << "Mvec \n" << M << "\n"; //debug
+
 	}
 }
 

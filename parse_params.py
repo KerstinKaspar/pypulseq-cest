@@ -17,6 +17,7 @@ def parse_sp(sp: Params, seq_file: str):
         lineshape = set_lineshape(sp.mt_pool['lineshape'])
         mt_pool = MTPool(sp.mt_pool['r1'], sp.mt_pool['r2'], sp.mt_pool['f'], sp.mt_pool['dw'], sp.mt_pool['k'], lineshape)
         sp_sim.SetMTPool(mt_pool)
+    sp_sim.InitCESTPoolMemory(len(sp.cest_pools))
     for i in range(len(sp.cest_pools)):
         cest_pool = CESTPool(sp.cest_pools[i]['r1'], sp.cest_pools[i]['r2'], sp.cest_pools[i]['f'], sp.cest_pools[i]['dw'], sp.cest_pools[i]['k'])
         sp_sim.SetCESTPool(cest_pool, i)
