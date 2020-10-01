@@ -3,48 +3,80 @@ import matplotlib.pyplot as plt
 from parse_params import get_offsets, check_m0
 
 
-def plot_without_offsets(mz: np.array, mtr_asym: bool = False):
-    fig = plt.figure()
-    plt.title('Z-spec')
-    plt.ylabel('M')
-    plt.xlabel('Offsets')
-    plt.plot(offsets, mz, '.--')
+def plot_without_offsets(mz: np.array, mtr_asym: np.array = None):
+    fig, ax1 = plt.subplots()
 
-    if check_m0:
-        m0 = mz[0]
-        z = mz[1:] / m0
-    else:
-        z = mz
-    mtr_asym = z[::-1] - z
-
-    fig = plt.figure()
-    plt.plot(offsets, z, label='$Z$')
+    ax1.set_ylabel('Z', color='b')
+    ax1.set_xlabel('#')
+    # plt.xlabel('Offsets')
+    plt.plot(mz, '.--', label='$Z$', color='b')
     plt.gca().invert_xaxis()
-    plt.plot(offsets, mtr_asym, label='$MTR_{asym}$')
-    plt.legend()
-    plt.xlabel('Offset')
+    ax1.tick_params(axis='y', labelcolor='b')
+
+    if mtr_asym.any():
+        ax2 = ax1.twinx()
+        ax2.set_ylabel('$MTR_{asym}$', color='y')
+        ax2.plot(mtr_asym, label='$MTR_{asym}$', color='y')
+        ax2.tick_params(axis='y', labelcolor='y')
+        fig.tight_layout()
+
+    plt.title('Z-spec')
+    plt.show()
     return fig
 
 
-def plot_with_offsets(mz: np.array, offsets: np.array, mtr_asym: bool = False):
-    pass
+def plot_with_offsets(mz: np.array, offsets: np.array, mtr_asym: np.array = None):
+    fig, ax1 = plt.subplots()
+    ax1.set_ylabel('Z', color='b')
+    ax1.set_xlabel('Offsets')
+    plt.plot(offsets, mz, '.--', label='$Z$', color='b')
+    plt.gca().invert_xaxis()
+    ax1.tick_params(axis='y', labelcolor='b')
+
+    if mtr_asym.any():
+        #TODO wrong scale?
+        ax2 = ax1.twinx()
+        ax2.set_ylabel('$MTR_{asym}$', color='y')
+        ax2.plot(offsets, mtr_asym, label='$MTR_{asym}$', color='y')
+        ax2.tick_params(axis='y', labelcolor='y')
+        fig.tight_layout()
+
+    plt.title('Z-spec')
+    plt.show()
+    return fig
 
 
-def plot_z(mz: np.array, offsets: np.array = None, seq_file: str = None, mtr_asym: bool = False):
+def get_m0(mz, seq_file: str = None):
+    if seq_file:
+        if check_m0(seq_file):
+            return mz[0]
+    elif mz[0] > 0.99:
+        return mz[0]
+    else:
+        return None
+
+
+def plot_z(mz: np.array, offsets: np.array = None, seq_file: str = None, plot_mtr_asym: bool = False):
     from_seq = False
+    m0 = get_m0(mz, seq_file)
+    if m0:
+        z = mz[1:]/m0
+    else:
+        z = mz
+    if plot_mtr_asym:
+        mtr_asym = z[::-1] - z
     if not offsets:
         if seq_file:
             offsets = get_offsets(seq_file)
             from_seq = True
         else:
-            plot_without_offsets(mz, mtr_asym)
-    if len(mz) != len(offsets) and not from_seq:
+            plot_without_offsets(z, mtr_asym)
+    if len(z) != len(offsets) and not from_seq:
         offsets = get_offsets(seq_file)
-        from_seq = True
-    if len(mz) != len(offsets):
-        plot_without_offsets(mz, mtr_asym)
+    if len(z) != len(offsets):
+        plot_without_offsets(z, mtr_asym)
     else:
-        plot_with_offsets(mz, offsets, mtr_asym)
+        plot_with_offsets(z, offsets, mtr_asym)
 
 
 

@@ -71,7 +71,7 @@ def get_num_adc_events(seq_file):
 
 
 def check_m0(seq_file):
-    seq = Sequence()
+    seq = Sequence(version=1.3)
     seq.read(seq_file)
     if seq.definitions['run_m0_scan'] == 'True':
         return True

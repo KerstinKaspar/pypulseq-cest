@@ -16,6 +16,7 @@ from parse_params import parse_sp, get_offsets, check_m0
 from params import Params
 import matplotlib.pyplot as plt
 from pypulseq.Sequence.sequence import Sequence
+from plot import plot_z
 
 from set_params import *
 
@@ -45,30 +46,31 @@ sp_sim = parse_sp(sp, seq_file)
 
 SimPulseqSBB(sp_sim, seq_file)
 m_out = sp_sim.GetFinalMagnetizationVectors()
-mz = m_out[5, :]
+mz = m_out[6, :]
 
-# mz = m_out[2, :]
-offsets = get_offsets(seq_file)
-
-plt.figure()
-plt.title('Z-spec')
-plt.ylabel('M')
-plt.xlabel('Offsets')
-plt.plot(offsets, mz, '.--')
-
-if check_m0(seq_file):
-    m0 = mz[0]
-    z = mz[1:]/m0
-else:
-    z = mz
-mtr_asym = z[::-1] - z
-
-fig = plt.figure()
-plt.plot(offsets, z, label='$Z$')
-plt.gca().invert_xaxis()
-plt.plot(offsets, mtr_asym, label='$MTR_{asym}$')
-plt.legend()
-plt.xlabel('Offset')
+plot_z(mz, seq_file=seq_file, plot_mtr_asym=True)
+# # mz = m_out[2, :]
+# offsets = get_offsets(seq_file)
+#
+# plt.figure()
+# plt.title('Z-spec')
+# plt.ylabel('M')
+# plt.xlabel('Offsets')
+# plt.plot(offsets, mz, '.--')
+#
+# if check_m0(seq_file):
+#     m0 = mz[0]
+#     z = mz[1:]/m0
+# else:
+#     z = mz
+# mtr_asym = z[::-1] - z
+#
+# fig = plt.figure()
+# plt.plot(offsets, z, label='$Z$')
+# plt.gca().invert_xaxis()
+# plt.plot(offsets, mtr_asym, label='$MTR_{asym}$')
+# plt.legend()
+# plt.xlabel('Offset')
 
 if __name__ == '__main__':
     from set_params import *
