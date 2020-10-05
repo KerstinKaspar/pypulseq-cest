@@ -7,7 +7,7 @@ np.allclose(m_out, m_out_m, rtol=1e-02, atol=1e-02, equal_nan=False)
 
 
 
-#df_mz_m = pd.read_csv('references/matlab_example_APTW_out/M_z.csv')
+df_mz_m = pd.read_csv('references/matlab_example_APTW_out/M_z.csv')
 df_mz_m = df_m_out_m.iloc[5].reset_index(drop=True)
 mz_m = df_mz_m.to_numpy()
 

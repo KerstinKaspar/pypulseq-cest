@@ -21,7 +21,7 @@ def parse_sp(sp: Params, seq_file: str):
     for i in range(len(sp.cest_pools)):
         cest_pool = CESTPool(sp.cest_pools[i]['r1'], sp.cest_pools[i]['r2'], sp.cest_pools[i]['f'], sp.cest_pools[i]['dw'], sp.cest_pools[i]['k'])
         sp_sim.SetCESTPool(cest_pool, i)
-    sp_sim.InitScanner(sp.scanner['b0'], sp.scanner['rel_b1'], sp.scanner['gamma'], sp.scanner['b0_inhomogeneity'])
+    sp_sim.InitScanner(sp.scanner['b0'], sp.scanner['rel_b1'], sp.scanner['b0_inhomogeneity'], sp.scanner['gamma'])
     if 'verbose' in sp.options.keys():
         sp_sim.SetVerbose(sp.options['verbose'])
     if 'reset_init_mag' in sp.options.keys():
@@ -73,7 +73,7 @@ def get_num_adc_events(seq_file):
 def check_m0(seq_file):
     seq = Sequence(version=1.3)
     seq.read(seq_file)
-    if seq.definitions['run_m0_scan'] == 'True':
+    if 1 in seq.definitions['run_m0_scan'] or 'True' in seq.definitions['run_m0_scan']:
         return True
     else:
         return False

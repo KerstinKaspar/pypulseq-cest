@@ -5,7 +5,7 @@ from parse_params import get_offsets, check_m0
 
 def plot_without_offsets(mz: np.array, mtr_asym: np.array = None):
     fig, ax1 = plt.subplots()
-
+    ax1.set_ylim([0, 1])
     ax1.set_ylabel('Z', color='b')
     ax1.set_xlabel('#')
     # plt.xlabel('Offsets')
@@ -15,6 +15,7 @@ def plot_without_offsets(mz: np.array, mtr_asym: np.array = None):
 
     if mtr_asym.any():
         ax2 = ax1.twinx()
+        ax2.set_ylim([0, round(np.max(mtr_asym) + 0.01, 2)])
         ax2.set_ylabel('$MTR_{asym}$', color='y')
         ax2.plot(mtr_asym, label='$MTR_{asym}$', color='y')
         ax2.tick_params(axis='y', labelcolor='y')
@@ -27,6 +28,7 @@ def plot_without_offsets(mz: np.array, mtr_asym: np.array = None):
 
 def plot_with_offsets(mz: np.array, offsets: np.array, mtr_asym: np.array = None):
     fig, ax1 = plt.subplots()
+    ax1.set_ylim([0, 1])
     ax1.set_ylabel('Z', color='b')
     ax1.set_xlabel('Offsets')
     plt.plot(offsets, mz, '.--', label='$Z$', color='b')
@@ -36,6 +38,7 @@ def plot_with_offsets(mz: np.array, offsets: np.array, mtr_asym: np.array = None
     if mtr_asym.any():
         #TODO wrong scale?
         ax2 = ax1.twinx()
+        ax2.set_ylim([0, round(np.max(mtr_asym) + 0.01, 2)])
         ax2.set_ylabel('$MTR_{asym}$', color='y')
         ax2.plot(offsets, mtr_asym, label='$MTR_{asym}$', color='y')
         ax2.tick_params(axis='y', labelcolor='y')
@@ -64,7 +67,7 @@ def plot_z(mz: np.array, offsets: np.array = None, seq_file: str = None, plot_mt
     else:
         z = mz
     if plot_mtr_asym:
-        mtr_asym = z[::-1] - z
+        mtr_asym = np.flip(z) - z
     if not offsets:
         if seq_file:
             offsets = get_offsets(seq_file)

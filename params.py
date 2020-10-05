@@ -86,7 +86,7 @@ class Params:
         if self.cest_pools:
             for ii in range(1, n_total_pools):
                 m_vec[n_total_pools * 2 + ii] = self.cest_pools[ii - 1]['f']
-                m_vec[n_total_pools * 2] = m_vec[n_total_pools * 2] - self.cest_pools[ii - 1]['f']
+                m_vec[n_total_pools * 2] = m_vec[n_total_pools * 2] # - self.cest_pools[ii - 1]['f']
         if self.mt_pool:
             m_vec = np.append(m_vec, self.mt_pool['f'])
         if scale:
@@ -105,6 +105,7 @@ class Params:
         return scanner
 
     def set_options(self, verbose: bool = None, reset_init_mag: bool = None, max_pulse_samples: int = None):
+        # TODO max_pulse not set
         options = {}
         if type(verbose) == bool:
             options.update({'verbose': verbose})
@@ -125,7 +126,7 @@ class Params:
         print("\t Options:\n", self.options)
 
     def _set_defaults(self, set_defaults):
-        self.set_options(verbose=False, reset_init_mag=True, max_pulse_samples=100)
+        self.set_options(verbose=False, reset_init_mag=True, max_pulse_samples=500)
         if set_defaults:
             self.set_water_pool()
             self.set_mt_pool()

@@ -1,6 +1,6 @@
 **/.idea
 *long*
-**/__pycache_
+__pycache_/**
 **/build
 *wrap*
 **/venv

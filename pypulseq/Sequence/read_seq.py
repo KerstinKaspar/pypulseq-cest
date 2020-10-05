@@ -40,7 +40,7 @@ def read(self, path: str, **kwargs):
             jemris_generated = True
         elif section == '[VERSION]':
             version_major, version_minor, version_revision = __read_version(input_file)
-            if version_major != self.version_major or version_minor != self.version_minor or version_revision != self.version_revision:
+            if version_major != self.version_major or (version_minor != 2 and version_minor != 3) or version_revision != self.version_revision:
                 raise Exception(
                     f'Unsupported version: {version_major, version_minor, version_revision}. '
                     f'Expected: {self.version_major, self.version_minor, self.version_revision}')
