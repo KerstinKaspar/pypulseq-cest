@@ -1,73 +1,93 @@
+"""
+set_params.py
+    Script to set the parameters used for the simulation.
+
+Only the parameter values need to be adapted: If the simulation is started from simulation.py, this file does not need
+to be run separately, the setting of the parameters into the class instance will be handled automatically.
+
+PARAMETERS:
+    b0: field strength [T]
+    gamma: gyromagnetic ratio [rad / uT]
+    b0_inhom: field inhomogeneity [ppm]
+    rel_b1: relative b1
+    f: proton fraction (relative)
+    dw: chemical shift from water [ppm]
+    k: exchange rate [Hz]
+    lineshape_mt: lineshape of the MT Pool ('Lorentzian', 'SuperLorentzian' or 'None')
+"""
+
 from sim_pulseq_sbb.params import Params
+
+# instantiate class to store the parameters
+sp = Params()
 
 # path to seq-file
 seq_file = 'example/example_APTw_m.seq'
-# scanner parameters
-b0 = 9.4  # field strength [T]
-gamma = 267.5153  # gyromagnetic ratio [rad / uT]
-# optional
-b0_inhom = 0.0
-rel_b1 = 1
 
-# # Water properties(standard 3 T)
-f_w = 1  # proton fraction
+# define scanner parameters
+b0 = 9.4  # [T]
+gamma = 267.5153  # [rad / uT]
+# optional
+b0_inhom = 0.0  # [ppm]
+rel_b1 = 1
+# set the scanner parameters
+sp.set_scanner(b0=b0, gamma=gamma, b0_inhomogeneity=b0_inhom, rel_b1=rel_b1)
+
+# define water properties according to the field strength
+f_w = 1
 try:
     if round(b0) < 4:
-        r1_w = 1 / 1.3  # Hz 1.31
-        r2_w = 1 / (75e-3)  # Hz 71e-3
+        r1_w = 1 / 1.3  # [Hz]
+        r2_w = 1 / 75e-3  # [Hz]
     elif 4 < round(b0) < 9:  # 7T
-        r1_w = 1 / 1.67  # Hz
-        r2_w = 1 / (43e-3)  # Hz
+        r1_w = 1 / 1.67  # [Hz]
+        r2_w = 1 / 43e-3  # [Hz]
     elif round(b0) >= 9:  # 9.4 T and above
-        r1_w = 1 / 2.0  # Hz
-        r2_w = 1 / (35e-3)  # Hz
+        r1_w = 1 / 2.0  # [Hz]
+        r2_w = 1 / 35e-3  # [Hz]
 except ValueError:
     print('B0 field strength of ' + str(b0) + 'T: No implementation possible.')
+# set the water parameters
+sp.set_water_pool(r1_w, r2_w, f_w)
 
-# CEST pools according to https: // doi.org / 10.1016 / j.neuroimage.2017.04.045,
-# pool 1 Amide
-r1 = r1_w
-r2 = 1 / 100e-3
-f = 10e-3 #50e-3/111 # fraction
-dw = 5  # chemical shift from water [ppm]
-k = 40 #30  # exchange rate[Hz]
+# define CEST pool parameters
+# pool 1
+r1 = r1_w  # [Hz]
+r2 = 1 / 100e-3  # [Hz]
+k = 40  # 30  # exchange rate[Hz]
+f = 10e-3  # rel
+dw = 5  # [ppm]
+# set CEST pool parameters
+sp.set_cest_pool(r1=r1, r2=r2, k=k, f=f, dw=dw)
 
+# define different pools in the same manner, the class automatically instatiates the pools separately
+# pool 2
+r1 = r1_w  # [Hz]
+r2 = 1 / 100e-3  # [Hz]
+k = 40  # [Hz]
+f = 10e-3  # rel
+dw = -5  # [ppm]
+# set CEST pool parameters
+sp.set_cest_pool(r1=r1, r2=r2, k=k, f=f, dw=dw)
 
-# # # pool 2 creatine
-# r1_c = r1_w
-# r2_c = 1 / 100e-3# 1 / 170e-3
-# f_c = 10e-3 #25e-3 / 111  # fraction
-# dw_c = -5  # chemical shift from water [ppm]
-# k_c = 40 #1100  # exchange rate[Hz]
-
-# pool 3 glutamate
-#  r1_g =  sp.WaterPool.R1
-#  r2_g = 1 / 200e-3
-#  f_g = 20e-3 / 111  # fraction
-#  dw_g = 3  # chemical shift from water [ppm]
-#  k_g = 5500  # exchange rate[Hz]
-
-# pool 4 NOE(until now, all 4 pools of the paper combined in one at - 3.5 ppm with 5 fold concentration, originally 5x 100 mM each at[-1.75 -2.25 -2.75 -3.25 -3.75] ppm
-#  r1_n =  sp.WaterPool.R1
-#  r2_n = 1 / 5e-3
-#  f_n  = 500e-3 / 111  # fraction
-#  dw_n = -3.5  # chemical shift from water[ppm]
-#  k_n  = 16  # exchange rate[Hz]
-
-# # OPTIONAL MT pool
-# r1_mt = 1
-# r2_mt = 1e5
-# k_mt = 23
-# f_mt = 0.0500
-# dw_mt = -2#0
-# lineshape_mt = 'Lorentzian' #'SuperLorentzian'
+# # define MT pool
+# r1_mt = 1  # [Hz]
+# r2_mt = 1e5  # [Hz]
+# k_mt = 23  # [Hz]
+# f_mt = 0.0500  # rel
+# dw_mt = -2  # [ppm]
+# lineshape_mt = 'Lorentzian'
+# sp.set_mt_pool(r1=r1_mt, r2=r2_mt, k=k_mt, f=f_mt, dw=dw_mt, lineshape=lineshape_mt)
 
 # say you have a magnetization Mi of 50 after the readout. Scale the M vector here according to that (ca. 0.5 for FLASH)
 scale = 0.5
+# initiate the magnetization vector
+sp.set_m_vec(scale)
 
 # optional params
-# verbose = True # for verbose output, defalut false
-# reset_init_mag = True # true if magnetization should be set to MEX.M after each ADC, defaultrue
-max_pulse_samples = 1000 # max samples for shaped pulses
-
-
+# verbose = True # for verbose output, default False
+# sp.set_options(verbose=verbose)
+# reset_init_mag = True # true if magnetization should be set to MEX.M after each ADC, default True
+# sp.set_options(reset_init_mag=reset_init_mag)
+max_pulse_samples = 300  # set the number of samples for the shaped pulses, default is 500
+sp.set_options(max_pulse_samples=max_pulse_samples)

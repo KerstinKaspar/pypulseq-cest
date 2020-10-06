@@ -22,6 +22,7 @@ class Params:
         self.scanner = None
         self.options = {}
         self._set_defaults(set_defaults)
+        self.mz_loc = 0
 
     def set_mt_pool(self, r1: float = 1, r2: float = 1e5, k: int = 23, f: float = 0.05, dw: int = 0,
                     lineshape: str = 'SuperLorentzian') -> dict:
@@ -37,6 +38,7 @@ class Params:
         """
         mt_pool = {'r1': r1, 'r2': r2, 'k': k, 'f': f, 'dw': dw, 'lineshape': lineshape}
         self.mt_pool.update(mt_pool)
+        # self.mz_loc += 2
         return mt_pool
 
     def set_water_pool(self, r1: float = 1/1.31, r2: float = 1 / 71e-3, f: float = 1) -> dict:
@@ -49,6 +51,7 @@ class Params:
         """
         water_pool = {'r1': r1, 'r2': r2, 'f': f}
         self.water_pool = water_pool
+        self.mz_loc += 2
         return water_pool
 
     def set_cest_pool(self, r1: float = 1/1.31, r2: float = 1/ 100e-3, k: int = 30, f: float = 72e-3 / 111, dw: int = 3.5) -> dict:
@@ -64,6 +67,7 @@ class Params:
         """
         cest_pool = {'r1': r1, 'r2': r2, 'k': k, 'f': f, 'dw': dw}
         self.cest_pools.append(cest_pool)
+        self.mz_loc += 2
         return cest_pool
 
     def set_m_vec(self, scale: float = 0.5) -> np.array:

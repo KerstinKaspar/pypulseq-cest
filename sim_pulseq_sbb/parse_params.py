@@ -50,17 +50,6 @@ def get_offsets(seq_file):
         offsets = list(seq.definitions['offsets_ppm'])
     except ValueError:
         print('Could not read offsets from seq-file.')
-    # with open(seq_file) as search:
-    #     num_lines = 0
-    #     while True:
-    #         num_lines += 1
-    #         line = search.readline()
-    #         if 'offsets_ppm' in line:
-    #             o = line.replace('offsets_ppm', '').strip().split()
-    #             offsets = [float(x) for x in o]
-    #             break
-    #         if num_lines == 20:
-    #             print('Could not read offsets from seq-file.')
     return offsets
 
 

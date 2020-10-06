@@ -15,25 +15,23 @@ import math
 import numpy as np
 
 from pypulseq.Sequence.sequence import Sequence
-# from pypulseq.calc_duration import calc_duration
 from pypulseq.make_adc import make_adc
 from pypulseq.make_delay import make_delay
-# from pypulseq.make_sinc_pulse import make_sinc_pulse
 from pypulseq.make_trap_pulse import make_trapezoid
 from pypulseq.make_gauss_pulse import make_gauss_pulse
 from pypulseq.opts import Opts
 
 seq = Sequence()
 
-offset_range = 5# 10  # [ppm]
-num_offsets = 10 #100  # number of measurements (not including M0)
+offset_range = 10  # [ppm]
+num_offsets = 100  # number of measurements (not including M0)
 run_m0_scan = True  # if you want an M0 scan at the beginning
 t_rec = 2.4  # recovery time between scans [s]
 m0_t_rec = 12  # recovery time before m0 scan [s]
 sat_b1 = 2.22  # mean sat pulse b1 [uT]
 t_p = 50e-3  # sat pulse duration [s]
 t_d = 40e-3  # delay between pulses [s]
-n_pulses = 1 #20  # number of sat pulses per measurement
+n_pulses = 20  # number of sat pulses per measurement
 b0 = 3  # B0 [T]
 spoiling = 1  # 0=no spoiling, 1=before readout, Gradient in x,y,z
 
@@ -47,7 +45,6 @@ gamma = sys.gamma * 1e-6
 # scanner events
 # sat pulse
 flip_angle_sat = sat_b1 * gamma * 2 * np.pi * t_p  # rad
-# tim-bandwidth-product=3 to compensate for default discrepancies (pulseq(m):3, pypulseq:4)
 rf_sat, _, _ = make_gauss_pulse(flip_angle=flip_angle_sat, duration=t_p, system=sys, time_bw_product=3)
 
 # spoilers
@@ -67,9 +64,6 @@ if run_m0_scan:
     seq.add_block(make_delay(m0_t_rec))
     seq.add_block(pseudo_adc)
 
-# print(rf_sat.signal)
-# offsets = [offsets[0]]
-# n_pulses = 1
 # loop through offsets and set pulses and delays
 for o in offsets:
     # take care of phase accumulation during off-res pulse
@@ -89,6 +83,8 @@ for o in offsets:
 
 seq.set_definition('offsets_ppm', offsets_ppm)
 seq.set_definition('run_m0_scan', str(run_m0_scan))
+
+# plot the sequence
 # seq.plot()
 print(seq.shape_library)
 seq.write(seq_filename)
