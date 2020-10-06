@@ -1,9 +1,12 @@
+"""TODO"""
 import numpy as np
 import matplotlib.pyplot as plt
+
 from sim_pulseq_sbb.parse_params import get_offsets, check_m0
 
 
 def plot_without_offsets(mz: np.array, mtr_asym: np.array = None):
+    """TODO"""
     fig, ax1 = plt.subplots()
     ax1.set_ylim([0, 1])
     ax1.set_ylabel('Z', color='b')
@@ -27,6 +30,7 @@ def plot_without_offsets(mz: np.array, mtr_asym: np.array = None):
 
 
 def plot_with_offsets(mz: np.array, offsets: np.array, mtr_asym: np.array = None):
+    """TODO"""
     fig, ax1 = plt.subplots()
     ax1.set_ylim([0, 1])
     ax1.set_ylabel('Z', color='b')
@@ -50,6 +54,7 @@ def plot_with_offsets(mz: np.array, offsets: np.array, mtr_asym: np.array = None
 
 
 def get_m0(mz, seq_file: str = None):
+    """TODO"""
     if seq_file:
         if check_m0(seq_file):
             return mz[0]
@@ -60,6 +65,7 @@ def get_m0(mz, seq_file: str = None):
 
 
 def plot_z(mz: np.array, offsets: np.array = None, seq_file: str = None, plot_mtr_asym: bool = False):
+    """TODO"""
     from_seq = False
     m0 = get_m0(mz, seq_file)
     if m0:

@@ -56,7 +56,6 @@ class Params:
 
     def set_cest_pool(self, r1: float = 1/1.31, r2: float = 1/ 100e-3, k: int = 30, f: float = 72e-3 / 111, dw: int = 3.5) -> dict:
         """
-        TODO possibly implment other standard CEST parameters
         Defaults for amide CEST pool
         :param r1: relaxation rate R1 = 1/T1 [Hz]
         :param r2: relaxation rate R2 = 1/T2 [Hz]
@@ -98,18 +97,31 @@ class Params:
                 m_vec = m_vec * scale
             except Exception:
                 print('Scaling of magnetization vector not possible with scale ', scale)
-        #TODO fix too large vector properly
         self.m_vec = m_vec
         return m_vec
 
     def set_scanner(self, b0: float = 3, gamma: float = 267.5153, b0_inhomogeneity: float = None, rel_b1: float = 1.0) \
             -> dict:
+        """
+        Sets the scanner values
+        :param b0: field strength [T]
+        :param gamma: gyromagnetic ratio [rad/uT]
+        :param b0_inhomogeneity: field ihnomogeneity [ppm]
+        :param rel_b1: relative B1 field
+        :return: dictionary containing the parameter values
+        """
         scanner = {'b0': b0, 'gamma': gamma, 'b0_inhomogeneity': b0_inhomogeneity, 'rel_b1': rel_b1}
         self.scanner = scanner
         return scanner
 
     def set_options(self, verbose: bool = None, reset_init_mag: bool = None, max_pulse_samples: int = None):
-        # TODO max_pulse not set
+        """
+        Setting additional options
+        :param verbose: Verbose output from C++ simulation, default False
+        :param reset_init_mag: true if magnetization should be set to MEX.M after each ADC, default True
+        :param max_pulse_samples: set the number of samples for the shaped pulses, default is 500
+        :return:
+        """
         options = {}
         if type(verbose) == bool:
             options.update({'verbose': verbose})
@@ -121,6 +133,9 @@ class Params:
         return options
 
     def print_settings(self):
+        """
+        function to print the current parameter settings
+        """
         print("Current parameter settings:\n")
         print("\t water pool:\n", self.water_pool)
         print("\t CEST pools: \n", self.cest_pools)
@@ -138,23 +153,6 @@ class Params:
             self.set_m_vec()
             self.set_scanner()
 
-
-# test main functionality
-if __name__ == "__main__":
-    from set_params import *
-    sp = Params()
-    sp.set_water_pool(r1_w, r2_w, f_w)
-    r1 = [x for x in dir() if x[:2] == 'r1' and x != 'r1_w' and x != 'r1_mt']
-    r2 = [x for x in dir() if x[:2] == 'r2' and x != 'r2_w' and x != 'r2_mt']
-    k = [x for x in dir() if x[0] == 'k' and x != 'k_w' and x != 'k_mt']
-    f = [x for x in dir() if x[0] == 'f' and x != 'f_w' and x != 'f_mt']
-    dw = [x for x in dir() if x[:2] == 'dw' and x != 'dw_w' and x != 'dw_mt']
-    for pool in range(len(r1)):
-        sp.set_cest_pool(eval(r1[pool]), eval(r2[pool]), eval(k[pool]), eval(f[pool]), eval(dw[pool]))
-    if 'r1_mt' in dir():
-        sp.set_mt_pool(r1_mt, r2_mt, k_mt, f_mt, dw_mt, lineshape_mt)
-
-    sp.set_m_vec(0.5)
 
 
 

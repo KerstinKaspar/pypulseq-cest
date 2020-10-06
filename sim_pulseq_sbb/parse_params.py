@@ -1,3 +1,7 @@
+"""
+function fedinitions to pars the parameters into the C++ class
+"""
+
 from SimPulseqSBB import SimulationParameters, WaterPool, MTPool, CESTPool
 from sim_pulseq_sbb.params import Params
 from SimPulseqSBB import Lorentzian, SuperLorentzian, NoLineshape
@@ -5,6 +9,12 @@ from pypulseq.Sequence.sequence import Sequence
 
 
 def parse_sp(sp: Params, seq_file: str):
+    """
+    parsing python parameters into the according C++ functions
+    :param sp: simulation parameter object
+    :param seq_file: location of the seq-file to simulate
+    :return: SWIG object for C++ object handling
+    """
     # sp = Params()
     sp_sim = SimulationParameters()
     # init magnetization vector
@@ -32,6 +42,7 @@ def parse_sp(sp: Params, seq_file: str):
 
 
 def set_lineshape(ls):
+    """TODO"""
     try:
         if ls == 'Lorentzian':
             return Lorentzian
@@ -44,6 +55,7 @@ def set_lineshape(ls):
 
 
 def get_offsets(seq_file):
+    """TODO"""
     seq = Sequence(version=1.3)
     seq.read(seq_file)
     try:
@@ -54,12 +66,14 @@ def get_offsets(seq_file):
 
 
 def get_num_adc_events(seq_file):
+    """TODO"""
     offsets = get_offsets(seq_file)
     num_adc_events = len(offsets)
     return num_adc_events
 
 
 def check_m0(seq_file):
+    """TODO"""
     seq = Sequence(version=1.3)
     seq.read(seq_file)
     if 1 in seq.definitions['run_m0_scan'] or 'True' in seq.definitions['run_m0_scan']:
