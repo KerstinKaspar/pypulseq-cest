@@ -3,11 +3,13 @@ function to run a standard CEST simulation
 """
 
 from SimPulseqSBB import SimPulseqSBB
-from parse_params import parse_sp, get_offsets
-from params import Params
+from sim_pulseq_sbb.parse_params import parse_sp
+from sim_pulseq_sbb.params import Params
+import time
 
-from plot import plot_z
+from sim_pulseq_sbb.plot import plot_z
 
+start_time = time.time()
 
 def run_standard_cest_sim():
     # path to seq-file
@@ -105,3 +107,5 @@ def run_standard_cest_sim():
     return mz, m_out, fig
 
 mz, m_out, fig = run_standard_cest_sim()
+
+elapsed_time = time.time() - start_time

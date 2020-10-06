@@ -1,5 +1,5 @@
 from SimPulseqSBB import SimulationParameters, WaterPool, MTPool, CESTPool
-from params import Params
+from sim_pulseq_sbb.params import Params
 from SimPulseqSBB import Lorentzian, SuperLorentzian, NoLineshape
 from pypulseq.Sequence.sequence import Sequence
 

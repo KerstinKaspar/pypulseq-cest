@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from parse_params import get_offsets, check_m0
+from sim_pulseq_sbb.parse_params import get_offsets, check_m0
 
 
 def plot_without_offsets(mz: np.array, mtr_asym: np.array = None):

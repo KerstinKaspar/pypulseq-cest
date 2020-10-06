@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 """
-setup.py file from src_old
+setup_win.py file adapted for Linux compilation
+
+TODO not working...
 """
 
 from distutils.core import setup, Extension
@@ -14,16 +16,12 @@ except AttributeError:
 eigen_include = '3rdParty/Eigen'
 
 SimPulseqSBB_module = Extension('_SimPulseqSBB', sources=['SimPulseqSBB_wrap.cxx', 'SimPulseqSBB.cpp',
-                                                     'SimulationParameters.cpp', 'ExternalSequence.cpp'],
-                               #extra_compile_args=['-Xpreprocessor', '-fopenmp'], #, '-fPIC'
-                            include_dirs=[numpy_include, numpy_include + '/numpy', eigen_include],
-                            # extra_link_args=['-lomp'],
-                                # swig_opts=['-threads'],
-                               language="c++",
-                              )
-
-
-
+                                                          'SimulationParameters.cpp', 'ExternalSequence.cpp'],
+                                extra_compile_args=['-Xpreprocessor', '-fopenmp', '-fPIC', '-fpermissive'],
+                                include_dirs=[numpy_include, numpy_include + '/numpy', eigen_include],
+                                extra_link_args=['-lgomp'],
+                                language="c++",
+                                )
 
 setup(name='SimPulseqSBB',
       version='0.1',

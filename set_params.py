@@ -1,3 +1,4 @@
+from sim_pulseq_sbb.params import Params
 
 # path to seq-file
 seq_file = 'example/example_APTw_m.seq'
@@ -25,11 +26,12 @@ except ValueError:
 
 # CEST pools according to https: // doi.org / 10.1016 / j.neuroimage.2017.04.045,
 # pool 1 Amide
-r1_a = r1_w
-r2_a = 1 / 100e-3
-f_a = 10e-3 #50e-3/111 # fraction
-dw_a = 5  # chemical shift from water [ppm]
-k_a = 40 #30  # exchange rate[Hz]
+r1 = r1_w
+r2 = 1 / 100e-3
+f = 10e-3 #50e-3/111 # fraction
+dw = 5  # chemical shift from water [ppm]
+k = 40 #30  # exchange rate[Hz]
+
 
 # # # pool 2 creatine
 # r1_c = r1_w
@@ -67,4 +69,5 @@ scale = 0.5
 # verbose = True # for verbose output, defalut false
 # reset_init_mag = True # true if magnetization should be set to MEX.M after each ADC, defaultrue
 max_pulse_samples = 1000 # max samples for shaped pulses
+
 

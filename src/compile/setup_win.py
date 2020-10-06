@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 """
-setup.py file from src_old
+setup_win.py file from src_old
+TODO write setup_win, setup_ux, setup_os files for pure installation of precompiled shared libraries
 """
 
 from distutils.core import setup, Extension
@@ -19,24 +20,10 @@ SimPulseqSBB_module = Extension('_SimPulseqSBB', sources=['SimPulseqSBB_wrap.cxx
                                 language="c++",
                                 )
 
-ExternalSequence_module = Extension('_SimPulseqSBB', sources=['ExternalSequence_wrap.cxx', 'ExternalSequence.cpp'],
-                               language="c++",
-                              )
-
-
-
 setup(name='SimPulseqSBB',
       version='0.1',
       author="K Heinecke",
       description="SimPulseqSBB",
       ext_modules=[SimPulseqSBB_module],
       py_modules=["SimPulseqSBB"],
-      )
-
-setup(name='ExternalSequence',
-      version='0.1',
-      author="K Heinecke",
-      description="""test""",
-      ext_modules=[ExternalSequence_module],
-      py_modules=["ExternalSequence"],
       )
