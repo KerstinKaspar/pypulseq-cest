@@ -1,12 +1,20 @@
-"""TODO"""
+"""
+functions for plotting and calculations
+"""
 import numpy as np
 import matplotlib.pyplot as plt
 
 from sim_pulseq_sbb.parse_params import get_offsets, check_m0
 
 
-def plot_without_offsets(mz: np.array, mtr_asym: np.array = None, title: str = None):
-    """TODO"""
+def plot_without_offsets(mz: np.array, mtr_asym: np.array = None, title: str = None) -> plt.subplots:
+    """
+    plots the magnetization without offsets
+    :param mz: Magnetization
+    :param mtr_asym: MTRasym as calculated in calc_mtr_asym
+    :param title: optional title for the plot
+    :return: matplotlib figure
+    """
     fig, ax1 = plt.subplots()
     ax1.set_ylim([0, 1])
     ax1.set_ylabel('Z', color='b')
@@ -30,11 +38,18 @@ def plot_without_offsets(mz: np.array, mtr_asym: np.array = None, title: str = N
         title = 'Z-spec'
     plt.title(title)
     plt.show()
-    return fig
+    return fig, ax1
 
 
-def plot_with_offsets(mz: np.array, offsets: np.array, mtr_asym: np.array = None, title: str = None):
-    """TODO"""
+def plot_with_offsets(mz: np.array, offsets: np.array, mtr_asym: np.array = None, title: str = None) -> plt.subplots:
+    """
+    plots the magnetization with regard to the defined offsets
+    :param mz: Magnetization
+    :param offsets: offsets
+    :param mtr_asym: MTRasym as calculated in calc_mtr_asym
+    :param title: optional title for the plot
+    :return: matplotlib figure
+    """
     fig, ax1 = plt.subplots()
     ax1.set_ylim([0, 1])
     ax1.set_ylabel('Z', color='b')
@@ -60,8 +75,13 @@ def plot_with_offsets(mz: np.array, offsets: np.array, mtr_asym: np.array = None
     return fig
 
 
-def get_m0(mz, seq_file: str = None):
-    """TODO"""
+def get_m0(mz, seq_file: str = None) -> float:
+    """
+    returns m0 from the magnetization vector
+    :param mz: Magnetization
+    :param seq_file: file to retrieve information from
+    :return: M0
+    """
     if seq_file:
         if check_m0(seq_file):
             return mz[0]
@@ -71,16 +91,37 @@ def get_m0(mz, seq_file: str = None):
         return None
 
 
-def plot_z(mz: np.array, offsets: np.array = None, seq_file: str = None, plot_mtr_asym: bool = False, title: str = None):
-    """TODO"""
-    from_seq = False
+def calc_mtr_asym(z: np.array) -> np.array:
+    """
+    calculating MTRasym from the magnetization vector
+    :param z: magnetization
+    :return: MTRasym
+    """
+    return np.flip(z) - z
+
+
+def get_z(mz, seq_file):
     m0 = get_m0(mz, seq_file)
     if m0:
         z = mz[1:]/m0
     else:
         z = mz
+    return z
+
+
+def plot_z(mz: np.array, offsets: np.array = None, seq_file: str = None, plot_mtr_asym: bool = False, title: str = None):
+    """
+    initiating calculations and plotting functions
+    :param mz: magnetization vector
+    :param offsets: offsets to plot the magnetization on
+    :param seq_file: sequence file to read offsets from
+    :param plot_mtr_asym: boolean wether MTRasym should be plotted as well
+    :param title: optional title for the plot
+    """
+    from_seq = False
+    z = get_z(mz, seq_file)
     if plot_mtr_asym:
-        mtr_asym = np.flip(z) - z
+        mtr_asym = calc_mtr_asym(z)
     if not offsets:
         if seq_file:
             offsets = get_offsets(seq_file)

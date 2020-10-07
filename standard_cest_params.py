@@ -79,7 +79,7 @@ r2_mt = 1e5  # [Hz]
 k_mt = 23  # [Hz]
 f_mt = 0.0500  # rel
 dw_mt = -2  # [ppm]
-lineshape_mt = 'SuperLorentzian'
+lineshape_mt = 'Lorentzian'
 sp.set_mt_pool(r1=r1_mt, r2=r2_mt, k=k_mt, f=f_mt, dw=dw_mt, lineshape=lineshape_mt)
 
 # Scale the M vector here according to FLASH)

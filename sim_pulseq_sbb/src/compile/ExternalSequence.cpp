@@ -871,7 +871,7 @@ bool ExternalSequence::checkBlockReferences(EventIDs& events)
 	error|= (events.id[GZ]>0    && m_gradLibrary.count(events.id[GZ])==0);
 	error|= (events.id[ADC]>0   && m_adcLibrary.count(events.id[ADC])==0);
 	error|= (events.id[DELAY]>0 && m_delayLibrary.count(events.id[DELAY])==0);
-	//error|= (events.id[CTRL]>0  && m_controlLibrary.count(events.id[CTRL])==0); // TODO: currently all error checking is done in getBlock(); it needs to be done here 
+	//error|= (events.id[CTRL]>0  && m_controlLibrary.count(events.id[CTRL])==0); //
 	
 	return (!error);
 }

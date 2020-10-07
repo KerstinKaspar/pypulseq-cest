@@ -170,7 +170,9 @@ class BlochMcConnellSolver:
         return mt_line
 
     def interpolate_sl(self, dw_pool: float):
-        """ Interpolate Super Lorentzian Shape"""
+        """
+        Interpolate Super Lorentzian Shape
+        """
         mt_line = 0
         dw = self.params.mt_pool['dw']
         t2 = 1 / self.params.mt_pool['r2']
@@ -183,7 +185,9 @@ class BlochMcConnellSolver:
         return mt_line * np.pi * step_size
 
     def interpolate_chs(self, dw_pool: float, w0: float):
-        """ Cubic Hermite Spline Interpolation """
+        """
+        Cubic Hermite Spline Interpolation
+        """
         mt_line = 0
         px = np.array([-300 - w0, -100 - w0, 100 + w0, 300 + w0])
         py = np.zeros(px.size)

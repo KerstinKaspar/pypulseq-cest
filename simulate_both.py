@@ -5,8 +5,8 @@ simulate_sbb.py
 """
 from sim_bmc.bmc_tool_v2 import BMCTool
 from SimPulseqSBB import SimPulseqSBB
-from sim_pulseq_sbb.parse_params import parse_sp, get_offsets
-from sim_pulseq_sbb.plot import plot_z
+from sim_pulseq_sbb.parse_params import parse_sp
+from sim.eval import plot_z
 # choose a params file to import for the simulation
 # from set_params import sp, seq_file
 from standard_cest_params import sp, seq_file
@@ -28,8 +28,8 @@ SimPulseqSBB(sp_sim, seq_file)
 m_out_sbb = sp_sim.GetFinalMagnetizationVectors()
 mz_sbb = m_out_sbb[sp.mz_loc, :]
 
-fig_sbb = plot_z(mz_sbb, seq_file=seq_file, plot_mtr_asym=True, title='Z spectrum SBB simulation')
-fig_bmc = plot_z(mz_bmc, seq_file=seq_file, plot_mtr_asym=True, title='Z spectrum BMCTool simulation')
+fig_sbb, ax_sbb = plot_z(mz_sbb, seq_file=seq_file, plot_mtr_asym=True, title='Z spectrum SBB simulation')
+fig_bmc, ax_bmc = plot_z(mz_bmc, seq_file=seq_file, plot_mtr_asym=True, title='Z spectrum BMCTool simulation')
 
 
 

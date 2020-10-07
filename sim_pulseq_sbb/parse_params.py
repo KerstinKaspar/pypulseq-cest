@@ -41,8 +41,10 @@ def parse_sp(sp: Params, seq_file: str):
     return sp_sim
 
 
-def set_lineshape(ls):
-    """TODO"""
+def set_lineshape(ls: str = None):
+    """
+    return the according lineshape object
+    """
     try:
         if ls == 'Lorentzian':
             return Lorentzian
@@ -54,8 +56,12 @@ def set_lineshape(ls):
         print(ls + ' is not a valid lineshape for MT Pool.')
 
 
-def get_offsets(seq_file):
-    """TODO"""
+def get_offsets(seq_file: str) -> list:
+    """
+    read the offsets from the sequence file
+    :param seq_file: sequence file to read the offsets from
+    :return: list of offsets
+    """
     seq = Sequence(version=1.3)
     seq.read(seq_file)
     try:
@@ -65,15 +71,23 @@ def get_offsets(seq_file):
     return offsets
 
 
-def get_num_adc_events(seq_file):
-    """TODO"""
+def get_num_adc_events(seq_file: str) -> int:
+    """
+    number of ADC events should equla number of offsets
+    :param seq_file: sequence file to read the offsets from
+    :return: num_adc_events
+    """
     offsets = get_offsets(seq_file)
     num_adc_events = len(offsets)
     return num_adc_events
 
 
-def check_m0(seq_file):
-    """TODO"""
+def check_m0(seq_file: str) -> bool:
+    """
+    check wether m0 simulation is defined in the sequence file
+    :param seq_file: sequence file to read the declaration from
+    :return: boolean
+    """
     seq = Sequence(version=1.3)
     seq.read(seq_file)
     if 1 in seq.definitions['run_m0_scan'] or 'True' in seq.definitions['run_m0_scan']:

@@ -27,7 +27,7 @@ def __calc_SAR(Q, I):
            contains the SAR value for a particular Q matrix
         """
 
-    if len(I.shape) == 1:  # Just to fit the multi-transmit case for now, ToDo
+    if len(I.shape) == 1:  # Just to fit the multi-transmit case for now
         I = np.matlib.repmat(I, Q.shape[0], 1)  # Nc x Nt
 
     Ifact = np.divide(np.matmul(I, np.matrix(I).getH()), I.shape[1])
