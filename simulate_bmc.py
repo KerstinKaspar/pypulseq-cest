@@ -1,21 +1,19 @@
 """
 simulate_bmc.py
-    Script to run the BMCTool simulation based on the parameters defined in set_params.py
+    Script to run the BMCTool simulation based on the defined parameters.
+    You can adapt parameters in set_params.py or use a standard CEST setting as defined in standard_cest_params.py.
 """
 from sim_bmc.bmc_tool_v2 import BMCTool
-import matplotlib.pyplot as plt
-# from set_params import *
-from standard_cest_params import *
+from sim_pulseq_sbb.plot import plot_z
+# choose a params file to import for the simulation
+# from set_params import sp, seq_file
+from standard_cest_params import sp, seq_file
 
 Sim = BMCTool(sp, seq_file)
 Sim.run()
-Mout = Sim.Mout
+m_out = Sim.Mout
 
-fig, ax = plt.subplots(figsize=(12,9))
-ax.plot(Sim.seq.definitions['offsets_ppm'], Mout[6, 1:], marker='o', linestyle='--', linewidth=2, color='black')
-ax.set_xlabel('frequency offset [ppm]', fontsize=20)
-ax.set_ylabel('normalized signal', fontsize=20)
-ax.set_ylim([-0.1,1])
-ax.invert_xaxis()
-ax.grid()
-plt.show()
+mz = m_out[sp.mz_loc, :]
+
+plot_z(mz, seq_file=seq_file, plot_mtr_asym=True)
+

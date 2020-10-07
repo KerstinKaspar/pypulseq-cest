@@ -113,7 +113,7 @@ class BlochMcConnellSolver:
         # mt_pool
         if self.is_mt_active:
             self.A[3 * (n_p + 1), 3 * (n_p + 1)] = (-self.params.mt_pool['r1'] - self.params.mt_pool['k'] -
-                                                    rf_amp_2pi**2 * self.params.get_mt_shape_at_offset(rf_freq_2pi + self.dw0, self.w0))
+                                                    rf_amp_2pi**2 * self.get_mt_shape_at_offset(rf_freq_2pi + self.dw0, self.w0))
 
     def solve_equation(self, mag: np.ndarray, dtp: float):
         """Solve the BMC equation system for all offsets in parallel using the matrix representation."""
@@ -152,6 +152,57 @@ class BlochMcConnellSolver:
         tmp = np.einsum('ijk,ikl->ijl', vects, np.apply_along_axis(np.diag, -1, np.exp(vals)))
         inv = np.linalg.inv(vects)  # np.linalg.inv is about 10 times faster than np.linalg.pinv
         return np.einsum('ijk,ikl->ijl', tmp, inv)
+
+    def get_mt_shape_at_offset(self, offset: float, w0: float):
+        ls = self.params.mt_pool['lineshape']
+        dw = self.params.mt_pool['dw']
+        t2 = 1/ self.params.mt_pool['r2']
+        if ls == 'Lorentzian':
+            mt_line = t2 / (1+ pow((offset - dw * w0) * t2, 2.0))
+        elif ls == 'SuperLorentzian':
+            dw_pool = offset - self.dw0
+            if abs(dw_pool) >= w0:
+                mt_line = self.interpolate_sl(dw_pool)
+            else:
+                mt_line = self.interpolate_chs(dw_pool, w0)
+        else:
+            mt_line = 0
+        return mt_line
+
+    def interpolate_sl(self, dw_pool: float):
+        """ Interpolate Super Lorentzian Shape"""
+        mt_line = 0
+        dw = self.params.mt_pool['dw']
+        t2 = 1 / self.params.mt_pool['r2']
+        n_samples = 101
+        step_size = 0.01
+        sqrt_2pi = np.sqrt(2/ np.pi)
+        for i in range(n_samples):
+            powcu2 = abs(3 * pow(step_size * i, 2) -1)
+            mt_line += sqrt_2pi * t2 / powcu2 * np.exp(-2 * pow(dw * t2 /powcu2, 2))
+        return mt_line * np.pi * step_size
+
+    def interpolate_chs(self, dw_pool: float, w0: float):
+        """ Cubic Hermite Spline Interpolation """
+        mt_line = 0
+        px = np.array([-300 - w0, -100 - w0, 100 + w0, 300 + w0])
+        py = np.zeros(px.size)
+        for i in range(px.size):
+            py[i] = self.interpolate_sl(px[i])
+        if px.size != 4 or py.size != 4:
+            return mt_line
+        else:
+            tan_weight = 30
+            d0y = tan_weight * (py[0] - py[0])
+            d1y = tan_weight * (py[3] - py[2])
+            c_step = abs((dw_pool - px[1] + 1) / (px[2] - px[1] + 1))
+            h0 = 2 * (c_step ** 3) - 3 * (c_step ** 2) + 1
+            h1 = -2 * (c_step ** 3) + 3 * (c_step ** 2)
+            h2 = (c_step ** 3) - 2 * (c_step ** 2) + c_step
+            h3 = (c_step ** 3) - (c_step ** 2)
+
+            mt_line = h0 * py[0] + h1 * py[2] + h2 * d0y + h3 * d1y
+            return mt_line
 
 
 class BMCTool:
