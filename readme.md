@@ -11,8 +11,8 @@ Example scripts and sequences can be found in the [example](./example) subfolder
 ## Simulation of CEST sequences
 Furthermore, this repository provides a python implementation of the C++ based simulation tool [pulseq-cest-sim](https://github.com/kherz/pulseq-cest/tree/master/pulseq-cest-sim)
 by Kai Herz, which was originally made available for use in MATLAB. The installation of the python package is necessary 
-(see section *Installation* below). Here, you'll find a script to directly run a [standard simulation](standard_cest_sim.py) as proposed by Moritz Zaiss or simulate your own Z-Spectra by defining your
-parameters and the according seq-file in [set_params](set_params.py) and run the [simulation](simulation.py) script. The
+(see section *Installation* below). Here, you'll find a script to set parameters for a [standard simulation](standard_cest_params.py) as proposed by Moritz Zaiss or simulate your own Z-Spectra by defining your
+parameters and the according seq-file in [set_params](set_params.py) and run the [simulation](simulate_sbb.py) script. The
 package code and C++ source code can be found in the [sim_pulseq_sbb](sim_pulseq_sbb) module.
 
 ## Installation

@@ -1,5 +1,5 @@
 """
-sim_pulseq_sbb.py
+simulate_sbb.py
     Script to run the C++ SimPulseqSBB simulation based on the parameters defined in set_params.py
 """
 

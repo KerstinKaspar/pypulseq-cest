@@ -54,7 +54,7 @@ class Params:
         self.mz_loc += 2
         return water_pool
 
-    def set_cest_pool(self, r1: float = 1/1.31, r2: float = 1/ 100e-3, k: int = 30, f: float = 72e-3 / 111, dw: int = 3.5) -> dict:
+    def set_cest_pool(self, r1: float = 1/1.31, r2: float = 1/ 100e-3, k: int = 30, f: float = 72e-3 / 111, dw: float = 3.5) -> dict:
         """
         Defaults for amide CEST pool
         :param r1: relaxation rate R1 = 1/T1 [Hz]

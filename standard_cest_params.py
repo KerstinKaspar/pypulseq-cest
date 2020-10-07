@@ -1,9 +1,13 @@
 """
 set_params.py
-    Script to set the parameters used for the simulation.
+    Script to use standard CEST parameters for the simulation:
+    Example for a Z-spectrum for gray matter at 3T with
+        - 2 CEST pools
+        - a Lorentzian shaped MT pool
+CEST pools according to https://doi.org/10.1016/j.neuroimage.2017.04.045
 
-Only the parameter values need to be adapted: If the simulation is started from simulate_sbb.py, this file does not need
-to be run separately, the setting of the parameters into the class instance will be handled automatically.
+If the simulation is started from simulate_sbb.py, this file does not need to be run separately, the setting of the
+parameters into the class instance will be handled automatically.
 
 PARAMETERS:
     b0: field strength [T]
@@ -22,10 +26,10 @@ from sim.params import Params
 sp = Params()
 
 # path to seq-file
-seq_file = 'example/example_APTw_test.seq'
+seq_file = 'example/example_APTw_m.seq'
 
 # define scanner parameters
-b0 = 9.4  # [T]
+b0 = 3  # [T]
 gamma = 267.5153  # [rad / uT]
 # optional
 b0_inhom = 0.0  # [ppm]
@@ -50,36 +54,35 @@ except ValueError:
 # set the water parameters
 sp.set_water_pool(r1_w, r2_w, f_w)
 
-# define CEST pool parameters
-# pool 1
+# CEST pools
+# pool 1: Amide
 r1 = r1_w  # [Hz]
 r2 = 1 / 100e-3  # [Hz]
-k = 40  # exchange rate[Hz]
-f = 10e-3  # rel
-dw = 5  # [ppm]
+k = 30  # exchange rate[Hz]
+f = 72e-3 / 111  # rel
+dw = 3.5  # [ppm]
 # set CEST pool parameters
 sp.set_cest_pool(r1=r1, r2=r2, k=k, f=f, dw=dw)
 
-# define different pools in the same manner, the class automatically instatiates the pools separately
-# pool 2
+# pool 2: Creatine
 r1 = r1_w  # [Hz]
 r2 = 1 / 100e-3  # [Hz]
-k = 40  # [Hz]
-f = 10e-3  # rel
-dw = -5  # [ppm]
+k = 1100  # [Hz]
+f = 20e-3 / 111  # rel
+dw = 2  # [ppm]
 # set CEST pool parameters
 sp.set_cest_pool(r1=r1, r2=r2, k=k, f=f, dw=dw)
 
-# # define MT pool
-# r1_mt = 1  # [Hz]
-# r2_mt = 1e5  # [Hz]
-# k_mt = 23  # [Hz]
-# f_mt = 0.0500  # rel
-# dw_mt = -2  # [ppm]
-# lineshape_mt = 'Lorentzian'
-# sp.set_mt_pool(r1=r1_mt, r2=r2_mt, k=k_mt, f=f_mt, dw=dw_mt, lineshape=lineshape_mt)
+# define MT pool
+r1_mt = 1  # [Hz]
+r2_mt = 1e5  # [Hz]
+k_mt = 23  # [Hz]
+f_mt = 0.0500  # rel
+dw_mt = -2  # [ppm]
+lineshape_mt = 'Lorentzian'
+sp.set_mt_pool(r1=r1_mt, r2=r2_mt, k=k_mt, f=f_mt, dw=dw_mt, lineshape=lineshape_mt)
 
-# say you have a magnetization Mi of 50 after the readout. Scale the M vector here according to that (ca. 0.5 for FLASH)
+# Scale the M vector here according to FLASH)
 scale = 0.5
 # initiate the magnetization vector
 sp.set_m_vec(scale)
