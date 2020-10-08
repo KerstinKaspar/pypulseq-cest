@@ -22,7 +22,7 @@ from sim.params import Params
 sp = Params()
 
 # path to seq-file
-seq_file = 'example/example_APTw_med.seq'
+seq_file = 'example/wasabi/example_wasabi.seq'
 
 # define scanner parameters
 b0 = 3  # [T]

@@ -25,11 +25,11 @@ seq = Sequence()
 
 offset_range = 2 # [ppm]
 num_offsets = 41 # number of measurements (not including M0)
-run_m0_scan = False  # if you want an M0 scan at the beginning
+run_m0_scan = True  # if you want an M0 scan at the beginning
 t_rec = 3  # recovery time between scans [s]
 m0_t_rec = 12  # recovery time before m0 scan [s]
 sat_b1 = 3.75  # mean sat pulse b1 [uT]
-t_p = 0.05 # sat pulse duration [s]
+t_p = 0.005 # sat pulse duration [s]
 t_d = 0  # delay between pulses [s]
 n_pulses = 1  # number of sat pulses per measurement
 b0 = 3  # B0 [T]

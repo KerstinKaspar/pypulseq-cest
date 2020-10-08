@@ -154,12 +154,12 @@ class BlochMcConnellSolver:
         return np.einsum('ijk,ikl->ijl', tmp, inv)
 
     def get_mt_shape_at_offset(self, offset: float, w0: float):
-        ls = self.params.mt_pool['lineshape']
+        ls = self.params.mt_pool['lineshape'].lower()
         dw = self.params.mt_pool['dw']
-        t2 = 1/ self.params.mt_pool['r2']
-        if ls == 'Lorentzian':
-            mt_line = t2 / (1+ pow((offset - dw * w0) * t2, 2.0))
-        elif ls == 'SuperLorentzian':
+        t2 = 1 / self.params.mt_pool['r2']
+        if ls == 'lorentzian':
+            mt_line = t2 / (1 + pow((offset - dw * w0) * t2, 2.0))
+        elif ls == 'superlorentzian':
             # TODO not yet working!
             dw_pool = offset - self.dw0
             if abs(dw_pool) >= w0:
@@ -264,9 +264,13 @@ class BMCTool:
 
                 n_unique = max(np.unique(amp).size, np.unique(ph).size)
 
-                if n_unique > max_pulse_samples:
-                    #amp = scipy.signal.resample(amp, max_pulse_samples)
-                    #ph = scipy.signal.resample(ph, max_pulse_samples)
+                if n_unique == 1:
+                    amp_ = amp[0]
+                    ph_ = ph[0]
+                    self.bm_solver.update_matrix(rf_amp=amp_, rf_phase=ph_, rf_freq=block.rf.freq_offset)
+                    M_ = self.bm_solver.solve_equation(mag=M_, dtp=dtp*amp.size)
+
+                elif n_unique > max_pulse_samples:
 
                     sample_factor = int(np.ceil(amp.size/max_pulse_samples))
                     pulse_samples = int(amp.size/sample_factor)
