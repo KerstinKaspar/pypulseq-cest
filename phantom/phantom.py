@@ -1,4 +1,13 @@
+"""
+pahntom.py
+    simulate and plot a phantom for CEST magnetization
+
+TODO implement different ellipses for different pools
+"""
+
 import numpy as np
+import matplotlib.pyplot as plt
+from sim.params import Params
 
 
 def phantom(npx: int, ellipses: np.array = None):
@@ -43,6 +52,18 @@ def create_phantom(n_offsets: int, mvec: np.array, npx: int = 256) -> np.array:
              [+mvec[i], .1600, .4100, -.22, 0, 18],
              [-1, .1100, .3100, .22, 0, -18],
              [+mvec[i], .1100, .3100, .22, 0, -18]]
-
+        print(mvec[i])
         img_stack[i, :, :] = phantom(npx=npx, ellipses=e)
     return img_stack
+
+
+def plot_phantom(phantom: np.array, sp: Params, offsets: list, pool: int = 0):
+    o = np.array(offsets)
+    dw = sp.cest_pools[pool]['dw']
+    # find index closest to CEST resonance
+    idx = int(np.where(o == o[np.abs(o - dw).argmin()])[0])
+
+    fig, ax = plt.subplots(figsize=(12, 9))
+    tmp = ax.imshow(phantom[idx,])
+    plt.show()
+    return fig

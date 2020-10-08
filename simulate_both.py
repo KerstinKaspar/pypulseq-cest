@@ -21,7 +21,7 @@ from example.wasabi.set_wasabi_params import sp, seq_file
 Sim = BMCTool(sp, seq_file)
 Sim.run()
 m_out_bmc = Sim.Mout
-mz_bmc = m_out_bmc[sp.mz_loc, :]
+mz_bmc = m_out_bmc[sp.mz_loc, :-1]
 
 # SBB simulation
 # parse the parameters for C++ code handling

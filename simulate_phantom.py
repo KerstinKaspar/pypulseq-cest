@@ -1,11 +1,10 @@
 from sim_bmc.bmc_tool_v2 import BMCTool
-from sim.eval import plot_z, get_offsets
+from sim.eval import get_offsets
 # choose a params file to import for the simulation
 from set_params import sp, seq_file
 # from standard_cest_params import sp, seq_file
-from phantom.phantom import create_phantom
-import numpy as np
-import matplotlib.pyplot as plt
+from phantom.phantom import create_phantom, plot_phantom
+
 
 Sim = BMCTool(sp, seq_file)
 Sim.run()
@@ -17,9 +16,4 @@ offsets = get_offsets(seq_file)
 
 phantom = create_phantom(len(offsets), mvec=mz)
 
-# find index closest to CEST resonance
-idx = offsets.index(min(offsets))
-
-fig, ax = plt.subplots(figsize=(12,9))
-tmp = ax.imshow(phantom[idx, ])
-plt.show()
+fig = plot_phantom(phantom=phantom, sp=sp, offsets=offsets, pool=0)
