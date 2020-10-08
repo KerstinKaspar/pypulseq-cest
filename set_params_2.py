@@ -19,10 +19,10 @@ PARAMETERS:
 from sim.params import Params
 
 # instantiate class to store the parameters
-sp = Params()
+sp2 = Params()
 
 # path to seq-file
-seq_file = 'example/example_APTw_med_9.seq'
+seq_file = 'example/example_APTw_mt.seq'
 
 # define scanner parameters
 b0 = 9.4  # [T]
@@ -31,7 +31,7 @@ gamma = 267.5153  # [rad / uT]
 b0_inhom = 0.0  # [ppm]
 rel_b1 = 1
 # set the scanner parameters
-sp.set_scanner(b0=b0, gamma=gamma, b0_inhomogeneity=b0_inhom, rel_b1=rel_b1)
+sp2.set_scanner(b0=b0, gamma=gamma, b0_inhomogeneity=b0_inhom, rel_b1=rel_b1)
 
 # define water properties according to the field strength
 f_w = 1
@@ -48,33 +48,24 @@ try:
 except ValueError:
     print('B0 field strength of ' + str(b0) + 'T: No implementation possible.')
 # set the water parameters
-sp.set_water_pool(r1_w, r2_w, f_w)
+sp2.set_water_pool(r1_w, r2_w, f_w)
 
-# define CEST pool parameters
-# strong pool
-r1 = r1_w  # [Hz]
-r2 = 1 / 100e-3  # [Hz]
-k = 40  # exchange rate[Hz]
-f = 10e-3  # rel
-dw = 5  # [ppm]
-# set CEST pool parameters
-sp.set_cest_pool(r1=r1, r2=r2, k=k, f=f, dw=dw)
-
-# dummy pool
-r1 = r1_w  # [Hz]
-r2 = r2_w  # 1 / 100e-3  # [Hz]
-k = 0  # exchange rate[Hz]
-f = 1  # rel
-dw = 0  # [ppm]
-# set CEST pool parameters
-sp.set_cest_pool(r1=r1, r2=r2, k=k, f=f, dw=dw)
-
-# # define different pools in the same manner, the class automatically instantiates the pools separately
-# # normal pool
+# # define CEST pool parameters
+# # pool 1
+# r1 = r1_w  # [Hz]
+# r2 = r2_w # 1 / 100e-3  # [Hz]
+# k = 0#40  # exchange rate[Hz]
+# f = 1#10e-3  # rel
+# dw = 0#5  # [ppm]
+# # set CEST pool parameters
+# sp.set_cest_pool(r1=r1, r2=r2, k=k, f=f, dw=dw)
+#
+# # define different pools in the same manner, the class automatically instatiates the pools separately
+# # pool 2
 # r1 = r1_w  # [Hz]
 # r2 = 1 / 100e-3  # [Hz]
 # k = 40  # [Hz]
-# f = 10e-3   # rel
+# f = 10e-3  # rel
 # dw = -5  # [ppm]
 # # set CEST pool parameters
 # sp.set_cest_pool(r1=r1, r2=r2, k=k, f=f, dw=dw)
@@ -91,7 +82,7 @@ sp.set_cest_pool(r1=r1, r2=r2, k=k, f=f, dw=dw)
 # say you have a magnetization Mi of 50 after the readout. Scale the M vector here according to that (ca. 0.5 for FLASH)
 scale = 0.5
 # initiate the magnetization vector
-sp.set_m_vec(scale)
+sp2.set_m_vec(scale)
 
 # optional params
 # verbose = True # for verbose output, default False
@@ -99,4 +90,4 @@ sp.set_m_vec(scale)
 # reset_init_mag = True # true if magnetization should be set to MEX.M after each ADC, default True
 # sp.set_options(reset_init_mag=reset_init_mag)
 max_pulse_samples = 300  # set the number of samples for the shaped pulses, default is 500
-sp.set_options(max_pulse_samples=max_pulse_samples)
+sp2.set_options(max_pulse_samples=max_pulse_samples)

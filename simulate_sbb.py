@@ -7,8 +7,8 @@ from SimPulseqSBB import SimPulseqSBB
 from sim_pulseq_sbb.parse_params import parse_sp
 from sim.eval import plot_z
 # choose a params file to import for the simulation
-# from set_params import sp, seq_file
-from standard_cest_params import sp, seq_file
+from set_params import sp, seq_file
+# from standard_cest_params import sp, seq_file
 
 
 # parse the parameters for C++ code handling
@@ -21,7 +21,7 @@ SimPulseqSBB(sp_sim, seq_file)
 m_out = sp_sim.GetFinalMagnetizationVectors()
 mz = m_out[sp.mz_loc, :]
 
-fig, ax = plot_z(mz, seq_file=seq_file, plot_mtr_asym=True)
+fig = plot_z(mz, seq_file=seq_file, plot_mtr_asym=True)
 
 
 

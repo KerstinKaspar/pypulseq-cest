@@ -63,8 +63,6 @@ private:
 */
 template<int size> BlochMcConnellSolver<size>::BlochMcConnellSolver(SimulationParameters &sp)
 {
-	std::cout << "BMsolver with\n";
-	std::cout << "CEST1.f " << sp.GetCESTPool(0)->GetFraction();
 	// fill A matrix with constant pool exchange and concentration parameters ////
 	if (size == Eigen::Dynamic)
 	{
@@ -164,6 +162,7 @@ template<int size> void BlochMcConnellSolver<size>::UpdateBlochMatrix(Simulation
 	double rfAmplitude2pi = rfAmplitude*TWO_PI*sp.GetScannerRelB1();
 	double rfAmplitude2piCosPhi = rfAmplitude2pi * cos(rfPhase);
 	double rfAmplitude2piSinPhi = rfAmplitude2pi * sin(rfPhase);
+
 	//water
 	A(0, 2 * (N + 1)) = -rfAmplitude2piSinPhi;
 	A(2 * (N + 1), 0) = rfAmplitude2piSinPhi;
@@ -192,7 +191,6 @@ template<int size> void BlochMcConnellSolver<size>::UpdateBlochMatrix(Simulation
 		double dwi = sp.GetCESTPool(i - 1)->GetShiftinPPM()*w0 - (rfFreqOffset2pi + dw0);
 		A(i, i + N + 1) = dwi;
 		A(i + N + 1, i) = -dwi;
-		std::cout << "\n CEST update dw= " << dwi << "for i= " << i; //debug
 	}
 
 	//set MT term

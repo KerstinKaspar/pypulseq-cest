@@ -160,6 +160,7 @@ class BlochMcConnellSolver:
         if ls == 'Lorentzian':
             mt_line = t2 / (1+ pow((offset - dw * w0) * t2, 2.0))
         elif ls == 'SuperLorentzian':
+            # TODO not yet working!
             dw_pool = offset - self.dw0
             if abs(dw_pool) >= w0:
                 mt_line = self.interpolate_sl(dw_pool)

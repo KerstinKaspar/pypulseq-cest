@@ -1,5 +1,6 @@
 """
-functions for plotting and calculations
+eval.py
+    Tool independent functions for plotting and calculations
 """
 import numpy as np
 import matplotlib.pyplot as plt
@@ -38,7 +39,7 @@ def plot_without_offsets(mz: np.array, mtr_asym: np.array = None, title: str = N
         title = 'Z-spec'
     plt.title(title)
     plt.show()
-    return fig, ax1
+    return fig
 
 
 def plot_with_offsets(mz: np.array, offsets: np.array, mtr_asym: np.array = None, title: str = None) -> plt.subplots:

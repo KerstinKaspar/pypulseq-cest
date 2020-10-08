@@ -8,7 +8,7 @@ from pypulseq.opts import Opts
 
 
 def make_gauss_pulse(flip_angle: float, system: Opts = Opts(), duration: float = 0, freq_offset: float = 0,
-                     phase_offset: float = 0, time_bw_product: float = 4, bandwidth: float = 0, apodization: float = 0,
+                     phase_offset: float = 0, time_bw_product: float = 3, bandwidth: float = 0, apodization: float = 0,
                      center_pos: float = 0.5, max_grad: float = 0, max_slew: float = 0, slice_thickness: float = 0,
                      delay: float = 0, use: str = None):
     """
