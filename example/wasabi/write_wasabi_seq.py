@@ -18,24 +18,24 @@ from pypulseq.Sequence.sequence import Sequence
 from pypulseq.make_adc import make_adc
 from pypulseq.make_delay import make_delay
 from pypulseq.make_trap_pulse import make_trapezoid
-from pypulseq.make_gauss_pulse import make_gauss_pulse
+from pypulseq.make_block_pulse import make_block_pulse
 from pypulseq.opts import Opts
 
 seq = Sequence()
 
-offset_range = 10 # [ppm]
-num_offsets = 40#100  # number of measurements (not including M0)
-run_m0_scan = True  # if you want an M0 scan at the beginning
-t_rec = 2.4  # recovery time between scans [s]
+offset_range = 2 # [ppm]
+num_offsets = 41 # number of measurements (not including M0)
+run_m0_scan = False  # if you want an M0 scan at the beginning
+t_rec = 3  # recovery time between scans [s]
 m0_t_rec = 12  # recovery time before m0 scan [s]
-sat_b1 = 2.22  # mean sat pulse b1 [uT]
-t_p = 50e-3  # sat pulse duration [s]
-t_d = 40e-3  # delay between pulses [s]
-n_pulses = 5#20  # number of sat pulses per measurement
+sat_b1 = 3.75  # mean sat pulse b1 [uT]
+t_p = 0.05 # sat pulse duration [s]
+t_d = 0  # delay between pulses [s]
+n_pulses = 1  # number of sat pulses per measurement
 b0 = 3  # B0 [T]
 spoiling = 1  # 0=no spoiling, 1=before readout, Gradient in x,y,z
 
-seq_filename = 'example_APTw_med.seq'  # filename
+seq_filename = 'example_wasabi.seq'  # filename
 
 # scanner limits
 sys = Opts(max_grad=40, grad_unit='mT/m', max_slew=130, slew_unit='T/m/s', rf_ringdown_time=30e-6, rf_dead_time=100e-6,
@@ -45,7 +45,7 @@ gamma = sys.gamma * 1e-6
 # scanner events
 # sat pulse
 flip_angle_sat = sat_b1 * gamma * 2 * np.pi * t_p  # rad
-rf_sat, _, _ = make_gauss_pulse(flip_angle=flip_angle_sat, duration=t_p, system=sys, time_bw_product=3)
+rf_sat, _ = make_block_pulse(flip_angle=flip_angle_sat, duration=t_p, system=sys)
 
 # spoilers
 spoil_amp = 0.8 * sys.max_grad  # Hz/m

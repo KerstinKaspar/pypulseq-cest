@@ -6,12 +6,16 @@ simulate_sbb.py
 from sim_bmc.bmc_tool_v2 import BMCTool
 from SimPulseqSBB import SimPulseqSBB
 from sim_pulseq_sbb.parse_params import parse_sp
-from sim.eval import plot_z, get_offsets, calc_mtr_asym
+from sim.eval import get_offsets, calc_mtr_asym
+
+import numpy as np
+import matplotlib.pyplot as plt
+
 # choose a params file to import for the simulation
 from set_params import sp, seq_file
 # from standard_cest_params import sp, seq_file
-import numpy as np
-import matplotlib.pyplot as plt
+# from example.wasabi.set_wasabi_params import sp, seq_file
+
 
 # BMCTool simulation
 Sim = BMCTool(sp, seq_file)
@@ -41,7 +45,7 @@ ax1.set_xlabel('Offsets')
 plt.plot(offsets, mz_bmc, '.--', label='$Z_{BMC}$', color='b')
 plt.plot(offsets, mz_sbb, '.--', label='$Z_{SBB}$', color='g')
 plt.gca().invert_xaxis()
-plt.legend()
+plt.legend(loc=3)
 ax1.tick_params(axis='y', labelcolor='b')
 
 mtr_asym_bmc = calc_mtr_asym(mz_bmc)
@@ -54,7 +58,7 @@ ax2.plot(offsets, mtr_asym_sbb, label='$MTR_{asym, SBB}$', color='y')
 ax2.tick_params(axis='y', labelcolor='y')
 fig.tight_layout()
 title = 'Z-spec'
-plt.legend()
+plt.legend(loc=4)
 plt.title(title)
 plt.show()
 

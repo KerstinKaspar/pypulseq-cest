@@ -84,19 +84,19 @@ class BlochMcConnellSolver:
         rf_amp_2pi_cos = rf_amp_2pi * np.cos(rf_phase)
 
         # water_pool
-        self.A[0, 2 * (n_p + 1)] = -rf_amp_2pi  # -rf_amp_2pi_sin
-        self.A[2 * (n_p + 1), 0] = rf_amp_2pi  # rf_amp_2pi_sin
+        self.A[0, 2 * (n_p + 1)] = -rf_amp_2pi_sin  # -rf_amp_2pi_sin
+        self.A[2 * (n_p + 1), 0] = rf_amp_2pi_sin  # rf_amp_2pi_sin
 
-        self.A[n_p + 1, 2 * (n_p + 1)] = rf_amp_2pi  # rf_amp_2pi_cos
-        self.A[2 * (n_p + 1), n_p + 1] = -rf_amp_2pi  # -rf_amp_2pi_cos
+        self.A[n_p + 1, 2 * (n_p + 1)] = rf_amp_2pi_cos  # rf_amp_2pi_cos
+        self.A[2 * (n_p + 1), n_p + 1] = -rf_amp_2pi_cos  # -rf_amp_2pi_cos
 
         # cest_pools
         for i in range(1, n_p+1):
-            self.A[i, i + 2 * (n_p + 1)] = -rf_amp_2pi  # -rf_amp_2pi_sin
-            self.A[i + 2 * (n_p + 1), i] = rf_amp_2pi  # rf_amp_2pi_sin
+            self.A[i, i + 2 * (n_p + 1)] = -rf_amp_2pi_sin  # -rf_amp_2pi_sin
+            self.A[i + 2 * (n_p + 1), i] = rf_amp_2pi_sin  # rf_amp_2pi_sin
 
-            self.A[n_p + 1 + i, i + 2 * (n_p + 1)] = rf_amp_2pi  # rf_amp_2pi_cos
-            self.A[i + 2 * (n_p + 1), n_p + 1 + i] = -rf_amp_2pi  # -rf_amp_2pi_cos
+            self.A[n_p + 1 + i, i + 2 * (n_p + 1)] = rf_amp_2pi_cos  # rf_amp_2pi_cos
+            self.A[i + 2 * (n_p + 1), n_p + 1 + i] = -rf_amp_2pi_cos  # -rf_amp_2pi_cos
 
         # set off-resonance terms
         # water_pool
@@ -253,11 +253,14 @@ class BMCTool:
                 max_pulse_samples = self.params.options['max_pulse_samples']
                 amp = np.real(block.rf.signal)
                 ph = np.imag(block.rf.signal)
+                rf_length = amp.size
                 dtp = 1e-6
 
                 idx = np.argwhere(amp>1E-6)
                 amp = amp[idx]
                 ph = ph[idx]
+
+                delay_after_pulse = (rf_length - idx.size) * dtp
 
                 n_unique = max(np.unique(amp).size, np.unique(ph).size)
 
@@ -277,6 +280,16 @@ class BMCTool:
                                                      rf_phase=ph_i-self.accumm_phase,
                                                      rf_freq=block.rf.freq_offset)
                         M_ = self.bm_solver.solve_equation(mag=M_, dtp=dtp*sample_factor)
+                else:
+                    pass
+
+                if delay_after_pulse > 0:
+                    self.bm_solver.update_matrix(0, 0, 0)
+                    M_ = self.bm_solver.solve_equation(mag=M_, dtp=delay_after_pulse)
+
+                phase_degree = rf_length * dtp * 360 * block.rf.freq_offset
+                phase_degree = phase_degree % 360
+                self.accumm_phase += phase_degree/180*np.pi
 
             elif hasattr(block, 'delay'):
                 print(f'Simulating block {n_sample} / {len(self.seq.block_events) + 1} (DELAY)')

@@ -1,19 +1,5 @@
 """
-set_params.py
-    Script to set the parameters used for the simulation.
-
-Only the parameter values need to be adapted: If the simulation is started from simulate_sbb.py, this file does not need
-to be run separately, the setting of the parameters into the class instance will be handled automatically.
-
-PARAMETERS:
-    b0: field strength [T]
-    gamma: gyromagnetic ratio [rad / uT]
-    b0_inhom: field inhomogeneity [ppm]
-    rel_b1: relative b1
-    f: proton fraction (relative)
-    dw: chemical shift from water [ppm]
-    k: exchange rate [Hz]
-    lineshape_mt: lineshape of the MT Pool ('Lorentzian', 'SuperLorentzian' or 'None')
+Setting the simulation parameters to wasabi after Schuenke et. al., 2017 (https://doi.org/10.1002/mrm.26133)
 """
 
 from sim.params import Params
@@ -22,7 +8,7 @@ from sim.params import Params
 sp = Params()
 
 # path to seq-file
-seq_file = 'example/example_APTw_med.seq'
+seq_file = 'example/wasabi/example_wasabi.seq'
 
 # define scanner parameters
 b0 = 3  # [T]
@@ -50,16 +36,6 @@ except ValueError:
 # set the water parameters
 sp.set_water_pool(r1_w, r2_w, f_w)
 
-# define CEST pool parameters
-# strong pool
-r1 = r1_w  # [Hz]
-r2 = 1 / 100e-3  # [Hz]
-k = 40  # exchange rate[Hz]
-f = 10e-3  # rel
-dw = 5  # [ppm]
-# set CEST pool parameters
-sp.set_cest_pool(r1=r1, r2=r2, k=k, f=f, dw=dw)
-
 # dummy pool
 r1 = r1_w  # [Hz]
 r2 = r2_w  # 1 / 100e-3  # [Hz]
@@ -69,27 +45,8 @@ dw = 0  # [ppm]
 # set CEST pool parameters
 sp.set_cest_pool(r1=r1, r2=r2, k=k, f=f, dw=dw)
 
-# define different pools in the same manner, the class automatically instantiates the pools separately
-# normal pool
-r1 = r1_w  # [Hz]
-r2 = 1 / 100e-3  # [Hz]
-k = 40  # [Hz]
-f = 10e-3 /111  # rel
-dw = -5  # [ppm]
-# set CEST pool parameters
-sp.set_cest_pool(r1=r1, r2=r2, k=k, f=f, dw=dw)
-
-# # define MT pool
-# r1_mt = 1  # [Hz]
-# r2_mt = 1e5  # [Hz]
-# k_mt = 23  # [Hz]
-# f_mt = 0.0500  # rel
-# dw_mt = -2  # [ppm]
-# lineshape_mt = 'Lorentzian'
-# sp.set_mt_pool(r1=r1_mt, r2=r2_mt, k=k_mt, f=f_mt, dw=dw_mt, lineshape=lineshape_mt)
-
 # say you have a magnetization Mi of 50 after the readout. Scale the M vector here according to that (ca. 0.5 for FLASH)
-scale = 0.5
+scale = 1 # 0.5
 # initiate the magnetization vector
 sp.set_m_vec(scale)
 
