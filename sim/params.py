@@ -23,6 +23,7 @@ class Params:
         self.options = {}
         self._set_defaults(set_defaults)
         self.mz_loc = 0
+        self.scale = 1
 
     def set_mt_pool(self, r1: float = 1, r2: float = 1e5, k: int = 23, f: float = 0.05, dw: int = 0,
                     lineshape: str = 'SuperLorentzian') -> dict:
@@ -98,6 +99,7 @@ class Params:
             except Exception:
                 print('Scaling of magnetization vector not possible with scale ', scale)
         self.m_vec = m_vec
+        self.scale = scale
         return m_vec
 
     def set_scanner(self, b0: float = 3, gamma: float = 267.5153, b0_inhomogeneity: float = None, rel_b1: float = 1.0) \

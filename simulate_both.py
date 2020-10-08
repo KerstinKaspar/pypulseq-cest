@@ -12,16 +12,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # choose a params file to import for the simulation
-from set_params import sp, seq_file
+#from set_params import sp, seq_file
 # from standard_cest_params import sp, seq_file
-# from example.wasabi.set_wasabi_params import sp, seq_file
+from example.wasabi.set_wasabi_params import sp, seq_file
 
 
 # BMCTool simulation
 Sim = BMCTool(sp, seq_file)
 Sim.run()
 m_out_bmc = Sim.Mout
-mz_bmc = m_out_bmc[sp.mz_loc, 1:]
+mz_bmc = m_out_bmc[sp.mz_loc, :]
 
 # SBB simulation
 # parse the parameters for C++ code handling
@@ -31,7 +31,7 @@ SimPulseqSBB(sp_sim, seq_file)
 
 # retrieve the calculated magnetization
 m_out_sbb = sp_sim.GetFinalMagnetizationVectors()
-mz_sbb = m_out_sbb[sp.mz_loc, 1:]
+mz_sbb = m_out_sbb[sp.mz_loc, :-1]
 
 # fig_sbb = plot_z(mz_sbb, seq_file=seq_file, plot_mtr_asym=True, title='Z spectrum SBB simulation')
 # fig_bmc = plot_z(mz_bmc, seq_file=seq_file, plot_mtr_asym=True, title='Z spectrum BMCTool simulation')

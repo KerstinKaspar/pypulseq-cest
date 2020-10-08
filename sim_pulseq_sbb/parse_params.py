@@ -15,7 +15,6 @@ def parse_sp(sp: Params, seq_file: str):
     :param seq_file: location of the seq-file to simulate
     :return: SWIG object for C++ object handling
     """
-    # sp = Params()
     sp_sim = SimulationParameters()
     # init magnetization vector
     num_adc_events = get_num_adc_events(seq_file) +1
