@@ -1,4 +1,5 @@
 import numpy as np
+import math
 import scipy
 from types import SimpleNamespace
 from sim.params import Params
@@ -114,6 +115,43 @@ class BlochMcConnellSolver:
         if self.is_mt_active:
             self.A[3 * (n_p + 1), 3 * (n_p + 1)] = (-self.params.mt_pool['r1'] - self.params.mt_pool['k'] -
                                                     rf_amp_2pi**2 * self.get_mt_shape_at_offset(rf_freq_2pi + self.dw0, self.w0))
+
+    def solve_equation_new(self, mag: np.ndarray, dtp: float):
+        q = 6
+
+        mag_ = mag[:]
+
+        a_inv_t = np.dot(np.linalg.pinv(self.A), self.C)
+        a_t = np.dot(self.A, dtp)
+
+        _, inf_exp = math.frexp(np.linalg.norm(a_t, ord=np.inf))
+        j = max(0, inf_exp)
+        a_t = a_t * (1/pow(2, j))
+
+        x = self.A.copy()
+        c = 0.5
+        n = np.identity(self.A.shape[0])
+        d = n - c * a_t
+        n = n + c * a_t
+
+        p = True
+
+        for k in range(2, q+1):
+            c = c * (q - k + 1) / (k * (2 * q - k + 1))
+            x = np.dot(a_t, x)
+            c_x = c * x
+            n = n + c_x
+            if p:
+                d = d + c_x
+            else:
+                d = d - c_x
+            p = not p
+
+        f = np.dot(np.linalg.pinv(d), n)
+        for k in range(1, j+1):
+            f = np.dot(f, f)
+        mag_ = np.dot(f, (mag_ + a_inv_t)) - a_inv_t
+        return mag_
 
     def solve_equation(self, mag: np.ndarray, dtp: float):
         """Solve the BMC equation system for all offsets in parallel using the matrix representation."""
@@ -239,9 +277,7 @@ class BMCTool:
                 self.Mout[:, self.current_adc] = M_  # write current mag in output array
                 self.current_adc += 1
                 if self.current_adc <= self.n_offsets and self.params.options['reset_init_mag']:
-                    print('resetting magnetization to:')
                     M_ = self.Mi
-                    print(M_)
 
             elif hasattr(block, 'gx') and hasattr(block, 'gy') and hasattr(block, 'gz'):
                 print(f'Simulating block {n_sample} / {len(self.seq.block_events) + 1} (SPOILER)')
