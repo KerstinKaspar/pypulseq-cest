@@ -116,7 +116,7 @@ class BlochMcConnellSolver:
             self.A[3 * (n_p + 1), 3 * (n_p + 1)] = (-self.params.mt_pool['r1'] - self.params.mt_pool['k'] -
                                                     rf_amp_2pi**2 * self.get_mt_shape_at_offset(rf_freq_2pi + self.dw0, self.w0))
 
-    def solve_equation_new(self, mag: np.ndarray, dtp: float):
+    def solve_equation_pade(self, mag: np.ndarray, dtp: float):
         q = 6
 
         mag_ = mag[:]
@@ -128,7 +128,7 @@ class BlochMcConnellSolver:
         j = max(0, inf_exp)
         a_t = a_t * (1/pow(2, j))
 
-        x = self.A.copy()
+        x = a_t.copy()
         c = 0.5
         n = np.identity(self.A.shape[0])
         d = n - c * a_t
