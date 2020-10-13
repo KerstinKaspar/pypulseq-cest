@@ -22,7 +22,7 @@ from sim.params import Params
 sp = Params()
 
 # path to seq-file
-seq_file = 'example/example_APTw_med.seq'
+seq_file = 'example/example_APTw_test.seq'
 
 # define scanner parameters
 b0 = 3  # [T]
@@ -60,12 +60,12 @@ dw = 5  # [ppm]
 # set CEST pool parameters
 sp.set_cest_pool(r1=r1, r2=r2, k=k, f=f, dw=dw)
 
-# define different pools in the same manner, the class automatically instantiates the pools separately
+# # define different pools in the same manner, the class automatically instantiates the pools separately
 # normal pool
 r1 = r1_w  # [Hz]
 r2 = 1 / 100e-3  # [Hz]
 k = 40  # [Hz]
-f = 10e-3 /111  # rel
+f = 2e-3 /111  # rel
 dw = -2  # [ppm]
 # set CEST pool parameters
 sp.set_cest_pool(r1=r1, r2=r2, k=k, f=f, dw=dw)
