@@ -190,11 +190,11 @@ def phantom_tissues(npx: int = 256, b0: float = 3, f_tissue: (str, None) = "wm")
     """
     tissues = ["gm", "wm", "wm", "csf"]
     phantom_t = np.zeros([2, npx, npx])
-    phantom_base = [[-1., .6900, .920, 0., 0., 0.]]
-    compartments = [[-1, .6624, .874, 0., -.0184, 0.],
-                    [-1, .18, .480, .25, -.2, -12.],
-                    [-1, .18, .480, -.25, -.2, 12.],
-                    [-1, .13, .2, 0., .15, 0]]
+    phantom_base = [[0., .6900, .920, 0., 0., 0.]]
+    compartments = [[0, .6624, .874, 0., -.0184, 0.],
+                    [0, .18, .480, .25, -.2, -12.],
+                    [0, .18, .480, -.25, -.2, 12.],
+                    [0, .13, .2, 0., .15, 0]]
     # p = [[-1, .09, .120, .33, -.1, -12.],
     #      [-1, .09, .120, -.28, 0.08, 12.]]
     for t in range(2):
@@ -203,22 +203,27 @@ def phantom_tissues(npx: int = 256, b0: float = 3, f_tissue: (str, None) = "wm")
             t_comp = compartments[i]
             if t == 0:
                 t_comp[0] = get_t1(tissue=tissues[i], b0=0)
+                print(tissues[i], " T1: ", t_comp[0])
             elif t == 1:
                 t_comp[0] = get_t2(tissue=tissues[i], b0=0)
+                print(tissues[i], " T2: ", t_comp[0])
             phantom_temp.append(t_comp)
         # phantom_temp.append(p[0])
         # phantom_temp.append(p[1])
         phantom_t[t, :, :] = phantom_ellipses(npx=npx, ellipses=phantom_temp)
     if f_tissue:
-        phantom_t[:, 190:200, 78:178] = get_t1(tissue=f_tissue, b0=b0)
+        phantom_t[0, 190:200, 78:178] = get_t1(tissue=f_tissue, b0=b0)
+        print(f_tissue, " T1: ", phantom_t[0, 191, 79])
+        phantom_t[1, 190:200, 78:178] = get_t2(tissue=f_tissue, b0=b0)
+        print(f_tissue, " T2: ", phantom_t[1, 191, 79])
     return phantom_t
 
 
-def phantom_fractions(npx: int = 256, n_fractions: int = 10, f_range: tuple = (0, 2e-5)):
+def phantom_fractions(npx: int = 256, f_base: float = 10e-3 ,n_fractions: int = 10, f_range: tuple = (0, 10e-3)):
     compartments = np.linspace(78, 178, n_fractions)
     fractions = np.linspace(f_range[0], f_range[1], n_fractions)
     phantom_f = np.zeros([1, npx, npx])
-    phantom_base = [[fractions[0]-fractions[1], .6900, .920, 0., 0., 0.]]
+    phantom_base = [[f_base, .6900, .920, 0., 0., 0.]]
     phantom_f[0, :, :] = phantom_ellipses(npx=npx, ellipses=phantom_base)
     for i in range(n_fractions-1):
         phantom_f[0, 190:200, int(round(compartments[i])):int(round(compartments[i+1]))] = fractions[i]
@@ -227,10 +232,23 @@ def phantom_fractions(npx: int = 256, n_fractions: int = 10, f_range: tuple = (0
 
 def phantom_b1_inhom(npx: int = 256, min_inhom: float = -0.3, max_inhom: float = 0.3, center: (tuple, None) = (0, 0)):
     phantom_b1 = np.zeros([1, npx, npx])
+    phantom_base = [[1, .6900, .920, 0., 0., 0.]]
+    phantom_b1[0, :, :] = phantom_ellipses(npx=npx, ellipses=phantom_base)
+    inhom_range = max_inhom - min_inhom
+    x = y = np.linspace(-inhom_range, inhom_range, 256)
+    # y = np.linspace(0, max_inhom - min_inhom, 256)
+    xx, yy = np.meshgrid(x, y)
+    r = np.sqrt(xx ** 2 + yy ** 2)
+    b1_inhom = np.ones((256, 256)) * 0.3 - r
+    phantom_b1[0, :, :] = phantom_b1[0, :, :] * b1_inhom
     return phantom_b1
 
 
 def phantom_b0_inhom(npx: int = 256, min_inhom: float = -0.3, max_inhom: float = 0.3, center: (tuple, None) = (0, 0)):
     phantom_b0 = np.zeros([1, npx, npx])
+    phantom_base = [[1, .6900, .920, 0., 0., 0.]]
+    phantom_b0[0, :, :] = phantom_ellipses(npx=npx, ellipses=phantom_base)
+    b0_inhom = np.linspace(min_inhom, max_inhom, npx*npx).reshape(npx, npx)
+    phantom_b0[0, :, :] = phantom_b0[0, :, :] * b0_inhom
     return phantom_b0
 
