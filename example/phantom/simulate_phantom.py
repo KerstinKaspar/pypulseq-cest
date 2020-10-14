@@ -4,7 +4,7 @@ from sim.eval import get_offsets
 from set_params import sp, seq_file
 # from standard_cest_params import sp, seq_file
 from phantom.phantom import create_phantom, plot_phantom, phantom_compartments
-from phantom.phantom import phantom_tissues
+from phantom.phantom import phantom_tissues_cest
 
 Sim = BMCTool(sp, seq_file)
 Sim.run()
@@ -22,5 +22,5 @@ offsets = get_offsets(seq_file)
 # phantom = create_phantom(len(offsets), mvec=mz)
 
 phantom = phantom_compartments(mz=mz, sp=sp, offsets=offsets, seq_file=seq_file, mtr_asym=True)
-phantom = phantom_tissues(mz, sp, mz1, sp1, mz2, sp2, offsets, 256, seq_file, False)
+phantom = phantom_tissues_cest(mz, sp, mz1, sp1, mz2, sp2, offsets, 256, seq_file, False)
 fig = plot_phantom(phantom=phantom[0], sp=sp) #, offsets=offsets, pool=0)

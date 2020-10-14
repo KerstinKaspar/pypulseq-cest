@@ -9,9 +9,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sim.params import Params
 from sim.eval import calc_mtr_asym, get_z
+from phantom.tissue_library import get_t1, get_t2
 
 
-def set_phantom(npx: int, ellipses: np.array = None):
+def phantom_ellipses(npx: int, ellipses: np.array = None):
     # Create blank image
     p = np.zeros((npx, npx))
 
@@ -61,7 +62,7 @@ def create_phantom(n_offsets: int, npx: int = 256) -> np.array:
         # [.1,  .0230, .023,    0.,   0.,   9.],
         # [.1,  .0230, .046, .06,   0.,   9.]]
 
-        phantom[i, :, :] = set_phantom(npx=npx, ellipses=e)
+        phantom[i, :, :] = phantom_ellipses(npx=npx, ellipses=e)
 
     return phantom
 
@@ -82,7 +83,7 @@ def set_mag(phantom: np.array, n_offsets: int, mvec: np.array, npx: int = 256):
         # [.1,  .0230, .023,    0.,   0.,   9.],
         # [.1,  .0230, .046, .06,   0.,   9.]]
 
-        phantom[i, :, :] = set_phantom(npx=npx, ellipses=e)
+        phantom[i, :, :] = phantom_ellipses(npx=npx, ellipses=e)
     return phantom
 
 
@@ -92,6 +93,7 @@ def plot_phantom(phantom: np.array, sp: Params): #, offsets: list, pool: int = 0
     fig, ax = plt.subplots(figsize=(12, 9))
     tmp = ax.imshow(phantom)
     plt.title('Phantom:' + str(n_pools) + ' CEST-pools')
+    plt.colorbar(tmp)
     plt.show()
     return fig
 
@@ -133,10 +135,11 @@ def phantom_compartments(mz: np.array, sp: Params, offsets: list, npx: int = 256
             print(e)
             phantom_base.append(e)
 
-    phantom = set_phantom(npx=npx, ellipses=phantom_base)
+    phantom = phantom_ellipses(npx=npx, ellipses=phantom_base)
     return phantom
 
-def phantom_tissues(mz_gm: np.array, sp_gm: Params, mz_wm: np.array, sp_wm: Params, mz_cf: np.array, sp_cf: Params,
+
+def phantom_tissues_cest(mz_gm: np.array, sp_gm: Params, mz_wm: np.array, sp_wm: Params, mz_cf: np.array, sp_cf: Params,
                     offsets: list, npx: int = 256, seq_file: str = None, mtr_asym: bool = False):
     """
     function to create a phantom contrasting simulations fo gray matter (gm), white matter (wm) and cerebral fluid (cf)
@@ -151,13 +154,13 @@ def phantom_tissues(mz_gm: np.array, sp_gm: Params, mz_wm: np.array, sp_wm: Para
     phantom = np.zeros([n_pools, npx, npx])
     o = np.array(offsets)
     # initiate empty phantom
-    phantom_base = [[1., .6900, .920, 0., 0., 0.],
-                    [-.9, .6624, .874, 0., -.0184, 0.]]
+    phantom_base = [[0.5, .6900, .920, 0., 0., 0.],
+                    [0.5, .6624, .874, 0., 0, 0]]#-.0184, 0.]]
                     # [-.2, .1100, .310, .22, 0., -18.],
                     # [-.2, .1600, .410, -.22, 0., 18.],
                     # [.1, .0460, .046, 0., .25, 9.]]
     compartments = [[-.2, .1100, .310, .22, 0., -18.],
-                    [-.2, .1600, .410, -.22, 0., 18.],
+                    [-.2, .1600, .410, -.22, 0., -18.],
                     [.1, .0460, .046, 0., .25, 9.]]
     params = [sp_gm, sp_wm, sp_cf]
     for pool in range(n_pools):
@@ -169,6 +172,65 @@ def phantom_tissues(mz_gm: np.array, sp_gm: Params, mz_wm: np.array, sp_wm: Para
             print(c)
             phantom_base.append(c)
         print(phantom_base)
-        phantom[pool, :, :] = set_phantom(npx=npx, ellipses=phantom_base)
+        phantom[pool, :, :] = phantom_ellipses(npx=npx, ellipses=phantom_base)
     return phantom
+
+
+def phantom_tissues(npx: int = 256, b0: float = 3, f_tissue: (str, None) = "wm"):
+    """
+    creates a phantom for the stated tissue types (gm: gray matter, wm: white matter and csf: cerebrospinal fluid)
+    with the according t1 and t2 values from tissue_library.py and optionally a range of pool-fraction-parameters for
+    one of the tissue types (if f_matter = "gm", "wm" or "csf").
+    :param  npx: int (pixel size of the phantom, default = 256)
+    :param  f_tissue: str (optional tissue type to create a fraction range from, default = "wm", set to None for no
+            fraction range in the phantom)
+    :param b0: float (field strength in T, default = 3)
+    :return phantom: np.array (size [2, npx, npx] with phantom[0] containing T1 and phantom[1] containing T2 values
+            for each pixel
+    """
+    tissues = ["gm", "wm", "wm", "csf"]
+    phantom_t = np.zeros([2, npx, npx])
+    phantom_base = [[-1., .6900, .920, 0., 0., 0.]]
+    compartments = [[-1, .6624, .874, 0., -.0184, 0.],
+                    [-1, .18, .480, .25, -.2, -12.],
+                    [-1, .18, .480, -.25, -.2, 12.],
+                    [-1, .13, .2, 0., .15, 0]]
+    # p = [[-1, .09, .120, .33, -.1, -12.],
+    #      [-1, .09, .120, -.28, 0.08, 12.]]
+    for t in range(2):
+        phantom_temp = phantom_base.copy()
+        for i in range(len(tissues)):
+            t_comp = compartments[i]
+            if t == 0:
+                t_comp[0] = get_t1(tissue=tissues[i], b0=0)
+            elif t == 1:
+                t_comp[0] = get_t2(tissue=tissues[i], b0=0)
+            phantom_temp.append(t_comp)
+        # phantom_temp.append(p[0])
+        # phantom_temp.append(p[1])
+        phantom_t[t, :, :] = phantom_ellipses(npx=npx, ellipses=phantom_temp)
+    if f_tissue:
+        phantom_t[:, 190:200, 78:178] = get_t1(tissue=f_tissue, b0=b0)
+    return phantom_t
+
+
+def phantom_fractions(npx: int = 256, n_fractions: int = 10, f_range: tuple = (0, 2e-5)):
+    compartments = np.linspace(78, 178, n_fractions)
+    fractions = np.linspace(f_range[0], f_range[1], n_fractions)
+    phantom_f = np.zeros([1, npx, npx])
+    phantom_base = [[fractions[0]-fractions[1], .6900, .920, 0., 0., 0.]]
+    phantom_f[0, :, :] = phantom_ellipses(npx=npx, ellipses=phantom_base)
+    for i in range(n_fractions-1):
+        phantom_f[0, 190:200, int(round(compartments[i])):int(round(compartments[i+1]))] = fractions[i]
+    return phantom_f
+
+
+def phantom_b1_inhom(npx: int = 256, min_inhom: float = -0.3, max_inhom: float = 0.3, center: (tuple, None) = (0, 0)):
+    phantom_b1 = np.zeros([1, npx, npx])
+    return phantom_b1
+
+
+def phantom_b0_inhom(npx: int = 256, min_inhom: float = -0.3, max_inhom: float = 0.3, center: (tuple, None) = (0, 0)):
+    phantom_b0 = np.zeros([1, npx, npx])
+    return phantom_b0
 
