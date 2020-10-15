@@ -20,12 +20,14 @@ p_t1, p_t2, p_b0, p_b1, p_f = [phantom[i] for i in range(5)]
 n_vars, n_rows, n_cols = phantom.shape
 simulations = {}
 
-time0 = time()
+locs = []
 for loc in np.ndindex(n_rows, n_cols):
-        if p_t1[loc] == 0:
-            pass
-        else:
-            print(loc, 'from <', n_rows, 'x', n_cols)
+    if p_t1[loc] != 0:
+        locs.append(loc)
+
+time0 = time()
+for loc in locs:
+            print('Simulation', locs.index(loc), 'of', len(locs))
             sp = Params()
             b0_inhom = p_b0[loc]
             rel_b1 = 1 + p_b1[loc]
