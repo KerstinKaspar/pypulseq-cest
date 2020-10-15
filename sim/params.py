@@ -24,6 +24,7 @@ class Params:
         self._set_defaults(set_defaults)
         self.mz_loc = 0
         self.scale = 1
+        self.mz = None
 
     def set_mt_pool(self, r1: float = 1, r2: float = 1e5, k: int = 23, f: float = 0.05, dw: int = 0,
                     lineshape: str = 'SuperLorentzian') -> dict:
@@ -133,6 +134,15 @@ class Params:
             options.update({'max_pulse_samples': max_pulse_samples})
         self.options.update(options)
         return options
+
+    def get_mz(self, m_out: np.array = None):
+        if not np.any(m_out) and not np.any(self.mz):
+            print("mz not yet retrieved from m_out. Use Params.get_mz(m_out).")
+        elif not np.any(m_out):
+            return self.mz
+        else:
+            self.mz = m_out[self.mz_loc, :]
+            return self.mz
 
     def print_settings(self):
         """

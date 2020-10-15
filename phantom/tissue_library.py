@@ -1,6 +1,6 @@
 """
 tissue_library.py
-    file to set the correct T1 and T2 parameters according to tissuees (gray matter, white matter, CSF) for the phantom
+    file to set the correct T1 and T2 parameters according to tissuees (gray matter, white matter, CSF) for the phantom_examples
 """
 
 def get_t1(tissue: str, b0: float = 3) -> float:

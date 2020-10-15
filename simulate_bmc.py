@@ -6,9 +6,11 @@ simulate_bmc.py
 from sim_bmc.bmc_tool_v2 import BMCTool
 from sim.eval import plot_z
 # choose a params file to import for the simulation
-from set_params import sp, seq_file
+#from set_params import sp, seq_file
 # from standard_cest_params import sp, seq_file
 import numpy as np
+
+from sim.params import Params
 
 Sim = BMCTool(sp, seq_file)
 Sim.run()

@@ -1,6 +1,6 @@
 """
 pahntom.py
-    simulate and plot a phantom for CEST magnetization
+    simulate and plot a phantom_examples for CEST magnetization
 
 TODO implement different ellipses for different pools
 """
@@ -87,16 +87,6 @@ def set_mag(phantom: np.array, n_offsets: int, mvec: np.array, npx: int = 256):
     return phantom
 
 
-def plot_phantom(phantom: np.array, sp: Params): #, offsets: list, pool: int = 0):
-    # TODO here where o, set M{i] into according ellipse per CEST pool
-    n_pools = len(sp.cest_pools)
-    fig, ax = plt.subplots(figsize=(12, 9))
-    tmp = ax.imshow(phantom)
-    plt.title('Phantom:' + str(n_pools) + ' CEST-pools')
-    plt.colorbar(tmp)
-    plt.show()
-    return fig
-
 
 def phantom_compartments(mz: np.array, sp: Params, offsets: list, npx: int = 256, seq_file: str = None, mtr_asym: bool = False):
     if seq_file:
@@ -108,9 +98,9 @@ def phantom_compartments(mz: np.array, sp: Params, offsets: list, npx: int = 256
     else:
         mvec = z
     n_pools = len(sp.cest_pools)
-    # phantom = np.zeros([n_pools, npx, npx])
+    # phantom_examples = np.zeros([n_pools, npx, npx])
     o = np.array(offsets)
-    # initiate empty phantom
+    # initiate empty phantom_examples
     phantom_base = [[1., .6900, .920, 0., 0., 0.],
                     [-.9, .6624, .874, 0., -.0184, 0.]]
     ellipses = [[-.2, .1100, .310, .22, 0., -18.],
@@ -142,7 +132,7 @@ def phantom_compartments(mz: np.array, sp: Params, offsets: list, npx: int = 256
 def phantom_tissues_cest(mz_gm: np.array, sp_gm: Params, mz_wm: np.array, sp_wm: Params, mz_cf: np.array, sp_cf: Params,
                     offsets: list, npx: int = 256, seq_file: str = None, mtr_asym: bool = False):
     """
-    function to create a phantom contrasting simulations fo gray matter (gm), white matter (wm) and cerebral fluid (cf)
+    function to create a phantom_examples contrasting simulations fo gray matter (gm), white matter (wm) and cerebral fluid (cf)
     """
     m_vecs = [mz_gm, mz_wm, mz_cf]
     if seq_file:
@@ -153,7 +143,7 @@ def phantom_tissues_cest(mz_gm: np.array, sp_gm: Params, mz_wm: np.array, sp_wm:
     n_pools = len(sp_gm.cest_pools)
     phantom = np.zeros([n_pools, npx, npx])
     o = np.array(offsets)
-    # initiate empty phantom
+    # initiate empty phantom_examples
     phantom_base = [[0.5, .6900, .920, 0., 0., 0.],
                     [0.5, .6624, .874, 0., 0, 0]]#-.0184, 0.]]
                     # [-.2, .1100, .310, .22, 0., -18.],
@@ -178,14 +168,14 @@ def phantom_tissues_cest(mz_gm: np.array, sp_gm: Params, mz_wm: np.array, sp_wm:
 
 def phantom_tissues(npx: int = 256, b0: float = 3, f_tissue: (str, None) = "wm"):
     """
-    creates a phantom for the stated tissue types (gm: gray matter, wm: white matter and csf: cerebrospinal fluid)
+    creates a phantom_examples for the stated tissue types (gm: gray matter, wm: white matter and csf: cerebrospinal fluid)
     with the according t1 and t2 values from tissue_library.py and optionally a range of pool-fraction-parameters for
     one of the tissue types (if f_matter = "gm", "wm" or "csf").
-    :param  npx: int (pixel size of the phantom, default = 256)
+    :param  npx: int (pixel size of the phantom_examples, default = 256)
     :param  f_tissue: str (optional tissue type to create a fraction range from, default = "wm", set to None for no
-            fraction range in the phantom)
+            fraction range in the phantom_examples)
     :param b0: float (field strength in T, default = 3)
-    :return phantom: np.array (size [2, npx, npx] with phantom[0] containing T1 and phantom[1] containing T2 values
+    :return phantom_examples: np.array (size [2, npx, npx] with phantom_examples[0] containing T1 and phantom_examples[1] containing T2 values
             for each pixel
     """
     tissues = ["gm", "wm", "wm", "csf"]
@@ -252,3 +242,22 @@ def phantom_b0_inhom(npx: int = 256, min_inhom: float = -0.3, max_inhom: float =
     phantom_b0[0, :, :] = phantom_b0[0, :, :] * b0_inhom
     return phantom_b0
 
+
+def build_default_phantom(npx: int = 256, fractions: bool = True):
+    phantom_t = phantom_tissues(npx)
+    phantom_b0 = phantom_b0_inhom(npx)
+    phantom_b1 = phantom_b1_inhom(npx)
+    phantom = np.concatenate([phantom_t, phantom_b0, phantom_b1])
+    if fractions:
+        phantom_f = phantom_fractions(npx)
+        return np.concatenate([phantom, phantom_f])
+    else:
+        return phantom
+
+
+def build_phantom(phantom_t: np.array, phantom_b0: np.array, phantom_b1: np.array, phantom_f: np.array = None):
+    phantom = np.concatenate([phantom_t, phantom_b0, phantom_b1])
+    if phantom_f.any():
+        return np.concatenate([phantom, phantom_f])
+    else:
+        return phantom
