@@ -1,10 +1,18 @@
-from phantom.phantom import phantom_b0_inhom, phantom_b1_inhom,  phantom_fractions, phantom_tissues, plot_phantom
+"""
+build_phantom.py
+    test file for phantoms
+"""
+
+from phantom.phantom import phantom_b0_inhom, phantom_b1_inhom,  phantom_fractions, phantom_tissues
 import matplotlib.pyplot as plt
 
 phantom_t = phantom_tissues()
 
 phantom_f = phantom_fractions()
 
+fig, ax = plt.subplots()
+ax.imshow(phantom_f[0])
+plt.show()
 fig_t, [ax_t1, ax_t2, ax_f, ax_b0, ax_b1] = plt.subplots(1, 5)# , figsize=(12, 9))
 t1 = ax_t1.imshow(phantom_t[0])
 ax_t1.title.set_text('Phantom: T1 values')
@@ -20,7 +28,7 @@ f = ax_f.imshow(phantom_f[0])
 ax_f.title.set_text('Phantom: fractions')
 # plt.colorbar(f)
 # plt.show()
-# plt.savefig('test_phantom.jpg')
+#plt.savefig('test_phantom.jpg')
 
 phantom_b0 = phantom_b0_inhom()
 #fig_b, [ax_b0, ax_b1] = plt.subplots(1, 2)

@@ -44,7 +44,7 @@ def phantom_ellipses(npx: int, ellipses: np.array = None):
     return p
 
 
-def create_phantom(n_offsets: int, npx: int = 256) -> np.array:
+def create_phantom(n_offsets: int, npx: int = 128) -> np.array:
     phantom = np.zeros([n_offsets, npx, npx])
 
     for i in range(n_offsets):
@@ -67,7 +67,7 @@ def create_phantom(n_offsets: int, npx: int = 256) -> np.array:
     return phantom
 
 
-def set_mag(phantom: np.array, n_offsets: int, mvec: np.array, npx: int = 256):
+def set_mag(phantom: np.array, n_offsets: int, mvec: np.array, npx: int = 128):
     for i in range(n_offsets):
         e = [[1., .6900, .920, 0., 0., 0.],
              [-.9, .6624, .874, 0., -.0184, 0.],
@@ -88,7 +88,7 @@ def set_mag(phantom: np.array, n_offsets: int, mvec: np.array, npx: int = 256):
 
 
 
-def phantom_compartments(mz: np.array, sp: Params, offsets: list, npx: int = 256, seq_file: str = None, mtr_asym: bool = False):
+def phantom_compartments(mz: np.array, sp: Params, offsets: list, npx: int = 128, seq_file: str = None, mtr_asym: bool = False):
     if seq_file:
         z = get_z(mz=mz, seq_file=seq_file)
     else:
@@ -130,7 +130,7 @@ def phantom_compartments(mz: np.array, sp: Params, offsets: list, npx: int = 256
 
 
 def phantom_tissues_cest(mz_gm: np.array, sp_gm: Params, mz_wm: np.array, sp_wm: Params, mz_cf: np.array, sp_cf: Params,
-                    offsets: list, npx: int = 256, seq_file: str = None, mtr_asym: bool = False):
+                    offsets: list, npx: int = 128, seq_file: str = None, mtr_asym: bool = False):
     """
     function to create a phantom_examples contrasting simulations fo gray matter (gm), white matter (wm) and cerebral fluid (cf)
     """
@@ -166,12 +166,12 @@ def phantom_tissues_cest(mz_gm: np.array, sp_gm: Params, mz_wm: np.array, sp_wm:
     return phantom
 
 
-def phantom_tissues(npx: int = 256, b0: float = 3, f_tissue: (str, None) = "wm"):
+def phantom_tissues(npx: int = 128, b0: float = 3, f_tissue: (str, None) = "wm"):
     """
     creates a phantom_examples for the stated tissue types (gm: gray matter, wm: white matter and csf: cerebrospinal fluid)
     with the according t1 and t2 values from tissue_library.py and optionally a range of pool-fraction-parameters for
     one of the tissue types (if f_matter = "gm", "wm" or "csf").
-    :param  npx: int (pixel size of the phantom_examples, default = 256)
+    :param  npx: int (pixel size of the phantom_examples, default = 128)
     :param  f_tissue: str (optional tissue type to create a fraction range from, default = "wm", set to None for no
             fraction range in the phantom_examples)
     :param b0: float (field strength in T, default = 3)
@@ -193,48 +193,44 @@ def phantom_tissues(npx: int = 256, b0: float = 3, f_tissue: (str, None) = "wm")
             t_comp = compartments[i]
             if t == 0:
                 t_comp[0] = get_t1(tissue=tissues[i], b0=0)
-                print(tissues[i], " T1: ", t_comp[0])
             elif t == 1:
                 t_comp[0] = get_t2(tissue=tissues[i], b0=0)
-                print(tissues[i], " T2: ", t_comp[0])
             phantom_temp.append(t_comp)
         # phantom_temp.append(p[0])
         # phantom_temp.append(p[1])
         phantom_t[t, :, :] = phantom_ellipses(npx=npx, ellipses=phantom_temp)
     if f_tissue:
-        phantom_t[0, 190:200, 78:178] = get_t1(tissue=f_tissue, b0=b0)
-        print(f_tissue, " T1: ", phantom_t[0, 191, 79])
-        phantom_t[1, 190:200, 78:178] = get_t2(tissue=f_tissue, b0=b0)
-        print(f_tissue, " T2: ", phantom_t[1, 191, 79])
+        phantom_t[0, 90:100, 39:89] = get_t1(tissue=f_tissue, b0=b0)
+        phantom_t[1, 90:100, 39:89] = get_t2(tissue=f_tissue, b0=b0)
     return phantom_t
 
 
-def phantom_fractions(npx: int = 256, f_base: float = 10e-3 ,n_fractions: int = 10, f_range: tuple = (0, 10e-3)):
-    compartments = np.linspace(78, 178, n_fractions)
+def phantom_fractions(npx: int = 128, f_base: float = 10e-3 ,n_fractions: int = 10, f_range: tuple = (0, 10e-3)):
+    compartments = np.linspace(39, 89, n_fractions)
     fractions = np.linspace(f_range[0], f_range[1], n_fractions)
     phantom_f = np.zeros([1, npx, npx])
     phantom_base = [[f_base, .6900, .920, 0., 0., 0.]]
     phantom_f[0, :, :] = phantom_ellipses(npx=npx, ellipses=phantom_base)
     for i in range(n_fractions-1):
-        phantom_f[0, 190:200, int(round(compartments[i])):int(round(compartments[i+1]))] = fractions[i]
+        phantom_f[0, 90:100, int(round(compartments[i])):int(round(compartments[i+1]))] = fractions[i]
     return phantom_f
 
 
-def phantom_b1_inhom(npx: int = 256, min_inhom: float = -0.3, max_inhom: float = 0.3, center: (tuple, None) = (0, 0)):
+def phantom_b1_inhom(npx: int = 128, min_inhom: float = -0.3, max_inhom: float = 0.3, center: (tuple, None) = (0, 0)):
     phantom_b1 = np.zeros([1, npx, npx])
     phantom_base = [[1, .6900, .920, 0., 0., 0.]]
     phantom_b1[0, :, :] = phantom_ellipses(npx=npx, ellipses=phantom_base)
     inhom_range = max_inhom - min_inhom
-    x = y = np.linspace(-inhom_range, inhom_range, 256)
-    # y = np.linspace(0, max_inhom - min_inhom, 256)
+    x = y = np.linspace(-inhom_range, inhom_range, 128)
+    # y = np.linspace(0, max_inhom - min_inhom, 128)
     xx, yy = np.meshgrid(x, y)
     r = np.sqrt(xx ** 2 + yy ** 2)
-    b1_inhom = np.ones((256, 256)) * 0.3 - r
+    b1_inhom = np.ones((128, 128)) * 0.3 - r
     phantom_b1[0, :, :] = phantom_b1[0, :, :] * b1_inhom
     return phantom_b1
 
 
-def phantom_b0_inhom(npx: int = 256, min_inhom: float = -0.3, max_inhom: float = 0.3, center: (tuple, None) = (0, 0)):
+def phantom_b0_inhom(npx: int = 128, min_inhom: float = -0.3, max_inhom: float = 0.3, center: (tuple, None) = (0, 0)):
     phantom_b0 = np.zeros([1, npx, npx])
     phantom_base = [[1, .6900, .920, 0., 0., 0.]]
     phantom_b0[0, :, :] = phantom_ellipses(npx=npx, ellipses=phantom_base)
@@ -243,7 +239,7 @@ def phantom_b0_inhom(npx: int = 256, min_inhom: float = -0.3, max_inhom: float =
     return phantom_b0
 
 
-def build_default_phantom(npx: int = 256, fractions: bool = True):
+def build_default_phantom(npx: int = 128, fractions: bool = True):
     phantom_t = phantom_tissues(npx)
     phantom_b0 = phantom_b0_inhom(npx)
     phantom_b1 = phantom_b1_inhom(npx)
