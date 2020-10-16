@@ -269,13 +269,13 @@ class BlochMcConnellSolver:
 
 
 class BMCTool:
-    def __init__(self, params: Params, seq_filename: str, seq_readmode: str = 'pypulseq'):
+    def __init__(self, params: Params, seq_filename: str):
         self.params = params
         self.seq_filename = seq_filename
-        self.seq_readmode = seq_readmode
         self.par_calc = False
         self.run_m0_scan = None
         self.offsets_ppm = None
+        self.bm_solver = None
 
         self.seq = Sequence()
         self.seq.read(seq_filename)
@@ -288,8 +288,6 @@ class BMCTool:
         self.Mi = params.m_vec.copy()
         self.Mout = np.zeros([self.Mi.shape[0], self.n_total_offsets])
 
-        self.bm_solver = None
-
     def prep_rf_simulation(self, block):
         max_pulse_samples = self.params.options['max_pulse_samples']
         amp = np.real(block.rf.signal)
@@ -300,22 +298,17 @@ class BMCTool:
         idx = np.argwhere(amp > 1E-6)
         amp = amp[idx]
         ph = ph[idx]
-
         delay_after_pulse = (rf_length - idx.size) * dtp
-
         n_unique = max(np.unique(amp).size, np.unique(ph).size)
-
         if n_unique == 1:
             amp_ = amp[0]
             ph_ = ph[0]
             dtp_ = dtp * amp.size
-
         elif n_unique > max_pulse_samples:
             sample_factor = int(np.ceil(amp.size / max_pulse_samples))
             amp_ = amp[::sample_factor]
             ph_ = ph[::sample_factor]
             dtp_ = dtp * sample_factor
-
         else:
             raise Exception('Case with 1 < unique samples < max_pulse_samples not implemented yet. Sorry :(')
 
@@ -366,6 +359,7 @@ class BMCTool:
         n_total = len(self.seq.block_events)
         idx_start = 0
         if self.run_m0_scan:
+            # TODO: get number of events including 1st ADC instead of hard coding the number
             n_total -= 2  # subtract m0 events (delay and ADC) if run_m0_scan is True
             idx_start += 2
 
@@ -394,10 +388,12 @@ class BMCTool:
                                 'the parallel computation in the current form')
 
             idx_zero = events_hz.index(0.0)
-            # TODO: find more pythonic way to insert n identical entries in list
-            for i in range(n_rf_per_offset - 1):  # insert (n_rf_per_offset - 1) more freq and phase values
-                events_hz.insert(idx_zero, 0.0)
-                events_ph.insert(idx_zero, events_hz[idx_zero])
+            events_hz[idx_zero:idx_zero] = [0.0] * (n_rf_per_offset-1)
+            events_ph[idx_zero:idx_zero] = [events_hz[idx_zero]] * (n_rf_per_offset-1)
+
+            #for i in range(n_rf_per_offset - 1):  # insert (n_rf_per_offset - 1) more freq and phase values
+            #    events_hz.insert(idx_zero, 0.0)
+            #    events_ph.insert(idx_zero, events_hz[idx_zero])
         else:
             n_rf_per_offset = len(events_hz)/self.n_offsets
             if n_rf_per_offset.is_integer():
@@ -417,14 +413,29 @@ class BMCTool:
         # reshape magnetization vector
         M_ = np.repeat(self.Mi[np.newaxis, :, np.newaxis], self.n_offsets, axis=0)
 
+        # handle m0 scan separately
+        if self.run_m0_scan:
+            m0 = M_.copy()
+            m0_block = self.seq.get_block(1)
+            if hasattr(m0_block, 'delay'):
+                m0_delay = float(m0_block.delay.delay)
+                self.bm_solver.update_matrix(rf_amp=0.0,
+                                             rf_phase=np.zeros(self.n_offsets),
+                                             rf_freq=np.zeros(self.n_offsets))
+                m0 = self.bm_solver.solve_equation(mag=m0, dtp=m0_delay)
+
+        # perform parallel computation
         rf_count = 0
         accumm_phase = np.zeros(self.n_offsets)
         for x in event_table_single_offset:
             block = self.seq.get_block(x)
 
             if hasattr(block, 'adc'):
-                Mout = np.squeeze(M_)  # write current mag in output array
-                self.Mout = np.swapaxes(Mout, 0, 1)
+                Mout = np.squeeze(M_)
+                Mout = np.swapaxes(Mout, 0, 1)
+                if self.run_m0_scan:
+                    Mout = np.concatenate((m0[0], Mout), axis=1)
+                self.Mout = Mout
 
             elif hasattr(block, 'delay'):
                 dtp_ = float(block.delay.delay)
