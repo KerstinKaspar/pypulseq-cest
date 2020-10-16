@@ -45,7 +45,7 @@ for loc in locs:
         sp = Params()
         # define inhomogeneities from inhomogeneity maps
         b0_inhom = p_b0[loc]
-        rel_b1 = 1 + p_b1[loc]
+        rel_b1 = p_b1[loc]
         sp.set_scanner(b0=b0, gamma=gamma, b0_inhomogeneity=b0_inhom, rel_b1=rel_b1)
         # define water pool from T1 and T2 maps
         r1_w = 1 / p_t1[loc]
