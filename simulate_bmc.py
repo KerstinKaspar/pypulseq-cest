@@ -11,7 +11,7 @@ from set_params import sp, seq_file
 import numpy as np
 
 Sim = BMCTool(sp, seq_file)
-Sim.run()
+Sim.run(par_calc=True)
 m_out = Sim.Mout
 
 mz = m_out[sp.mz_loc, :]
