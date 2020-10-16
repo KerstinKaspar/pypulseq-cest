@@ -1,5 +1,8 @@
-**/.idea
-*long*
-**/__pycache__
+.idea/
+_pycache_/
+.ipynb_checkpoints/
 sim_pulseq_sbb/src/compile/build
-**/venv
+venv/
+build/
+*long*
+example/test/

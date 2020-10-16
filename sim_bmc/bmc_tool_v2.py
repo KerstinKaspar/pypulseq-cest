@@ -117,6 +117,7 @@ class BlochMcConnellSolver:
                                                     rf_amp_2pi**2 * self.get_mt_shape_at_offset(rf_freq_2pi + self.dw0, self.w0))
 
     def solve_equation_pade(self, mag: np.ndarray, dtp: float):
+      
         q = 6
 
         mag_ = mag[:]
@@ -130,7 +131,7 @@ class BlochMcConnellSolver:
 
         x = a_t.copy()
         c = 0.5
-        n = np.identity(self.A.shape[0])
+        n = np.identity(a_t.shape[0])
         d = n - c * a_t
         n = n + c * a_t
 
@@ -153,7 +154,7 @@ class BlochMcConnellSolver:
         mag_ = np.dot(f, (mag_ + a_inv_t)) - a_inv_t
         return mag_
 
-    def solve_equation(self, mag: np.ndarray, dtp: float):
+    def solve_equation_old(self, mag: np.ndarray, dtp: float):
         """Solve the BMC equation system for all offsets in parallel using the matrix representation."""
         _tmp = True
         if _tmp:  # TODO: implement parallel computation of all offsets
