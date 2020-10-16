@@ -35,7 +35,7 @@ class Params:
         :param set_gm_3t_default: Sets R1 and R2 to standard 3T water properties
         :return: dict of water pool parameters
         """
-        if not set_gm_3t_default and (not r1 or not r2):
+        if not set_gm_3t_default and None in [r1, r2]:
             raise ValueError('Not enough parameters given for water pool definition.')
         elif set_gm_3t_default:
             r1 = 1/1.31
@@ -59,7 +59,7 @@ class Params:
         :param set_creatine_defaults: sets an amide CEST pool
         :return: dict of CEST pool parameters
         """
-        if not set_amide_defaults and not set_creatine_defaults and (not r1 or not r2 or not k or not f):
+        if not set_amide_defaults and not set_creatine_defaults and None in [r1, r2, k, f, dw]:
             raise ValueError('Not enough parameters given for CEST pool definition.')
         elif set_amide_defaults and set_creatine_defaults:
             raise ValueError('Can\'t define CEST pool for both Amide and Creatine default values. Set separately.')
@@ -95,7 +95,7 @@ class Params:
         :param set_lorentzian_default: sets defaults for a standard Lorentzian MT pool at dw = -2
         :return:
         """
-        if not set_lorentzian_default and (not r1 or not r2 or not k or not f or not dw or not lineshape):
+        if not set_lorentzian_default and None in [r1, r2, k, f, dw, lineshape]:
             raise ValueError('Not enough parameters given for MT pool definition.')
         elif set_lorentzian_default:
             r1 = 1  # [Hz]

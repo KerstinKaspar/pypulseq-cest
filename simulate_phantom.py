@@ -30,7 +30,7 @@ n_vars, n_rows, n_cols = phantom.shape
 # find all relevant locations for simulation
 # to simulate part of the phantom (min_row to max_row), define something like idces[128*min_row, 128*max_row]
 locs = []
-idces = list(np.ndindex(n_rows, n_cols))[128*87:128*93]
+idces = list(np.ndindex(n_rows, n_cols)) # [128*87:128*93]
 for loc in idces:
     if p_t1[loc] != 0:
         locs.append(loc)
@@ -62,7 +62,7 @@ for loc in locs:
         sp.set_m_vec(scale)
         # start the simulation for this pixel
         Sim = BMCTool(sp, seq_file)
-        Sim.run()
+        Sim.run(par_calc=True)
         # retrieve simulated spectrum
         m_out = Sim.Mout
         mz = sp.get_zspec(m_out, m0=Sim.seq.definitions['run_m0_scan'][0])
@@ -113,14 +113,13 @@ ax1.set_ylim([0, 1])
 ax1.set_ylabel('Z', color='b')
 ax1.set_xlabel('Offsets')
 labels = ["gm top", "gm mid", "gm bottom", "wm bottom left", "wm top right ", "csf"]
-locs = [(14, 64), (57, 64), (112, 64), (126, 41), (25, 78), (62, 72)]
+locs = [(14, 64), (57, 64), (56, 64), (63, 41), (25, 78), (62, 72)]
 for i in range(len(locs)):
-    mz = simulations[locs[i]].zspec[1:]
+    mz = simulations[locs[i]].zspec
     plt.plot(offsets, mz, '.--', label=labels[i])
 plt.gca().invert_xaxis()
 plt.legend()
 plt.show()
-ax1.tick_params(axis='y', labelcolor='b')
 
 # plot some fraction spectra
 fig3, ax1 = plt.subplots()
@@ -130,7 +129,7 @@ ax1.set_xlabel('Offsets')
 labels = ["gm", "wm f=min", "wm f=max"]
 locs = [(88, 40), (92, 40), (92, 85)]
 for i in range(len(locs)):
-    mz = simulations[locs[i]].zspec[1:] * simulations[locs[i]].zspec[0]
+    mz = simulations[locs[i]].zspec
     plt.plot(offsets, mz, '.--', label=labels[i])
 plt.gca().invert_xaxis()
 plt.legend()
