@@ -129,7 +129,7 @@ class BlochMcConnellSolver:
             self.A[:, i + n_p + 1, i] = -dwi
 
         # mt_pool
-        if self.is_mt_active and self.par_calc:
+        if self.is_mt_active and not self.par_calc:
             self.A[3 * (n_p + 1), 3 * (n_p + 1)] = (-self.params.mt_pool['r1'] - self.params.mt_pool['k'] -
                                                     rf_amp_2pi ** 2 * self.get_mt_shape_at_offset(
                         rf_freq_2pi + self.dw0, self.w0))
@@ -237,10 +237,10 @@ class BlochMcConnellSolver:
         t2 = 1 / self.params.mt_pool['r2']
         n_samples = 101
         step_size = 0.01
-        sqrt_2pi = np.sqrt(2/ np.pi)
+        sqrt_2pi = np.sqrt(2 / np.pi)
         for i in range(n_samples):
-            powcu2 = abs(3 * pow(step_size * i, 2) -1)
-            mt_line += sqrt_2pi * t2 / powcu2 * np.exp(-2 * pow(dw * t2 /powcu2, 2))
+            powcu2 = abs(3 * pow(step_size * i, 2) - 1)
+            mt_line += sqrt_2pi * t2 / powcu2 * np.exp(-2 * pow(dw * t2 / powcu2, 2))
         return mt_line * np.pi * step_size
 
     def interpolate_chs(self, dw_pool: float, w0: float):
@@ -329,6 +329,7 @@ class BMCTool:
                             "Please switch 'reset_init_mag' option or change to sequential computation.")
 
         seq_file = open(self.seq_filename, 'r')
+        event_table = dict()
         while True:
             line = strip_line(seq_file)
             if line == -1:
@@ -345,7 +346,6 @@ class BMCTool:
             elif line == '[BLOCKS]':
                 adc_count = 0
                 line = strip_line(seq_file)
-                event_table = dict()
                 while line != '' and line != ' ' and line != '#':
                     block_events = np.fromstring(line, dtype=int, sep=' ')
                     if block_events[6]:
@@ -391,9 +391,6 @@ class BMCTool:
             events_hz[idx_zero:idx_zero] = [0.0] * (n_rf_per_offset-1)
             events_ph[idx_zero:idx_zero] = [events_hz[idx_zero]] * (n_rf_per_offset-1)
 
-            #for i in range(n_rf_per_offset - 1):  # insert (n_rf_per_offset - 1) more freq and phase values
-            #    events_hz.insert(idx_zero, 0.0)
-            #    events_ph.insert(idx_zero, events_hz[idx_zero])
         else:
             n_rf_per_offset = len(events_hz)/self.n_offsets
             if n_rf_per_offset.is_integer():
@@ -416,8 +413,8 @@ class BMCTool:
         # handle m0 scan separately
         if self.run_m0_scan:
             m0 = M_.copy()
-            m0_block = self.seq.get_block(1)
-            if hasattr(m0_block, 'delay'):
+            m0_block = self.seq.get_block(1)  # TODO: read index from events instead of hard coding it
+            if hasattr(m0_block, 'delay') and hasattr(m0_block.delay, 'delay'):
                 m0_delay = float(m0_block.delay.delay)
                 self.bm_solver.update_matrix(rf_amp=0.0,
                                              rf_phase=np.zeros(self.n_offsets),
@@ -431,13 +428,12 @@ class BMCTool:
             block = self.seq.get_block(x)
 
             if hasattr(block, 'adc'):
-                Mout = np.squeeze(M_)
-                Mout = np.swapaxes(Mout, 0, 1)
+                Mout = np.swapaxes(np.squeeze(M_), 0, 1)
                 if self.run_m0_scan:
                     Mout = np.concatenate((m0[0], Mout), axis=1)
                 self.Mout = Mout
 
-            elif hasattr(block, 'delay'):
+            elif hasattr(m0_block, 'delay') and hasattr(m0_block.delay, 'delay'):
                 dtp_ = float(block.delay.delay)
                 self.bm_solver.update_matrix(rf_amp=0.0,
                                              rf_phase=np.zeros(self.n_offsets),
@@ -505,7 +501,7 @@ class BMCTool:
                 phase_degree = phase_degree % 360
                 accumm_phase += phase_degree / 180 * np.pi
 
-            elif hasattr(block, 'delay'):
+            elif hasattr(block, 'delay') and hasattr(block.delay, 'delay'):
                 print(f'Simulating block {n_sample} / {len(self.seq.block_events) + 1} (DELAY)')
                 delay = float(block.delay.delay)
                 self.bm_solver.update_matrix(0, 0, 0)
