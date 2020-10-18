@@ -183,7 +183,7 @@ class Params:
             print("mz not yet retrieved from m_out. Use Params.get_mz(m_out).")
         elif np.any(m_out):
             if m0:
-                self.zspec = m_out[self.mz_loc, 1:]
+                self.zspec = m_out[self.mz_loc, 1:] # TODO *M0?
             else:
                 self.zspec = m_out[self.mz_loc, :]
         return self.zspec
