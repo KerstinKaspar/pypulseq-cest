@@ -107,9 +107,9 @@ def simulate_data():
 
 
 # simulate
-data = simulate_data()
+# data = simulate_data()
 # load data
-# data = load_data('example/data/phantom_data_1pools2_2020-10-16.txt')
+data = load_data('example/data/phantom_data_1pools2_2020-10-16.txt')
 
 offsets = np.array(data['offsets'])
 locs = data['sim_locs'] # if undefined use code from function simulate_data
