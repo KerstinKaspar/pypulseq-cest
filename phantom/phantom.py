@@ -45,25 +45,26 @@ def phantom_ellipses(npx: int, ellipses: np.array = None) -> np.array:
     return p
 
 
-def phantom_tissues(npx: int = 128, b0: float = 3, f_tissue: (str, None) = "wm") -> np.array:
+def phantom_tissues(npx: int = 128, b0: float = 3, f_tissue: (str, None) = 'wm', noise_tissue: (str, None) = 'wm') -> np.array:
     """
     creates a phantom_examples for the stated tissue types (gm: gray matter, wm: white matter and csf: cerebrospinal fluid)
     with the according t1 and t2 values from tissue_library.py and optionally a range of pool-fraction-parameters for
     one of the tissue types (if f_matter = "gm", "wm" or "csf").
     :param  npx: int (pixel size of the phantom_examples, default = 128)
-    :param  f_tissue: str (optional tissue type to create a fraction range from, default = "wm", set to None for no
-            fraction range in the phantom_examples)
+    :param  f_tissue: str (optional tissue type to create a fraction range, default = "wm", set to None for no
+            fraction range in the phantom)
+    :param noise_tissue: str (optional tissue type to create a noise range, default = "wm", set to None for no
+            noise range in the phantom)
     :param b0: float (field strength in T, default = 3)
     :return phantom_t: np.array (size [2, npx, npx] with phantom_examples[0] containing T1 and phantom_examples[1]
     containing T2 values for each pixel
     """
-    tissues = ["gm", "wm", "wm", "csf"]
+    tissues = ["gm", "wm", "csf"]
     phantom_t = np.zeros([2, npx, npx])
     phantom_base = [[0., .6900, .920, 0., 0., 0.]]
     compartments = [[0, .6624, .874, 0., -.0184, 0.],
-                    [0, .18, .480, .25, -.2, -12.],
-                    [0, .18, .480, -.25, -.2, 12.],
-                    [0, .13, .2, 0., .15, 0]]
+                    [0, .16, .41, -.22, -.2, 18],  # [0.5, .16, .41, -.22, -.2, 18],
+                    [0, .12, .31, .22, -.12, -12]]  # [0.4, .11, .31, .22, -.12, -12]]
     for t in range(2):
         phantom_temp = phantom_base.copy()
         for i in range(len(tissues)):
@@ -75,8 +76,11 @@ def phantom_tissues(npx: int = 128, b0: float = 3, f_tissue: (str, None) = "wm")
             phantom_temp.append(t_comp)
         phantom_t[t, :, :] = phantom_ellipses(npx=npx, ellipses=phantom_temp)
     if f_tissue:
-        phantom_t[0, 90:100, 39:89] = get_t1(tissue=f_tissue, b0=b0)
-        phantom_t[1, 90:100, 39:89] = get_t2(tissue=f_tissue, b0=b0)
+        phantom_t[0, 84:90, 44:84] = get_t1(tissue=f_tissue, b0=b0)
+        phantom_t[1, 84:90, 44:84] = get_t2(tissue=f_tissue, b0=b0)
+    if noise_tissue:
+        phantom_t[0, 94:100, 44:84] = get_t1(tissue=noise_tissue, b0=b0)
+        phantom_t[1, 94:100, 44:84] = get_t2(tissue=noise_tissue, b0=b0)
     return phantom_t
 
 
@@ -90,13 +94,13 @@ def phantom_fractions(npx: int = 128, f_base: float = 10e-3, n_fractions: int = 
     :param f_range: (min, max) of the fraction parameters in the fraction bar
     :return phantom_f: array of size (1, npx, npx)
     """
-    compartments = np.linspace(39, 89, n_fractions)
+    compartments = np.linspace(44, 84, n_fractions)
     fractions = np.linspace(f_range[0], f_range[1], n_fractions)
     phantom_f = np.zeros([1, npx, npx])
     phantom_base = [[f_base, .6900, .920, 0., 0., 0.]]
     phantom_f[0, :, :] = phantom_ellipses(npx=npx, ellipses=phantom_base)
     for i in range(n_fractions-1):
-        phantom_f[0, 90:100, int(round(compartments[i])):int(round(compartments[i+1]))] = fractions[i]
+        phantom_f[0, 84:90, int(round(compartments[i])):int(round(compartments[i+1]))] = fractions[i]
     return phantom_f
 
 
@@ -136,12 +140,13 @@ def phantom_b0_inhom(npx: int = 128, min_inhom: float = -0.3, max_inhom: float =
     return phantom_b0
 
 
-def build_default_phantom(npx: int = 128, fractions: bool = True) -> np.array:
+def build_default_phantom(npx: int = 128, fractions: bool = True, noise: bool = True) -> np.array:
     """
     building a default phantom at 3T with parameters for a large GM ellipse, 2 WM ellipses, 1 CSF ellipse,
     optionally with a bar of WM parameters and continuously spaced fractions
     :param npx: pixel size of the phantom
     :param fractions: bool to define the fraction option (default: True)
+    :param noise: bool to define the noise option (default: True)
     :return phantom: array of size (4, npx, npx) without or (5, npx, npx) with fractions containing the T1, T2,
     B0 inhomogeneities, B1 inhomogeneities and possibly fractions for each pixel respectively
     """
@@ -151,9 +156,11 @@ def build_default_phantom(npx: int = 128, fractions: bool = True) -> np.array:
     phantom = np.concatenate([phantom_t, phantom_b0, phantom_b1])
     if fractions:
         phantom_f = phantom_fractions(npx)
-        return np.concatenate([phantom, phantom_f])
-    else:
-        return phantom
+        phantom = np.concatenate([phantom, phantom_f])
+    if noise:
+        phantom_n = phantom_noise(npx)
+        phantom = np.concatenate([phantom, phantom_n])
+    return phantom
 
 
 def build_phantom(phantom_t: np.array, phantom_b0: np.array, phantom_b1: np.array, phantom_f: np.array = None):
@@ -171,3 +178,38 @@ def build_phantom(phantom_t: np.array, phantom_b0: np.array, phantom_b1: np.arra
         return np.concatenate([phantom, phantom_f])
     else:
         return phantom
+
+
+def phantom_noise(npx: int = 128, mean: float = 0, std_base: float = 0, n: int = 10, std_max: float = 0.1) -> np.array:
+    compartments = np.linspace(44, 84, n)
+    # vars = np.linspace(var_base, var_max, n)
+    # sigmas = vars ** 0.5
+    sigmas = np.linspace(std_base, std_max, n)
+    phantom_n = np.zeros([1, npx, npx])
+    phantom_base = [[1, .6900, .920, 0., 0., 0.]]
+    phantom_n[0, :, :] = phantom_ellipses(npx=npx, ellipses=phantom_base)
+    noise = np.random.normal(mean, sigmas[0], phantom_n.shape)
+    phantom_n = phantom_n * noise
+    for i in range(n-1):
+        idx = [int(round(compartments[i])), int(round(compartments[i+1]))]
+        noise = np.random.normal(mean, sigmas[i], phantom_n[0, 94:100, idx[0]:idx[1]].shape)
+        phantom_n[0, 94:100, idx[0]:idx[1]] = noise
+    return phantom_n
+
+# # Phantom playground
+# import matplotlib.pyplot as plt
+#
+# phantom_base = [[0., .6900, .920, 0., 0., 0.],
+#                 [1, .6624, .874, 0., -.0184, 0.],
+#                 [0.5, .16, .41, -.22, -.2, 18],  # [0.5, .16, .41, -.22, -.2, 18],
+#                 [0.4, .12, .31, .22, -.12, -12]]  # [0.4, .11, .31, .22, -.12, -12]]
+#
+# p = phantom_ellipses(128, phantom_base)
+# p[84:90, 44:84] = 0.2
+# p[94:100, 44:84] = 0.1
+#
+#
+# plt.figure()
+# plt.imshow(p[0])
+# plt.show()
+
