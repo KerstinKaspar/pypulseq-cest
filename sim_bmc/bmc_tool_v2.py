@@ -439,7 +439,7 @@ class BMCTool:
                     Mout = np.concatenate((m0[0], Mout), axis=1)
                 self.Mout = Mout
 
-            elif hasattr(m0_block, 'delay') and hasattr(m0_block.delay, 'delay'):
+            elif hasattr(block, 'delay') and hasattr(block.delay, 'delay'):
                 dtp_ = float(block.delay.delay)
                 self.bm_solver.update_matrix(rf_amp=0.0,
                                              rf_phase=np.zeros(self.n_offsets),
