@@ -1,5 +1,5 @@
 """
-Script to output a seq file for an APTw protocol
+Script to output a seq file for a CW-CEST simulation
 source: https://cest-sources.org/doku.php?id=standard_cest_protocols
 APTw_1 : APT-weighted, low DC, t_sat=1.8s (//GLINT//)
      pulse shape = Gaussian
@@ -19,23 +19,27 @@ from pypulseq.make_adc import make_adc
 from pypulseq.make_delay import make_delay
 from pypulseq.make_trap_pulse import make_trapezoid
 from pypulseq.make_block_pulse import make_block_pulse
+from pypulseq.make_gauss_pulse import make_gauss_pulse
 from pypulseq.opts import Opts
+from time import time
+
+time0 = time()
 
 seq = Sequence()
 
-offset_range = 2 # [ppm]
-num_offsets = 41 # number of measurements (not including M0)
+offset_range = 7 # [ppm]
+num_offsets = 30 # number of measurements (not including M0)
 run_m0_scan = True  # if you want an M0 scan at the beginning
-t_rec = 2  # recovery time between scans [s]
+t_rec = 2.4  # recovery time between scans [s]
 m0_t_rec = 12  # recovery time before m0 scan [s]
-sat_b1 = 3.75  # mean sat pulse b1 [uT]
-t_p = 0.005 # sat pulse duration [s]
+sat_b1 = 2.22  # mean sat pulse b1 [uT]
+t_p = 5  # sat pulse duration [s]
 t_d = 0  # delay between pulses [s]
 n_pulses = 1  # number of sat pulses per measurement
 b0 = 3  # B0 [T]
-spoiling = 1  # 0=no spoiling, 1=before readout, Gradient in x,y,z
+spoiling = 0  # 0=no spoiling, 1=before readout, Gradient in x,y,z
 
-seq_filename = 'example_wasabi.seq'  # filename
+seq_filename = 'example_gauss.seq'  # filename
 
 # scanner limits
 sys = Opts(max_grad=40, grad_unit='mT/m', max_slew=130, slew_unit='T/m/s', rf_ringdown_time=30e-6, rf_dead_time=100e-6,
@@ -88,3 +92,41 @@ seq.set_definition('run_m0_scan', str(run_m0_scan))
 # seq.plot()
 print(seq.shape_library)
 seq.write(seq_filename)
+
+print("Gauss: Timing of tp =", t_p)
+
+time1 = time()
+secs = time1 - time0
+print("Writing took", secs, "s.")
+
+time0 = time()
+seq = Sequence()
+seq.read('example_cw.seq')
+block = seq.get_block(10)
+
+time1 = time()
+secs = time1 - time0
+print("reading took", secs, "s.")
+
+time0 = time()
+block = seq.get_block(10)
+time1 = time()
+secs = time1 - time0
+print("get_block took", secs, "s.")
+
+# Timing of tp = 0.5
+# Writing took 1.7505543231964111 s.
+# reading took 0.03276515007019043 s
+# get_block took 0.06653714179992676 s.
+# Timing of tp = 5
+# Writing took 17.61750316619873 s.
+# reading took 0.40004467964172363 s.
+# get_block took 0.07500362396240234 s.
+# Gauss: Timing of tp = 0.5
+# Writing took 4.583460330963135 s.
+# reading took 0.06652712821960449 s
+# get_block took 0.08266448974609375 s.
+# Gauss: Timing of tp = 5
+# Writing took 43.18380427360535 s.
+# reading took 0.06653976440429688 s.
+# get_block took 0.050411224365234375 s.

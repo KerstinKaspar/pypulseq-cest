@@ -154,7 +154,9 @@ class BlochMcConnellSolver:
 
         x = a_t.copy()
         c = 0.5
+
         n = np.identity(A.shape[0])
+
         d = n - c * a_t
         n = n + c * a_t
 
@@ -177,7 +179,7 @@ class BlochMcConnellSolver:
         mag_ = np.dot(f, (mag_ + a_inv_t)) - a_inv_t
         return mag_[np.newaxis, :, np.newaxis]
 
-    def solve_equation(self, mag: np.ndarray, dtp: float):
+    def solve_equation_old(self, mag: np.ndarray, dtp: float):
         """Solve the BMC equation system for all offsets in parallel using the matrix representation."""
         A = self.A
         C = self.C

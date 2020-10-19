@@ -19,13 +19,13 @@ def decompress_shape(compressed_shape: np.ndarray) -> np.ndarray:
     decompressed_shape = np.zeros(num_samples)
 
     count_pack, count_unpack = 0, 0
-    while count_pack < max(data_pack.shape) - 1:
+    while count_pack < max(data_pack.shape) - 2: # TODO check, was -1
         if data_pack[count_pack] != data_pack[count_pack + 1]:
             decompressed_shape[count_unpack] = data_pack[count_pack]
             count_unpack += 1
             count_pack += 1
         else:
-            rep = int(data_pack[count_pack + 2] + 2)
+            rep = int(data_pack[count_pack + 2] + 2) # TODO or here +1
             decompressed_shape[count_unpack:(count_unpack + rep)] = data_pack[count_pack]
             count_pack += 3
             count_unpack += rep

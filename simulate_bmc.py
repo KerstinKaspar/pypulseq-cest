@@ -8,7 +8,6 @@ from sim.eval import plot_z
 # choose a params file to import for the simulation
 from set_params import sp, seq_file
 # from standard_cest_params import sp, seq_file
-import numpy as np
 
 Sim = BMCTool(sp, seq_file)
 Sim.run(par_calc=True)
@@ -17,3 +16,4 @@ m_out = Sim.Mout
 mz = m_out[sp.mz_loc, :]
 
 fig = plot_z(mz, seq_file=seq_file, plot_mtr_asym=True)
+
