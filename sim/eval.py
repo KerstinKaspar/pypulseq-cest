@@ -123,6 +123,8 @@ def plot_z(mz: np.array, offsets: np.array = None, seq_file: str = None, plot_mt
     z = get_z(mz, seq_file)
     if plot_mtr_asym:
         mtr_asym = calc_mtr_asym(z)
+    else:
+        mtr_asym = np.array([])
     if not offsets:
         if seq_file:
             offsets = get_offsets(seq_file)

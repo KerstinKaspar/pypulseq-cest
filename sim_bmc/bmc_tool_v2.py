@@ -130,6 +130,7 @@ class BlochMcConnellSolver:
 
         # mt_pool
         if self.is_mt_active and not self.par_calc:
+
             self.A[3 * (n_p + 1), 3 * (n_p + 1)] = (-self.params.mt_pool['r1'] - self.params.mt_pool['k'] -
                                                     rf_amp_2pi ** 2 * self.get_mt_shape_at_offset(
                         rf_freq_2pi + self.dw0, self.w0))
@@ -179,7 +180,7 @@ class BlochMcConnellSolver:
         mag_ = np.dot(f, (mag_ + a_inv_t)) - a_inv_t
         return mag_[np.newaxis, :, np.newaxis]
 
-    def solve_equation_old(self, mag: np.ndarray, dtp: float):
+    def solve_equation(self, mag: np.ndarray, dtp: float):
         """Solve the BMC equation system for all offsets in parallel using the matrix representation."""
         A = self.A
         C = self.C
@@ -331,7 +332,9 @@ class BMCTool:
                             "Please switch 'reset_init_mag' option or change to sequential computation.")
 
         seq_file = open(self.seq_filename, 'r')
+
         event_table = dict()
+
         while True:
             line = strip_line(seq_file)
             if line == -1:
@@ -348,6 +351,7 @@ class BMCTool:
             elif line == '[BLOCKS]':
                 adc_count = 0
                 line = strip_line(seq_file)
+
                 while line != '' and line != ' ' and line != '#':
                     block_events = np.fromstring(line, dtype=int, sep=' ')
                     if block_events[6]:
