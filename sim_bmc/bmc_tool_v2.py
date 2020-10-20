@@ -219,14 +219,20 @@ class BlochMcConnellSolver:
         elif ls == 'superlorentzian':
             # TODO not yet working!
             dw_pool = offsets - self.dw0
-            mt_line = np.zeros(offsets.size)
-            for i, dw_ in enumerate(dw_pool):
-                if abs(dw_) >= w0:
-                    # mt_line[i] = self.interpolate_sl(dw_pool)
-                    mt_line[i] = 0
+            if self.par_calc:
+                mt_line = np.zeros(offsets.size)
+                for i, dw_ in enumerate(dw_pool):
+                    if abs(dw_) >= w0:
+                        # mt_line[i] = self.interpolate_sl(dw_pool)
+                        mt_line[i] = 0
+                    else:
+                        # mt_line[i] = self.interpolate_chs(dw_pool, w0)
+                        mt_line[i] = 1
+            else:
+                if abs(dw_pool) >= w0:
+                    mt_line = 0
                 else:
-                    # mt_line[i] = self.interpolate_chs(dw_pool, w0)
-                    mt_line[i] = 1
+                    mt_line = 1
         else:
             mt_line = np.zeros(offsets.size)
         return mt_line
