@@ -75,6 +75,7 @@ def phantom_tissues(npx: int = 128, b0: float = 3, f_tissue: (str, None) = 'wm',
                 t_comp[0] = get_t2(tissue=tissues[i], b0=0)
             phantom_temp.append(t_comp)
         phantom_t[t, :, :] = phantom_ellipses(npx=npx, ellipses=phantom_temp)
+    # TODO wm t1
     if f_tissue:
         phantom_t[0, 84:90, 44:84] = get_t1(tissue=f_tissue, b0=b0)
         phantom_t[1, 84:90, 44:84] = get_t2(tissue=f_tissue, b0=b0)
@@ -176,6 +177,7 @@ def build_phantom(phantom_t: np.array, phantom_b0: np.array, phantom_b1: np.arra
     phantom = np.concatenate([phantom_t, phantom_b0, phantom_b1])
     if phantom_f.any():
         return np.concatenate([phantom, phantom_f])
+    # TODO noise
     else:
         return phantom
 
