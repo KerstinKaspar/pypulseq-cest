@@ -129,14 +129,10 @@ class BlochMcConnellSolver:
             self.A[:, i + n_p + 1, i] = -dwi
 
         # mt_pool
-        if self.is_mt_active and not self.par_calc:
-
-            self.A[3 * (n_p + 1), 3 * (n_p + 1)] = (-self.params.mt_pool['r1'] - self.params.mt_pool['k'] -
-                                                    rf_amp_2pi ** 2 * self.get_mt_shape_at_offset(
-                        rf_freq_2pi + self.dw0, self.w0))
-        else:
-            # TODO: implement for parallel computation
-            pass
+        if self.is_mt_active:
+            self.A[:, 3 * (n_p + 1), 3 * (n_p + 1)] = (-self.params.mt_pool['r1'] - self.params.mt_pool['k'] -
+                                                       rf_amp_2pi ** 2 *
+                                                       self.get_mt_shape_at_offset(rf_freq_2pi + self.dw0, self.w0))
 
     def solve_equation_pade(self, mag: np.ndarray, dtp: float):
 
@@ -214,29 +210,35 @@ class BlochMcConnellSolver:
         inv = np.linalg.inv(vects)  # np.linalg.inv is about 10 times faster than np.linalg.pinv
         return np.einsum('ijk,ikl->ijl', tmp, inv)
 
-    def get_mt_shape_at_offset(self, offset: float, w0: float):
+    def get_mt_shape_at_offset(self, offsets: np.ndarray, w0: float):
         ls = self.params.mt_pool['lineshape'].lower()
         dw = self.params.mt_pool['dw']
         t2 = 1 / self.params.mt_pool['r2']
         if ls == 'lorentzian':
-            mt_line = t2 / (1 + pow((offset - dw * w0) * t2, 2.0))
+            mt_line = t2 / (1 + pow((offsets - dw * w0) * t2, 2.0))
         elif ls == 'superlorentzian':
-            # TODO not yet working!
-            dw_pool = offset - self.dw0
-            if abs(dw_pool) >= w0:
-                mt_line = self.interpolate_sl(dw_pool)
+            dw_pool = offsets - dw * w0
+            if self.par_calc:
+                mt_line = np.zeros(offsets.size)
+                for i, dw_ in enumerate(dw_pool):
+                    if abs(dw_) >= w0:
+                        mt_line[i] = self.interpolate_sl(dw_)
+                    else:
+                        mt_line[i] = self.interpolate_chs(dw_, w0)
             else:
-                mt_line = self.interpolate_chs(dw_pool, w0)
+                if abs(dw_pool) >= w0:
+                    mt_line = self.interpolate_sl(dw_pool)
+                else:
+                    mt_line = self.interpolate_chs(dw_pool, w0)
         else:
-            mt_line = 0
+            mt_line = np.zeros(offsets.size)
         return mt_line
 
-    def interpolate_sl(self, dw_pool: float):
+    def interpolate_sl(self, dw: float):
         """
         Interpolate Super Lorentzian Shape
         """
         mt_line = 0
-        dw = self.params.mt_pool['dw']
         t2 = 1 / self.params.mt_pool['r2']
         n_samples = 101
         step_size = 0.01
@@ -259,7 +261,7 @@ class BlochMcConnellSolver:
             return mt_line
         else:
             tan_weight = 30
-            d0y = tan_weight * (py[0] - py[0])
+            d0y = tan_weight * (py[1] - py[0])
             d1y = tan_weight * (py[3] - py[2])
             c_step = abs((dw_pool - px[1] + 1) / (px[2] - px[1] + 1))
             h0 = 2 * (c_step ** 3) - 3 * (c_step ** 2) + 1
@@ -267,7 +269,7 @@ class BlochMcConnellSolver:
             h2 = (c_step ** 3) - 2 * (c_step ** 2) + c_step
             h3 = (c_step ** 3) - (c_step ** 2)
 
-            mt_line = h0 * py[0] + h1 * py[2] + h2 * d0y + h3 * d1y
+            mt_line = h0 * py[1] + h1 * py[2] + h2 * d0y + h3 * d1y
             return mt_line
 
 
