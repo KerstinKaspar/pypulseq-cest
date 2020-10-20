@@ -21,22 +21,22 @@ def load_data(filename):
 def simulate_data():
     # generate and plot phantom
     phantom = build_default_phantom()
-    # phantom_fig = plot_phantom(phantom)
+    phantom_fig = plot_phantom(phantom)
 
     # set general simulation parameters
-    seq_file = 'example/example_CW.seq'
+    seq_file = 'example/example_wasabi_new.seq'
     b0 = 3  # T
     gamma = 267.5153  # rad/uT
-    scale = 0.5
+    scale = 1
     
     # unpack simulation parameters from phantom
-    p_t1, p_t2, p_b0, p_b1, p_f = [phantom[i] for i in range(5)]
+    p_t1, p_t2, p_b0, p_b1, p_f, p_n = [phantom[i] for i in range(6)]
     n_vars, n_rows, n_cols = phantom.shape
     
     # find all relevant locations for simulation
     # to simulate part of the phantom (min_row to max_row), define something like idces[128*min_row, 128*max_row]
     locs = []
-    idces = list(np.ndindex(n_rows, n_cols)) # [128*87:128*93]
+    idces = list(np.ndindex(n_rows, n_cols))  # [128*60:128*62]
     for loc in idces:
         if p_t1[loc] != 0:
             locs.append(loc)
@@ -46,7 +46,7 @@ def simulate_data():
     time0 = time()
     simulations = {}
     for loc in locs:
-        print('Simulation', locs.index(loc), 'of', n_locs)
+        print('Simulation', locs.index(loc)+1, 'of', n_locs)
         # define simulation parameters
         sp = Params()
         # define inhomogeneities from inhomogeneity maps
@@ -58,20 +58,20 @@ def simulate_data():
         r2_w = 1 / p_t2[loc]
         sp.set_water_pool(r1=r1_w, r2=r2_w)
         # define CEST pool parameters
-        r1 = r1_w  # [Hz]
-        r2 = 1 / 100e-3  # [Hz]
-        k = 40  # exchange rate[Hz]
-        # define fractions from fraction map
-        f = p_f[loc]  # rel
-        dw = 5  # [ppm]
-        sp.set_cest_pool(r1=r1, r2=r2, k=k, f=f, dw=dw)
+        # r1 = r1_w  # [Hz]
+        # r2 = 1 / 100e-3  # [Hz]
+        # k = 40  # exchange rate[Hz]
+        # # define fractions from fraction map
+        # f = p_f[loc]  # rel
+        # dw = 5  # [ppm]
+        # sp.set_cest_pool(r1=r1, r2=r2, k=k, f=f, dw=dw)
         sp.set_m_vec(scale)
         # start the simulation for this pixel
         Sim = BMCTool(sp, seq_file)
         Sim.run(par_calc=True)
         # retrieve simulated spectrum
         m_out = Sim.Mout
-        mz = sp.get_zspec(m_out, m0=Sim.seq.definitions['run_m0_scan'][0])
+        mz = sp.get_zspec(m_out, m0=False)
         simulations.update({loc: sp})
     time1 = time()
     secs = time1 - time0
@@ -107,19 +107,19 @@ def simulate_data():
 
 
 # simulate
-# data = simulate_data()
+data = simulate_data()
 # load data
-data = load_data('example/data/phantom_data_1pools2_2020-10-16.txt')
+# data = load_data('example/data/phantom_data_example_cw_1pools_2020-10-19.txt')
 
 offsets = np.array(data['offsets'])
-locs = data['sim_locs'] # if undefined use code from function simulate_data
+locs = [tuple(loc) for loc in data['sim_locs']] # if undefined use code from function simulate_data
 phantom = np.array(data['phantom'])
 phantom_sim = np.array(data['phantom_sim'])
-z_specs = {data['z_specs_k'][i]: data['z_specs_v'][i] for i in range(len(data['z_specs_k']))} # if undefined use:
-# z_specs = {}
-# for loc in locs:
-#     z = [phantom_sim[o][loc] for o in range(len(offsets))]
-#     z_specs.update({loc: z})
+# z_specs = {data['z_specs_k'][i]: data['z_specs_v'][i] for i in range(len(data['z_specs_k']))}
+z_specs = {}
+for loc in locs:
+    z = [phantom_sim[o][loc] for o in range(len(offsets))]
+    z_specs.update({loc: z})
 
 # calculate MTRasym
 mtr_asyms = {}
@@ -135,7 +135,7 @@ ax_im = plt.subplot(121)
 tmp = ax_im.imshow(phantom_sim[idx])
 plt.title("$Z({\Delta}{\omega})$ at offset " + str(offsets[idx]))
 plt.colorbar(tmp)
-#plt.show()
+# plt.show()
 
 # plot some tissue spectra
 # fig2 = figure()
@@ -143,29 +143,30 @@ ax_t = plt.subplot(122)
 ax_t.set_ylim([0, 1])
 ax_t.set_ylabel('$Z({\Delta}{\omega})$')
 ax_t.set_xlabel('Offsets')
-labels = ["gm top", "gm mid", "gm bottom", "wm bottom left", "wm top right ", "csf"]
-locs = [(20, 64), (57, 64), (85, 56), (65, 41), (25, 80), (72, 62)]
-for i in range(len(locs)):
+labels = ["gm top", "gm mid", "gm bottom", "wm", "csf"]
+locs = [(17, 64), (57, 64), (108, 64), (41, 50), (41, 78)]
+# locs = [(61, 22), (61, 70)]
+for i in range(len(locs[:3])):
     # TODO something is wrong with the indexing - matplotlib != numpy? imshow != annotate?
     mz = z_specs[locs[i]]
     plt.plot(offsets, mz, '.--', label=labels[i])
 plt.gca().invert_xaxis()
 plt.legend()
 plt.title('Z-Spectra for tifferent tissue types and phantom locations.')
-for i in range(len(locs)):
-    ax_im.annotate(s=labels[i], xy=locs[i], arrowprops={'arrowstyle': 'simple'}, xytext=(locs[i][0]+2, locs[i][1]-4))
+for i in range(len(locs[:3])):
+    ax_im.annotate(s=labels[i], xy=locs[i][::-1], arrowprops={'arrowstyle': 'simple'}, xytext=(locs[i][1]+5, locs[i][0]+5))
 fig.show()
 
-# plot some fraction spectra
-fig3, ax1 = plt.subplots()
-ax1.set_ylim([0, 1])
-ax1.set_ylabel('Z')
-ax1.set_xlabel('Offsets')
-labels = ["gm", "wm f=min", "wm f=max"]
-locs = [(88, 40), (92, 40), (92, 85)]
-for i in range(len(locs)):
-    mz = simulations[locs[i]].zspec
-    plt.plot(offsets, mz, '.--', label=labels[i])
-plt.gca().invert_xaxis()
-plt.legend()
-plt.show()
+# # plot some fraction spectra
+# fig3, ax1 = plt.subplots()
+# ax1.set_ylim([0, 1])
+# ax1.set_ylabel('Z')
+# ax1.set_xlabel('Offsets')
+# labels = ["gm", "wm f=min", "wm f=max"]
+# locs = [(60, 40), (61, 40), (61, 85)]
+# for i in range(len(locs)):
+#     mz = simulations[locs[i]].zspec
+#     plt.plot(offsets, mz, '.--', label=labels[i])
+# plt.gca().invert_xaxis()
+# plt.legend()
+# plt.show()

@@ -19,7 +19,7 @@ def plot_example(phantom: np.array, sp: Params): #, offsets: list, pool: int = 0
 
 
 def plot_phantom(phantom):
-    titles = ['T1', 'T2', 'B0 inhom.', 'B1 inhom.', 'fractions']
+    titles = ['T1', 'T2', 'B0 inhom.', 'B1 inhom.', 'fractions', 'noise']
     n_plots = phantom.shape[0]
     fig, ax = plt.subplots(1, n_plots)
     for p in range(len(ax)):
