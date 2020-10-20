@@ -217,32 +217,28 @@ class BlochMcConnellSolver:
         if ls == 'lorentzian':
             mt_line = t2 / (1 + pow((offsets - dw * w0) * t2, 2.0))
         elif ls == 'superlorentzian':
-            # TODO not yet working!
-            dw_pool = offsets - self.dw0
+            dw_pool = offsets - dw * w0
             if self.par_calc:
                 mt_line = np.zeros(offsets.size)
                 for i, dw_ in enumerate(dw_pool):
                     if abs(dw_) >= w0:
-                        # mt_line[i] = self.interpolate_sl(dw_pool)
-                        mt_line[i] = 0
+                        mt_line[i] = self.interpolate_sl(dw_)
                     else:
-                        # mt_line[i] = self.interpolate_chs(dw_pool, w0)
-                        mt_line[i] = 1
+                        mt_line[i] = self.interpolate_chs(dw_, w0)
             else:
                 if abs(dw_pool) >= w0:
-                    mt_line = 0
+                    mt_line = self.interpolate_sl(dw_pool)
                 else:
-                    mt_line = 1
+                    mt_line = self.interpolate_chs(dw_pool, w0)
         else:
             mt_line = np.zeros(offsets.size)
         return mt_line
 
-    def interpolate_sl(self, dw_pool: float):
+    def interpolate_sl(self, dw: float):
         """
         Interpolate Super Lorentzian Shape
         """
         mt_line = 0
-        dw = self.params.mt_pool['dw']
         t2 = 1 / self.params.mt_pool['r2']
         n_samples = 101
         step_size = 0.01
@@ -265,7 +261,7 @@ class BlochMcConnellSolver:
             return mt_line
         else:
             tan_weight = 30
-            d0y = tan_weight * (py[0] - py[0])
+            d0y = tan_weight * (py[1] - py[0])
             d1y = tan_weight * (py[3] - py[2])
             c_step = abs((dw_pool - px[1] + 1) / (px[2] - px[1] + 1))
             h0 = 2 * (c_step ** 3) - 3 * (c_step ** 2) + 1
@@ -273,7 +269,7 @@ class BlochMcConnellSolver:
             h2 = (c_step ** 3) - 2 * (c_step ** 2) + c_step
             h3 = (c_step ** 3) - (c_step ** 2)
 
-            mt_line = h0 * py[0] + h1 * py[2] + h2 * d0y + h3 * d1y
+            mt_line = h0 * py[1] + h1 * py[2] + h2 * d0y + h3 * d1y
             return mt_line
 
 
