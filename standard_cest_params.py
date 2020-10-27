@@ -26,7 +26,7 @@ from sim.params import Params
 sp = Params()
 
 # path to seq-file
-seq_file = 'example/example_APTw_test.seq'
+seq_file = 'example/APTw_3T_001_2uT_36SincGauss_DC90_2s_braintumor_py.seq'
 
 # define scanner parameters
 b0 = 3  # [T]
@@ -79,7 +79,7 @@ r2_mt = 1e5  # [Hz]
 k_mt = 23  # [Hz]
 f_mt = 0.0500  # rel
 dw_mt = -2  # [ppm]
-lineshape_mt = 'Lorentzian'
+lineshape_mt = 'SuperLorentzian'
 sp.set_mt_pool(r1=r1_mt, r2=r2_mt, k=k_mt, f=f_mt, dw=dw_mt, lineshape=lineshape_mt)
 
 # Scale the M vector here according to FLASH)

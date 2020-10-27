@@ -1,4 +1,4 @@
-# Sequence design in open file format for MR sequences
+## Sequence design in open file format for MR sequences
 This repository contains the necessary code and tools to build CEST saturation blocks with a variation of [pypulseq](https://github.com/imr-framework/pypulseq)
 which in itself is a python adaption of the matlab-based [pulseq](https://github.com/pulseq/pulseq). The documentation
 of the open file format for MR sequences can be found [here](https://pulseq.github.io/specification.pdf).
