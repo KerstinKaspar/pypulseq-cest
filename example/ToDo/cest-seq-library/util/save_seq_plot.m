@@ -1,5 +1,5 @@
 function save_seq_plot(seq_fn)
-% this function plots the seq file from the first to second adc
+% this function output the seq file from the first to second adc
 % (or the entire sequence if it contains less than 2 adc events)
 % and writes a png file with the seq plot with the same filename as the seq
 % file
@@ -14,7 +14,7 @@ end
 seq = mr.Sequence;
 seq.read(seq_fn);
 
-% with time unit ms and RF unit µT
+% with time unit ms and RF unit ï¿½T
 t=0;
 adc_counter = 0;
 tADC=zeros(2,1);

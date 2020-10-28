@@ -406,7 +406,7 @@ class Sequence:
         time_disp : str
             Time display type, must be one of `s`, `ms` or `us`.
         save_as : bool
-            Boolean flag indicating if plots should be saved. The two figures will be saved as JPG with numerical
+            Boolean flag indicating if output should be saved. The two figures will be saved as JPG with numerical
             suffixes to the filename 'seq_plot'.
         """
 
