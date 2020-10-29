@@ -34,6 +34,8 @@ class Phantom():
         self.locs, self.n_locs = self._locate()
         self.simulated = None
         self.z_specs = None
+        # TODO save sim data or not? also review load and sim functions
+        # self.sim_data = None
 
     def set_t1(self, f_tissue: (str, None) = 'wm', noise_tissue: (str, None) = 'wm') -> np.array:
         """
@@ -224,12 +226,16 @@ class Phantom():
         phantom = np.array(data['phantom'])
         self.unstack(phantom=phantom)
         self.simulated = data['phantom_sim']
+        # self.sim_data = data
+        self.b0 = data['B0']
+        # TODO reimplement for new simulation data
+        # self.locs = data['locs']
         return data
 
     def simulate(self, seq_file: str = 'example/example_test.seq', b0: float = 3, gamma: float = 267.5153,
                  scale: float = 1, noise: bool = False, cest_pools=None, export_file: (bool, str) = False):
         # if no phantom is defined
-        if self.n_layers < 1:
+        if len(self.layers) < 1:
             self.set_defaults()
         # simulation for each phantom pixel in locs
         tqdm_simulation = tqdm(self.locs)
@@ -261,7 +267,7 @@ class Phantom():
             Sim.run(par_calc=True)
             # retrieve simulated spectrum
             m_out = Sim.Mout
-            mz = sp.get_zspec(m_out, m0=False)
+            mz = sp.get_zspec(m_out)
             simulations.update({loc: sp})
         time1 = time()
         secs = time1 - time0
@@ -298,18 +304,20 @@ class Phantom():
                 with open(export_file, 'w') as outfile:
                     json.dump(data, outfile)
         self.simulated = phantom_sim
+        # self.sim_data = data
         return data
 
-    def get_z(self, locs: (list, tuple) = None):
+    def get_z(self, locs: (list, tuple) = None, noise: bool = True):
         if not locs:
             locs = self.locs
         z_specs = {}
         if type(locs) is tuple:
             locs = [locs]
         for loc in locs:
-            z = np.abs([self.simulated[o][loc] for o in range(len(self.simulated))])
-            z_noisy = sim_noise(z, is_zspec=True)
-            z_specs.update({tuple(loc): z_noisy})
+            z = np.array([self.simulated[o][loc[0]][loc[1]] for o in range(len(self.simulated))])
+            if noise:
+                z = sim_noise(z, is_zspec=True)
+            z_specs.update({tuple(loc): z})
         self.z_specs = z_specs
         return z_specs
 
@@ -341,7 +349,7 @@ class Phantom():
         ax_im = plt.subplot(121)
         tmp = ax_im.imshow(self.simulated[idx])
         title = "$Z({\Delta}{\omega})$"
-        if offsets:
+        if offsets.any():
             title += " at offset " + str(offsets[idx])
         plt.title(title)
         plt.colorbar(tmp)
@@ -374,7 +382,7 @@ class Phantom():
         if not self.z_specs:
             self.get_z(locs=locs)
 
-        if offsets:
+        if offsets.any():
             ax_t.set_xlabel('Offsets')
             for i in range(len(locs)):
                 mz = self.z_specs[locs[i]]
@@ -390,6 +398,7 @@ class Phantom():
         for i in range(len(locs)):
             ax_im.annotate(s=labels[i], xy=locs[i][::-1], arrowprops={'arrowstyle': 'simple'},
                            xytext=(locs[i][1] + 5, locs[i][0] + 5))
+        # plt.show()
         if export:
             if type(export) is not str:
                 today = date.today().strftime("%Y-%m-%d")
@@ -397,7 +406,6 @@ class Phantom():
             else:
                 filename = export
             plt.savefig(filename)
-        plt.show()
         return fig
 
     @staticmethod
@@ -462,7 +470,9 @@ class Phantom():
         return tissues, compartments
 
     def _locate(self, return_n: bool = True):
-        phantom = self._phantom_ellipses(self.npx, self.base)
+        base = self.base.copy()
+        base[0][0] = 1
+        phantom = self._phantom_ellipses(self.npx, base)
         n_rows, n_cols = phantom.shape
         locs = []
         idces = list(np.ndindex(n_rows, n_cols))
@@ -616,7 +626,7 @@ def plot_phantom(phantom):
     n_plots = phantom.shape[0]
     fig, ax = plt.subplots(1, n_plots)
     for p in range(len(ax)):
-        temp = ax[p].imshow(phantom[p])
+        ax[p].imshow(phantom[p])
         ax[p].title.set_text('Phantom' + titles[p])
     plt.show()
     plt.savefig('example/test/phantom_examples.jpg')
