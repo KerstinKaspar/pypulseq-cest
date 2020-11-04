@@ -1,6 +1,6 @@
 function [Z, MTRasym, ppm_sort] = Simulate_and_plot_seq_file(seq_fn, B0, fig_no)
 % This function runs the standard simulation for a specific .seq file
-% and field strength and plots the results
+% and field strength and output the results
 % An equal distribution of offsets at both sides of the spectra and only unique values
 % are expected. 
 %

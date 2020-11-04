@@ -1,7 +1,7 @@
 .idea/
 __pycache__/
 .ipynb_checkpoints/
-sim_pulseq_sbb/src/compile/build
+sim_pulseq_sbb/src/compile/
 venv/
 build/
 *long*

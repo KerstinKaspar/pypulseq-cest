@@ -24,7 +24,7 @@ from pypulseq.opts import Opts
 seq = Sequence()
 
 offset_range = 10 # [ppm]
-num_offsets = 41 #100  # number of measurements (not including M0)
+num_offsets = 40 #100  # number of measurements (not including M0)
 run_m0_scan = True  # if you want an M0 scan at the beginning
 t_rec = 2.4  # recovery time between scans [s]
 m0_t_rec = 12  # recovery time before m0 scan [s]

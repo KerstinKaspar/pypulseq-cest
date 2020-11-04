@@ -10,7 +10,7 @@ from sim_pulseq_sbb.parse_params import get_offsets, check_m0
 
 def plot_without_offsets(mz: np.array, mtr_asym: np.array = None, title: str = None) -> plt.subplots:
     """
-    plots the magnetization without offsets
+    output the magnetization without offsets
     :param mz: Magnetization
     :param mtr_asym: MTRasym as calculated in calc_mtr_asym
     :param title: optional title for the plot
@@ -44,7 +44,7 @@ def plot_without_offsets(mz: np.array, mtr_asym: np.array = None, title: str = N
 
 def plot_with_offsets(mz: np.array, offsets: np.array, mtr_asym: np.array = None, title: str = None) -> plt.subplots:
     """
-    plots the magnetization with regard to the defined offsets
+    output the magnetization with regard to the defined offsets
     :param mz: Magnetization
     :param offsets: offsets
     :param mtr_asym: MTRasym as calculated in calc_mtr_asym
