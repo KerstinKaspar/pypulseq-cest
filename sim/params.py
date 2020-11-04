@@ -10,7 +10,7 @@ class Params:
     Default parameters are for a Z-spectrum for gray matter at 3T
     with an amide CEST pool and a Lorentzian shaped MT pool
     """
-    def __init__(self, set_defaults: bool = False):
+    def __init__(self, set_defaults: bool = False, config: dict = None):
         """
         :param set_defaults: if True, class initializes with parameters for a standard APT weightedCEST simulation of
         gray matter at 3T with an amide CEST pool, a creatine CEST pool and a Lorentzian shaped MT pool
@@ -25,6 +25,8 @@ class Params:
         self.mz_loc = 0
         self.scale = 1
         self.zspec = None
+        self.b1_nom = None
+        self.config = config
 
     def set_water_pool(self, r1: float = None, r2: float= None, f: float = 1, set_gm_3t_default: bool = False) -> dict:
         """
@@ -146,35 +148,30 @@ class Params:
         self.scale = scale
         return m_vec
 
-    def set_scanner(self, b0: float = 3, gamma: float = 267.5153, b0_inhomogeneity: float = None, rel_b1: float = 1.0) \
+    def set_scanner(self, b0: float = 3, gamma: float = 267.5153, b0_inhom: float = None, rel_b1: float = 1.0) \
             -> dict:
         """
         Sets the scanner values
         :param b0: field strength [T]
         :param gamma: gyromagnetic ratio [rad/uT]
-        :param b0_inhomogeneity: field ihnomogeneity [ppm]
+        :param b0_inhom: field ihnomogeneity [ppm]
         :param rel_b1: relative B1 field
         :return: dictionary containing the parameter values
         """
-        scanner = {'b0': b0, 'gamma': gamma, 'b0_inhomogeneity': b0_inhomogeneity, 'rel_b1': rel_b1}
+        scanner = {'b0': b0, 'gamma': gamma, 'b0_inhomogeneity': b0_inhom, 'rel_b1': rel_b1}
         self.scanner = scanner
         return scanner
 
-    def set_options(self, verbose: bool = None, reset_init_mag: bool = None, max_pulse_samples: int = None):
+    def set_options(self, **kwargs):
         """
         Setting additional options
-        :param verbose: Verbose output from C++ simulation, default False
+        :param verbose: Verbose output, default False
         :param reset_init_mag: true if magnetization should be set to MEX.M after each ADC, default True
         :param max_pulse_samples: set the number of samples for the shaped pulses, default is 500
+        :param par_calc: toggles parallel calculation for BMC Tool
         :return:
         """
-        options = {}
-        if type(verbose) == bool:
-            options.update({'verbose': verbose})
-        if type(reset_init_mag) == bool:
-            options.update({'reset_init_mag': reset_init_mag})
-        if max_pulse_samples:
-            options.update({'max_pulse_samples': max_pulse_samples})
+        options = {k: v for k, v in kwargs.items()}
         self.options.update(options)
         return options
 

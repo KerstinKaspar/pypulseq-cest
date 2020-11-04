@@ -17,7 +17,7 @@ gamma = 267.5153  # [rad / uT]
 b0_inhom = 0.0  # [ppm]
 rel_b1 = 1
 # set the scanner parameters
-sp.set_scanner(b0=b0, gamma=gamma, b0_inhomogeneity=b0_inhom, rel_b1=rel_b1)
+sp.set_scanner(b0=b0, gamma=gamma, b0_inhom=b0_inhom, rel_b1=rel_b1)
 
 # define water properties according to the field strength
 f_w = 1

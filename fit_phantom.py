@@ -11,8 +11,11 @@ from time import time
 import random
 import matplotlib.pyplot as plt
 import json
+from pypulseq.Sequence.sequence import Sequence
+
 
 filename = 'example/data/data_wasabi_test.txt'
+seq_file = 'example/wasabi/example_wasabi.seq'
 
 # LOAD
 phantom = Phantom()
@@ -25,18 +28,53 @@ z_specs = phantom.get_z()
 #                          export='example/test/test_{date}.jpg'.format(date=date.today().strftime("%Y-%m-%d")))
 
 
-def wasabi(x, db0, b1, c, d, freq, tp):
-    """WASABI function for simultaneous determination of B1 and B0. For more information read:
-    Schuenke et al. Magnetic Resonance in Medicine, 77(2), 571–580. https://doi.org/10.1002/mrm.26133"""
-    return np.abs(c - d * np.square(np.sin(np.arctan((b1 / (freq / gamma)) / (x - db0)))) *
-                  np.square(np.sin(np.sqrt(np.square(b1 / (freq / gamma)) +
-                                           np.square(x - db0)) * freq * 2 * np.pi * tp / 2)))
+class Wasabi_fit:
+    def __init__(self, phantom, data, seq_file=None, b1_nom=None, t_p=None):#
+        self.b0 = phantom.b0
+        self.gamma = data['gamma'] / (2 * np.pi)
+        if seq_file:
+            self.b1_nom, self.t_p = self._get_b1_tp(seq_file, self.gamma)  # 1.25*b0, 0.005
+        elif b1_nom and t_p:
+            self.b1_nom = b1_nom
+            self.t_p = t_p
+        else:
+            raise Exception('You need to define either a seq-file or b1_nom and t_p for a fit.')
+
+    @staticmethod
+    def _wasabi(x, db0, b1, c, d, freq, tp):
+        """WASABI function for simultaneous determination of B1 and B0. For more information read:
+        Schuenke et al. Magnetic Resonance in Medicine, 77(2), 571–580. https://doi.org/10.1002/mrm.26133"""
+        return np.abs(c - d * np.square(np.sin(np.arctan((b1 / (freq / gamma)) / (x - db0)))) *
+                      np.square(np.sin(np.sqrt(np.square(b1 / (freq / gamma)) +
+                                               np.square(x - db0)) * freq * 2 * np.pi * tp / 2)))
+
+    @staticmethod
+    def _get_b1_tp(source: (str, object), gamma):
+        if type(source) is str:
+            try:
+                seq = Sequence()
+                seq.read(source)
+            except ValueError:
+                print('Could not read sequence from file ', source)
+        else:
+            try:
+                seq = source.seq
+            except ValueError:
+                print('Could not read seq file from the given input. Pleas give a sequence filepath or a BMCTool '
+                      'object after simulation.')
+        try:
+            for i in range(2, 10):
+                block = seq.get_block(i)
+                if hasattr(block, 'rf'):
+                    break
+        except AttributeError:
+            print('Can\'t find rf pulse in the first 10 blocks of the sequence.')
+        t_p = block.rf.t.max
+        amp = np.real(block.rf.signal)
+        b1_nom = amp / gamma
+        return b1_nom, t_p
 
 
-b0 = phantom.b0
-b1_nom = 1.25*b0  # in µT here... so no 1e-6 factor needed
-tp = 0.005
-gamma = 42.577
 
 model = Model(wasabi)
 params = model.make_params()

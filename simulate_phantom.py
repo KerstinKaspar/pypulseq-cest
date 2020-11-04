@@ -1,21 +1,24 @@
 from sim_bmc.bmc_tool_v2 import BMCTool
 from sim.params import Params
-from phantom.phantom import build_default_phantom, get_locs
+from phantom.phantom import Phantom, get_locs
 from phantom.plot_phantom import plot_phantom
 import numpy as np
 from sim.eval import get_offsets
 from sim.util import sim_noise
 from time import time
 import matplotlib.pyplot as plt
-import json
+import yaml
 from datetime import date
 from tqdm import tqdm
+
+# TODO change to new phantom object
+# TODO test yaml
 
 
 def load_data(filename):
     # open json data
-    with open(filename) as json_file:
-        data = json.load(json_file)
+    with open(filename) as file:
+        data = yaml.load(file)
     return data
 
 
@@ -23,8 +26,9 @@ def simulate_data(phantom: np.array = None, seq_file: str = 'example/example_tes
                   gamma: float = 267.5153, scale: float = 1, noise: bool = False, cest_pools = None, test_mode: bool = False):
     # generate and plot phantom
     if not phantom:
-        phantom = build_default_phantom()
-        phantom_fig = plot_phantom(phantom)
+        phantom = Phantom()
+        phantom.set_defaults()
+        phantom_fig = phantom.plot()
     
     # unpack simulation parameters from phantom
     assert len(phantom) >= 5
@@ -43,7 +47,7 @@ def simulate_data(phantom: np.array = None, seq_file: str = 'example/example_tes
         # define inhomogeneities from inhomogeneity maps
         b0_inhom = p_b0[loc]
         rel_b1 = p_b1[loc]
-        sp.set_scanner(b0=b0, gamma=gamma, b0_inhomogeneity=b0_inhom, rel_b1=rel_b1)
+        sp.set_scanner(b0=b0, gamma=gamma, b0_inhom=b0_inhom, rel_b1=rel_b1)
         # define water pool from T1 and T2 maps
         r1_w = 1 / p_t1[loc]
         r2_w = 1 / p_t2[loc]
@@ -95,9 +99,9 @@ def simulate_data(phantom: np.array = None, seq_file: str = 'example/example_tes
     data['offsets'] = offsets.tolist()
     data['n_cest_pools'] = len(sp.cest_pools)
     seq_name = seq_file.split('/')[-1].replace('.seq', '')
-    with open('example/data/phantom_data_{seq_name}_{n}pools_{date}.txt'.format(n=data['n_cest_pools'], date=today,
+    with open('example/data/phantom_data_{seq_name}_{n}pools_{date}.yaml'.format(n=data['n_cest_pools'], date=today,
                                                                                 seq_name=seq_name), 'w') as outfile:
-        json.dump(data, outfile)
+        yaml.dump(data, outfile)
     return data
 
 

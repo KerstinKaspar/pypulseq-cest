@@ -248,7 +248,7 @@ class Phantom():
             # define inhomogeneities from inhomogeneity maps
             b0_inhom = self.b0_shift[loc]
             rel_b1 = self.b1_inhom[loc]
-            sp.set_scanner(b0=b0, gamma=gamma, b0_inhomogeneity=b0_inhom, rel_b1=rel_b1)
+            sp.set_scanner(b0=b0, gamma=gamma, b0_inhom=b0_inhom, rel_b1=rel_b1)
             # define water pool from T1 and T2 maps
             r1_w = 1 / self.t1[loc]
             r2_w = 1 / self.t2[loc]
@@ -522,7 +522,7 @@ def simulate_data(phantom: Phantom = None, seq_file: str = 'example/example_test
         # define inhomogeneities from inhomogeneity maps
         b0_inhom = p_b0[loc]
         rel_b1 = p_b1[loc]
-        sp.set_scanner(b0=b0, gamma=gamma, b0_inhomogeneity=b0_inhom, rel_b1=rel_b1)
+        sp.set_scanner(b0=b0, gamma=gamma, b0_inhom=b0_inhom, rel_b1=rel_b1)
         # define water pool from T1 and T2 maps
         r1_w = 1 / p_t1[loc]
         r2_w = 1 / p_t2[loc]

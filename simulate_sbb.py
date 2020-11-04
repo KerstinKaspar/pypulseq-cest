@@ -1,24 +1,25 @@
 """
 simulate_sbb.py
     Script to run the C++ SimPulseqSBB simulation based on the defined parameters.
-    You can adapt parameters in set_params.py or use a standard CEST setting as defined in standard_cest_params.py.
+    You can adapt parameters in param_configs.py or use a standard CEST setting as defined in standard_cest_params.py.
 """
 from SimPulseqSBB import SimPulseqSBB
 from sim_pulseq_sbb.parse_params import parse_sp
 from sim.eval import plot_z
-# choose a params file to import for the simulation
-# from set_params import sp, seq_file
-from standard_cest_params import sp, seq_file
+from sim.set_params import load_params
 
+# set the necessary filepaths:
+sample_file = 'param_configs/sample_params.yaml'
+experimental_file = 'param_configs/experimental_params.yaml'
+seq_file = 'example/example_APTw_test.seq'
 
-# parse the parameters for C++ code handling
-sp_sim = parse_sp(sp, seq_file)
-
+sp = load_params(sample_file, experimental_file)
+sim_params = parse_sp(sp=sp, seq_file=seq_file)
 # run the simulation
-SimPulseqSBB(sp_sim, seq_file)
+SimPulseqSBB(sim_params, seq_file)
 
 # retrieve the calculated magnetization
-m_out = sp_sim.GetFinalMagnetizationVectors()
+m_out = sim_params.GetFinalMagnetizationVectors()
 mz = m_out[sp.mz_loc, :]
 
 fig = plot_z(mz, seq_file=seq_file, plot_mtr_asym=True)
@@ -38,7 +39,7 @@ gamma = 267.5153  # [rad / uT]
 b0_inhom = 0.0  # [ppm]
 rel_b1 = 1
 # set the scanner parameters
-sp.set_scanner(b0=b0, gamma=gamma, b0_inhomogeneity=b0_inhom, rel_b1=rel_b1)
+sp.set_scanner(b0=b0, gamma=gamma, b0_inhom=b0_inhom, rel_b1=rel_b1)
 
 # define water properties according to the field strength
 f_w = 1

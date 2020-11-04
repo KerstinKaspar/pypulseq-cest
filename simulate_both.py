@@ -1,20 +1,24 @@
 """
 simulate_sbb.py
     Script to run the C++ SimPulseqSBB simulation based on the defined parameters.
-    You can adapt parameters in set_params.py or use a standard CEST setting as defined in standard_cest_params.py.
+    You can adapt parameters in param_configs.py or use a standard CEST setting as defined in standard_cest_params.py.
 """
 from sim_bmc.bmc_tool_v2 import BMCTool
 from SimPulseqSBB import SimPulseqSBB
 from sim_pulseq_sbb.parse_params import parse_sp
 from sim.eval import get_offsets, calc_mtr_asym
-
 import numpy as np
 import matplotlib.pyplot as plt
+from sim.set_params import load_params
 
-# choose a params file to import for the simulation
-#from set_params import sp, seq_file
-# from standard_cest_params import sp, seq_file
-from example.wasabi.set_wasabi_params import sp, seq_file
+
+# set the necessary filepaths:
+sample_file = 'param_configs/sample_params.yaml'
+experimental_file = 'param_configs/experimental_params.yaml'
+seq_file = 'example/example_APTw_test.seq'
+
+
+sp = load_params(sample_file, experimental_file)
 
 
 # BMCTool simulation
