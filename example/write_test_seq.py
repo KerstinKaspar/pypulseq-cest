@@ -12,6 +12,7 @@ from pypulseq.make_trap_pulse import make_trapezoid
 from pypulseq.make_gauss_pulse import make_gauss_pulse
 from pypulseq.make_block_pulse import make_block_pulse
 from pypulseq.opts import Opts
+from seq_util.conversion import convert_seq_12_to_pseudo_13
 
 seq = Sequence()
 
@@ -81,3 +82,6 @@ seq.set_definition('run_m0_scan', str(run_m0_scan))
 # seq.plot()
 print(seq.shape_library)
 seq.write(seq_filename)
+
+# convert to pseudo version 1.3
+convert_seq_12_to_pseudo_13(seq_filename)

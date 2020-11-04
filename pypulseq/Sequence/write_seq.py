@@ -4,7 +4,6 @@ import numpy as np
 def write(self, file_name):
     """
     Writes the calling `Sequence` object as a `.seq` file with filename `file_name`.
-
     Parameters
     ----------
     file_name : str
@@ -19,8 +18,7 @@ def write(self, file_name):
 
     output_file.write('[VERSION]\n')
     output_file.write(f'major {self.version_major}\n')
-    # old: output_file.write(f'minor {self.version_minor}\n')
-    output_file.write(f'minor {self.version_minor+1}\n')
+    output_file.write(f'minor {self.version_minor}\n')
     output_file.write(f'revision {self.version_revision}\n')
     output_file.write('\n')
 
@@ -39,15 +37,12 @@ def write(self, file_name):
         output_file.write('\n')
 
     output_file.write('# Format of blocks:\n')
-    # old: output_file.write('#  #  D RF  GX  GY  GZ  ADC\n')
-    output_file.write('#  #  D RF  GX  GY  GZ  ADC  EXT\n')
+    output_file.write('#  #  D RF  GX  GY  GZ ADC\n')
     output_file.write('[BLOCKS]\n')
     id_format_width = '{:' + str(len(str(len(self.block_events)))) + 'd} '
-    # old: id_format_str = id_format_width + '{:2d} {:2d} {:3d} {:3d} {:3d} {:2d}\n'
-    id_format_str = id_format_width + '{:2d} {:2d} {:3d} {:3d} {:3d} {:2d}'
+    id_format_str = id_format_width + '{:2d} {:2d} {:3d} {:3d} {:3d} {:2d}\n'
     for i in range(len(self.block_events)):
-        # old: s = id_format_str.format(*np.insert(self.block_events[i + 1], 0, (i + 1)))
-        s = id_format_str.format(*np.insert(self.block_events[i + 1], 0, (i + 1))) + '  0\n'
+        s = id_format_str.format(*np.insert(self.block_events[i + 1], 0, (i + 1)))
         output_file.write(s)
     output_file.write('\n')
 
