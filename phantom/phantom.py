@@ -12,7 +12,7 @@ from sim.params import Params
 from sim.eval import get_offsets
 from sim.util import sim_noise
 from time import time
-import json
+import pickle
 from datetime import date
 from tqdm import tqdm
 
@@ -34,8 +34,7 @@ class Phantom():
         self.locs, self.n_locs = self._locate()
         self.simulated = None
         self.z_specs = None
-        # TODO save sim data or not? also review load and sim functions
-        # self.sim_data = None
+        self.sim_data = None
 
     def set_t1(self, f_tissue: (str, None) = 'wm', noise_tissue: (str, None) = 'wm') -> np.array:
         """
@@ -147,7 +146,7 @@ class Phantom():
         compartments = np.linspace(44, 84, n_fractions)
         fractions = np.linspace(f_range[0], f_range[1], n_fractions)
         base = self.base.copy()
-        base[0] = f_base
+        base[0][0] = f_base
         phantom_f = self._phantom_ellipses(npx=self.npx, ellipses=base)
         for i in range(n_fractions-1):
             phantom_f[84:90, int(round(compartments[i])):int(round(compartments[i+1]))] = fractions[i]
@@ -220,20 +219,36 @@ class Phantom():
         return [phantom[i] for i in range(n_layers)]
 
     def load(self, filename: str):
-        # open json data
-        with open(filename) as json_file:
-            data = json.load(json_file)
-        phantom = np.array(data['phantom'])
-        self.unstack(phantom=phantom)
-        self.simulated = data['phantom_sim']
-        # self.sim_data = data
+        # # open json data
+        # with open(filename) as json_file:
+        #     data = json.load(json_file)
+        # phantom = np.array(data['phantom'])
+        # self.unstack(phantom=phantom)
+        # self.simulated = data['phantom_sim']
+        # # self.sim_data = data
+        # self.b0 = data['B0']
+        # # self.locs = data['locs']
+        with open(filename, 'rb') as infile:
+            data = pickle.load(infile)
+
+        self.sim_data = data
         self.b0 = data['B0']
-        # TODO reimplement for new simulation data
-        # self.locs = data['locs']
+        self.t1 = data['phantom']['t1']
+        self.t2 = data['phantom']['t2']
+        self.b0_shift = data['phantom']['b0_shift']
+        self.b1_inhom = data['phantom']['b1_inhom']
+        if 'fractions' in data['phantom'].keys():
+            self.fractions = data['phantom']['fractions']
+        if 'noise' in data['phantom'].keys():
+            self.noise = data['phantom']['noise']
+        self.locs = data['sim_locs']
+        self.simulated = data['phantom_sim']
+        self.z_specs = data['z_specs']
+
         return data
 
     def simulate(self, seq_file: str = 'example/example_test.seq', b0: float = 3, gamma: float = 267.5153,
-                 scale: float = 1, noise: bool = False, cest_pools=None, export_file: (bool, str) = False):
+                 scale: float = 1, noise: bool = True, cest_pools=None, export_file: (bool, str) = False):
         # if no phantom is defined
         if len(self.layers) < 1:
             self.set_defaults()
@@ -253,14 +268,15 @@ class Phantom():
             r1_w = 1 / self.t1[loc]
             r2_w = 1 / self.t2[loc]
             sp.set_water_pool(r1=r1_w, r2=r2_w)
-            for n in range(len(cest_pools)):
-                r1 = r1_w  # [Hz]
-                r2 = cest_pools[n]['r2']  # [Hz]
-                k = cest_pools[n]['k']  # exchange rate[Hz]
-                # define fractions from fraction map
-                f = self.fractions[loc]  # rel
-                dw = cest_pools[n]['dw']  # [ppm]
-                sp.set_cest_pool(r1=r1, r2=r2, k=k, f=f, dw=dw)
+            if cest_pools:
+                for n in range(len(cest_pools)):
+                    r1 = r1_w  # [Hz]
+                    r2 = cest_pools[n]['r2']  # [Hz]
+                    k = cest_pools[n]['k']  # exchange rate[Hz]
+                    # define fractions from fraction map
+                    f = self.fractions[loc]  # rel
+                    dw = cest_pools[n]['dw']  # [ppm]
+                    sp.set_cest_pool(r1=r1, r2=r2, k=k, f=f, dw=dw)
             sp.set_m_vec(scale)
             # start the simulation for this pixel
             Sim = BMCTool(sp, seq_file)
@@ -284,28 +300,40 @@ class Phantom():
                     zspec = simulations[k].zspec[o]
                 phantom_sim[o, k[0], k[1]] = zspec
 
+        self.simulated = phantom_sim
+        z_specs = self.get_z()
         today = date.today().strftime("%Y-%m-%d")
         data = {}
+        data['seq_file'] = seq_file
         data['B0'] = b0
         data['gamma'] = gamma
         data['scale'] = scale
-        data['phantom'] = self.stack().tolist()
+        data['phantom'] = {}
+        data['phantom']['t1'] = self.t1
+        data['phantom']['t2'] = self.t2
+        data['phantom']['b0_shift'] = self.b0_shift
+        data['phantom']['b1_inhom'] = self.b1_inhom
+        if self.fractions:
+            data['phantom']['fractions'] = self.fractions
+        if self.noise:
+            data['phantom']['noise'] = self.noise
         data['sim_locs'] = list(self.locs)
-        data['phantom_sim'] = phantom_sim.tolist()
+        data['phantom_sim'] = phantom_sim
+        data['z_specs'] = z_specs
         data['offsets'] = offsets.tolist()
-        data['n_cest_pools'] = len(sp.cest_pools)
-        if export_file:
-            if export_file is not str:
-                seq_name = seq_file.split('/')[-1].replace('.seq', '')
-                export_file = 'example/data/phantom_data_{seq_name}_{n}pools_{date}.txt'.format(n=data['n_cest_pools'],
-                                                                                                date=today,
-                                                                                                seq_name=seq_name)
-            else:
-                with open(export_file, 'w') as outfile:
-                    json.dump(data, outfile)
-        self.simulated = phantom_sim
-        # self.sim_data = data
+        if sp.cest_pools:
+            data['n_cest_pools'] = len(sp.cest_pools)
+        self.sim_data = data
         return data
+
+    def save_data(self, filename: str = None):
+        if not filename:
+            seq_name = self.sim_data['seq_file'].split('/')[-1].replace('.seq', '')
+            filename = 'example/data/phantom_data_{seq_name}_{n}pools_{date}.p'.format(n=data['n_cest_pools'],
+                                                                                            date=today,
+                                                                                            seq_name=seq_name)
+        with open(filename, 'wb') as outfile:
+            pickle.dump(self.sim_data, outfile)
 
     def get_z(self, locs: (list, tuple) = None, noise: bool = True):
         if not locs:
@@ -485,214 +513,214 @@ class Phantom():
         else:
             return locs
 
-
-def load_data(filename):
-    # open json data
-    with open(filename) as json_file:
-        data = json.load(json_file)
-    data['offsets'] = np.array(data['offsets'])
-    data['locs'] = [tuple(loc) for loc in data['sim_locs']]  # if undefined use code from function simulate_data
-    data['phantom'] = np.array(data['phantom'])
-    data['phantom_sim'] = np.array(data['phantom_sim'])
-    return data
-
-
-def simulate_data(phantom: Phantom = None, seq_file: str = 'example/example_test.seq', b0: float = 3,
-                  gamma: float = 267.5153, scale: float = 1, noise: bool = False, cest_pools=None,
-                  test_mode: bool = False):
-    # generate and plot phantom
-    if not phantom:
-        phantom = Phantom()
-        phantom.set_defaults()
-        phantom_fig = plot_phantom(phantom)
-
-    # unpack simulation parameters from phantom
-    assert len(phantom) >= 5
-    p_t1, p_t2, p_b0, p_b1, p_f = [phantom[i] for i in range(5)]
-    locs, n_locs = get_locs(phantom, auto_range=test_mode, return_n=True)
-
-    # simulation for each phantom pixel in locs
-    tqdm_simulation = tqdm(locs)
-    time0 = time()
-    simulations = {}
-    for loc in tqdm_simulation:
-        # print('Simulation', locs.index(loc)+1, 'of', n_locs)
-        # define simulation parameters
-        sp = Params()
-        # define inhomogeneities from inhomogeneity maps
-        b0_inhom = p_b0[loc]
-        rel_b1 = p_b1[loc]
-        sp.set_scanner(b0=b0, gamma=gamma, b0_inhom=b0_inhom, rel_b1=rel_b1)
-        # define water pool from T1 and T2 maps
-        r1_w = 1 / p_t1[loc]
-        r2_w = 1 / p_t2[loc]
-        sp.set_water_pool(r1=r1_w, r2=r2_w)
-        for n in range(len(cest_pools)):
-            r1 = r1_w  # [Hz]
-            r2 = cest_pools[n]['r2']  # [Hz]
-            k = cest_pools[n]['k']  # exchange rate[Hz]
-            # define fractions from fraction map
-            f = p_f[loc]  # rel
-            dw = cest_pools[n]['dw']  # [ppm]
-            sp.set_cest_pool(r1=r1, r2=r2, k=k, f=f, dw=dw)
-        sp.set_m_vec(scale)
-        # start the simulation for this pixel
-        Sim = BMCTool(sp, seq_file)
-        Sim.run(par_calc=True)
-        # retrieve simulated spectrum
-        m_out = Sim.Mout
-        mz = sp.get_zspec(m_out, m0=False)
-        simulations.update({loc: sp})
-    time1 = time()
-    secs = time1 - time0
-    print("Simulations took", secs, "s.")
-
-    # create phantom images of all magnetizations at each offsets
-    offsets = np.array(get_offsets(seq_file))
-    phantom_sim = np.zeros([len(offsets), 128, 128])
-    for o in range(len(offsets)):
-        for k in list(simulations.keys()):
-            if noise:
-                zspec = sim_noise(simulations[k].zspec[o])
-            else:
-                zspec = simulations[k].zspec[o]
-            phantom_sim[o, k[0], k[1]] = zspec
-
-    # z_specs = {k : simulations[k].zspec.tolist() for k in simulations.keys()}
-
-    # save data as json
-    today = date.today().strftime("%Y-%m-%d")
-    data = {}
-    data['B0'] = b0
-    data['gamma'] = gamma
-    data['scale'] = scale
-    data['phantom'] = phantom.tolist()
-    data['sim_locs'] = list(locs)
-    # data['z_specs_k'] = list(z_specs.keys())
-    # data['z_specs_v'] = [v.tolist() for v in z_specs.values()]
-    data['phantom_sim'] = phantom_sim.tolist()
-    data['offsets'] = offsets.tolist()
-    data['n_cest_pools'] = len(sp.cest_pools)
-    seq_name = seq_file.split('/')[-1].replace('.seq', '')
-    with open('example/data/phantom_data_{seq_name}_{n}pools_{date}.txt'.format(n=data['n_cest_pools'], date=today,
-                                                                                seq_name=seq_name), 'w') as outfile:
-        json.dump(data, outfile)
-    return data
-
-
-def get_locs(phantom, set_range: tuple = None, auto_range: bool = False, return_n: bool = False):
-    if phantom.ndim == 3:
-        _, n_rows, n_cols = phantom.shape
-    elif phantom.ndim == 2:
-        n_rows, n_cols = phantom.shape
-    else:
-        raise Exception("Phantom needs to have to or 3 dimensions, not", phantom.ndim)
-    locs = []
-    idces = list(np.ndindex(n_rows, n_cols))
-    if auto_range:
-        set_range = (128*60, 128*62)
-    if set_range:
-        idces = idces[range(set_range)]
-    if phantom.ndim == 3:
-        for loc in idces:
-            if phantom[0][loc] != 0:
-                locs.append(loc)
-    elif phantom.ndim == 2:
-        for loc in idces:
-            if phantom[loc] != 0:
-                locs.append(loc)
-    n_locs = len(locs)
-    if return_n:
-        return locs, n_locs
-    else:
-        return locs
-
-
-def get_z(phantom_sim: np.array, locs: (list, tuple) = None):
-    if not locs:
-        locs = get_locs(phantom_sim)
-    z_specs = {}
-    if type(locs) is tuple:
-        locs = [locs]
-    for loc in locs:
-        z = np.abs([phantom_sim[o][loc] for o in range(len(phantom_sim))])
-        z_noisy = sim_noise(z, is_zspec=True)
-        z_specs.update({tuple(loc): z_noisy})
-    return z_specs
-
-
-def plot_phantom(phantom):
-    titles = ['T1', 'T2', 'B0 inhom.', 'B1 inhom.', 'fractions', 'noise']
-    n_plots = phantom.shape[0]
-    fig, ax = plt.subplots(1, n_plots)
-    for p in range(len(ax)):
-        ax[p].imshow(phantom[p])
-        ax[p].title.set_text('Phantom' + titles[p])
-    plt.show()
-    plt.savefig('example/test/phantom_examples.jpg')
-    return fig
-
-
-def plot_phantom_zspec(phantom_sim: np.array, z_specs: np.array = None, offsets: np.array = None, dw: float = None, locs: (tuple, list, dict) = None,
-                       test_mode: bool = False):
-    if dw and offsets:
-        idx = int(np.where(offsets == offsets[np.abs(offsets - dw).argmin()])[0])
-    elif not dw:
-        idx = np.random.randint(len(phantom_sim))
-    fig = plt.figure()
-    ax_im = plt.subplot(121)
-    tmp = ax_im.imshow(phantom_sim[idx])
-    title = "$Z({\Delta}{\omega})$"
-    if offsets:
-        title += " at offset " + str(offsets[idx])
-    plt.title(title)
-    plt.colorbar(tmp)
-    # plt.show()
-
-    # plot some tissue spectra
-    ax_t = plt.subplot(122)
-    ax_t.set_ylim([0, 1])
-    ax_t.set_ylabel('$Z({\Delta}{\omega})$')
-
-    if test_mode:
-        labels = ["gm top", "gm mid", "gm bottom", "n1", "n2"]  # "wm", "csf"]
-        locs = [(17, 64), (57, 64), (108, 64), (95, 60), (95, 80)]  # (41, 50), (41, 78)]  # locs = [(61, 22), (61, 70)]
-    elif locs:
-        if type(locs) is dict:
-            labels = [k for k in locs.keys()]
-            locs = [v for v in locs.values()]
-        else:
-            if type(locs) is tuple:
-                locs = [locs]
-            if type(locs) is list:
-                labels = ['loc ' + str(l) for l in locs]
-            else:
-                raise ValueError('locs has to be of type tuple, list(tuples) or dict({labels: locs}')
-    else:
-        all_locs = get_locs(phantom_sim)
-        idx = np.random.randint(len(all_locs))
-        locs = [all_locs[idx]]
-        labels = ['random loc ' + str(l) for l in locs]
-
-    if not z_specs:
-        z_specs = get_z(phantom_sim=phantom_sim, locs = locs)
-
-    if offsets:
-        ax_t.set_xlabel('Offsets')
-        for i in range(len(locs)):
-            mz = z_specs[locs[i]]
-            plt.plot(offsets, mz, '.--', label=labels[i])
-    else:
-        ax_t.set_xlabel('Datapoints')
-        for i in range(len(locs)):
-            mz = z_specs[locs[i]]
-            plt.plot(mz, '.--', label=labels[i])
-    plt.gca().invert_xaxis()
-    plt.legend()
-    plt.title('Z-Spec vs phantom location')
-    for i in range(len(locs)):
-        ax_im.annotate(s=labels[i], xy=locs[i][::-1], arrowprops={'arrowstyle': 'simple'},
-                       xytext=(locs[i][1] + 5, locs[i][0] + 5))
-    fig.show()
-    return fig
-
+#
+# def load_data(filename):
+#     # open json data
+#     with open(filename) as json_file:
+#         data = json.load(json_file)
+#     data['offsets'] = np.array(data['offsets'])
+#     data['locs'] = [tuple(loc) for loc in data['sim_locs']]  # if undefined use code from function simulate_data
+#     data['phantom'] = np.array(data['phantom'])
+#     data['phantom_sim'] = np.array(data['phantom_sim'])
+#     return data
+#
+#
+# def simulate_data(phantom: Phantom = None, seq_file: str = 'example/example_test.seq', b0: float = 3,
+#                   gamma: float = 267.5153, scale: float = 1, noise: bool = False, cest_pools=None,
+#                   test_mode: bool = False):
+#     # generate and plot phantom
+#     if not phantom:
+#         phantom = Phantom()
+#         phantom.set_defaults()
+#         phantom_fig = plot_phantom(phantom)
+#
+#     # unpack simulation parameters from phantom
+#     assert len(phantom) >= 5
+#     p_t1, p_t2, p_b0, p_b1, p_f = [phantom[i] for i in range(5)]
+#     locs, n_locs = get_locs(phantom, auto_range=test_mode, return_n=True)
+#
+#     # simulation for each phantom pixel in locs
+#     tqdm_simulation = tqdm(locs)
+#     time0 = time()
+#     simulations = {}
+#     for loc in tqdm_simulation:
+#         # print('Simulation', locs.index(loc)+1, 'of', n_locs)
+#         # define simulation parameters
+#         sp = Params()
+#         # define inhomogeneities from inhomogeneity maps
+#         b0_inhom = p_b0[loc]
+#         rel_b1 = p_b1[loc]
+#         sp.set_scanner(b0=b0, gamma=gamma, b0_inhom=b0_inhom, rel_b1=rel_b1)
+#         # define water pool from T1 and T2 maps
+#         r1_w = 1 / p_t1[loc]
+#         r2_w = 1 / p_t2[loc]
+#         sp.set_water_pool(r1=r1_w, r2=r2_w)
+#         for n in range(len(cest_pools)):
+#             r1 = r1_w  # [Hz]
+#             r2 = cest_pools[n]['r2']  # [Hz]
+#             k = cest_pools[n]['k']  # exchange rate[Hz]
+#             # define fractions from fraction map
+#             f = p_f[loc]  # rel
+#             dw = cest_pools[n]['dw']  # [ppm]
+#             sp.set_cest_pool(r1=r1, r2=r2, k=k, f=f, dw=dw)
+#         sp.set_m_vec(scale)
+#         # start the simulation for this pixel
+#         Sim = BMCTool(sp, seq_file)
+#         Sim.run(par_calc=True)
+#         # retrieve simulated spectrum
+#         m_out = Sim.Mout
+#         mz = sp.get_zspec(m_out, m0=False)
+#         simulations.update({loc: sp})
+#     time1 = time()
+#     secs = time1 - time0
+#     print("Simulations took", secs, "s.")
+#
+#     # create phantom images of all magnetizations at each offsets
+#     offsets = np.array(get_offsets(seq_file))
+#     phantom_sim = np.zeros([len(offsets), 128, 128])
+#     for o in range(len(offsets)):
+#         for k in list(simulations.keys()):
+#             if noise:
+#                 zspec = sim_noise(simulations[k].zspec[o])
+#             else:
+#                 zspec = simulations[k].zspec[o]
+#             phantom_sim[o, k[0], k[1]] = zspec
+#
+#     # z_specs = {k : simulations[k].zspec.tolist() for k in simulations.keys()}
+#
+#     # save data as json
+#     today = date.today().strftime("%Y-%m-%d")
+#     data = {}
+#     data['B0'] = b0
+#     data['gamma'] = gamma
+#     data['scale'] = scale
+#     data['phantom'] = phantom.tolist()
+#     data['sim_locs'] = list(locs)
+#     # data['z_specs_k'] = list(z_specs.keys())
+#     # data['z_specs_v'] = [v.tolist() for v in z_specs.values()]
+#     data['phantom_sim'] = phantom_sim.tolist()
+#     data['offsets'] = offsets.tolist()
+#     data['n_cest_pools'] = len(sp.cest_pools)
+#     seq_name = seq_file.split('/')[-1].replace('.seq', '')
+#     with open('example/data/phantom_data_{seq_name}_{n}pools_{date}.txt'.format(n=data['n_cest_pools'], date=today,
+#                                                                                 seq_name=seq_name), 'w') as outfile:
+#         json.dump(data, outfile)
+#     return data
+#
+#
+# def get_locs(phantom, set_range: tuple = None, auto_range: bool = False, return_n: bool = False):
+#     if phantom.ndim == 3:
+#         _, n_rows, n_cols = phantom.shape
+#     elif phantom.ndim == 2:
+#         n_rows, n_cols = phantom.shape
+#     else:
+#         raise Exception("Phantom needs to have to or 3 dimensions, not", phantom.ndim)
+#     locs = []
+#     idces = list(np.ndindex(n_rows, n_cols))
+#     if auto_range:
+#         set_range = (128*60, 128*62)
+#     if set_range:
+#         idces = idces[range(set_range)]
+#     if phantom.ndim == 3:
+#         for loc in idces:
+#             if phantom[0][loc] != 0:
+#                 locs.append(loc)
+#     elif phantom.ndim == 2:
+#         for loc in idces:
+#             if phantom[loc] != 0:
+#                 locs.append(loc)
+#     n_locs = len(locs)
+#     if return_n:
+#         return locs, n_locs
+#     else:
+#         return locs
+#
+#
+# def get_z(phantom_sim: np.array, locs: (list, tuple) = None):
+#     if not locs:
+#         locs = get_locs(phantom_sim)
+#     z_specs = {}
+#     if type(locs) is tuple:
+#         locs = [locs]
+#     for loc in locs:
+#         z = np.abs([phantom_sim[o][loc] for o in range(len(phantom_sim))])
+#         z_noisy = sim_noise(z, is_zspec=True)
+#         z_specs.update({tuple(loc): z_noisy})
+#     return z_specs
+#
+#
+# def plot_phantom(phantom):
+#     titles = ['T1', 'T2', 'B0 inhom.', 'B1 inhom.', 'fractions', 'noise']
+#     n_plots = phantom.shape[0]
+#     fig, ax = plt.subplots(1, n_plots)
+#     for p in range(len(ax)):
+#         ax[p].imshow(phantom[p])
+#         ax[p].title.set_text('Phantom' + titles[p])
+#     plt.show()
+#     plt.savefig('example/test/phantom_examples.jpg')
+#     return fig
+#
+#
+# def plot_phantom_zspec(phantom_sim: np.array, z_specs: np.array = None, offsets: np.array = None, dw: float = None, locs: (tuple, list, dict) = None,
+#                        test_mode: bool = False):
+#     if dw and offsets:
+#         idx = int(np.where(offsets == offsets[np.abs(offsets - dw).argmin()])[0])
+#     elif not dw:
+#         idx = np.random.randint(len(phantom_sim))
+#     fig = plt.figure()
+#     ax_im = plt.subplot(121)
+#     tmp = ax_im.imshow(phantom_sim[idx])
+#     title = "$Z({\Delta}{\omega})$"
+#     if offsets:
+#         title += " at offset " + str(offsets[idx])
+#     plt.title(title)
+#     plt.colorbar(tmp)
+#     # plt.show()
+#
+#     # plot some tissue spectra
+#     ax_t = plt.subplot(122)
+#     ax_t.set_ylim([0, 1])
+#     ax_t.set_ylabel('$Z({\Delta}{\omega})$')
+#
+#     if test_mode:
+#         labels = ["gm top", "gm mid", "gm bottom", "n1", "n2"]  # "wm", "csf"]
+#         locs = [(17, 64), (57, 64), (108, 64), (95, 60), (95, 80)]  # (41, 50), (41, 78)]  # locs = [(61, 22), (61, 70)]
+#     elif locs:
+#         if type(locs) is dict:
+#             labels = [k for k in locs.keys()]
+#             locs = [v for v in locs.values()]
+#         else:
+#             if type(locs) is tuple:
+#                 locs = [locs]
+#             if type(locs) is list:
+#                 labels = ['loc ' + str(l) for l in locs]
+#             else:
+#                 raise ValueError('locs has to be of type tuple, list(tuples) or dict({labels: locs}')
+#     else:
+#         all_locs = get_locs(phantom_sim)
+#         idx = np.random.randint(len(all_locs))
+#         locs = [all_locs[idx]]
+#         labels = ['random loc ' + str(l) for l in locs]
+#
+#     if not z_specs:
+#         z_specs = get_z(phantom_sim=phantom_sim, locs = locs)
+#
+#     if offsets:
+#         ax_t.set_xlabel('Offsets')
+#         for i in range(len(locs)):
+#             mz = z_specs[locs[i]]
+#             plt.plot(offsets, mz, '.--', label=labels[i])
+#     else:
+#         ax_t.set_xlabel('Datapoints')
+#         for i in range(len(locs)):
+#             mz = z_specs[locs[i]]
+#             plt.plot(mz, '.--', label=labels[i])
+#     plt.gca().invert_xaxis()
+#     plt.legend()
+#     plt.title('Z-Spec vs phantom location')
+#     for i in range(len(locs)):
+#         ax_im.annotate(s=labels[i], xy=locs[i][::-1], arrowprops={'arrowstyle': 'simple'},
+#                        xytext=(locs[i][1] + 5, locs[i][0] + 5))
+#     fig.show()
+#     return fig
+#
