@@ -2,6 +2,7 @@
 class definition to store simulation parameters
 """
 import numpy as np
+from sim.util import sim_noise
 
 
 class Params:
@@ -175,14 +176,24 @@ class Params:
         self.options.update(options)
         return options
 
-    def get_zspec(self, m_out: np.array = None, m0: bool = False):
+    def get_zspec(self, m_out: np.array = None, m0: bool = False, noise: (bool, tuple) = True):
+        """
+        returns the Z- spectra and optionally simulates noise
+        :param m_out: Output magnetization from the simulation
+        :param m0: bool, True if m_out contains m0 at the first position
+        :param noise: bool or tuple, toggle to simulate standard gaussian noise on the spectra or set values (mean, std)
+        """
         if not np.any(m_out) and not np.any(self.zspec):
             print("mz not yet retrieved from m_out. Use Params.get_mz(m_out).")
         elif np.any(m_out):
             if m0:
-                self.zspec = np.abs(m_out[self.mz_loc, 1:]) # TODO *M0? Put into simulation!
+                zspec = np.abs(m_out[self.mz_loc, 1:]) # TODO *M0? Move into simulation!
             else:
-                self.zspec = np.abs(m_out[self.mz_loc, :])
+                zspec = np.abs(m_out[self.mz_loc, :])
+            if noise:
+                self.zspec = sim_noise(zspec, set=noise)
+            else:
+                self.z_spec = zspec
         return self.zspec
 
     def print_settings(self):

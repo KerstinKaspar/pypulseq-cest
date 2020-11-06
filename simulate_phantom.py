@@ -6,11 +6,12 @@ import pickle
 
 phantom = Phantom()
 phantom.set_defaults(fractions=False)
-data = phantom.simulate(seq_file='example/wasabi/example_wasabi.seq', noise=False)
+data = phantom.simulate(seq_file='example/wasabi/example_wasabi.seq')
 filename = 'example/data/test_phantom_wasabi.p'
 phantom.save_data(filename)
 
-phantom.load(filename)
+# data = phantom.load(filename)
+
 
 # with open(filename, 'wb') as outfile:
 #     pickle.dump(data, outfile)
@@ -115,52 +116,52 @@ phantom.load(filename)
 # load data
 # data = load_data('example/data/data_wasabi_test.txt')
 
-offsets = np.array(data['offsets'])
-locs = [tuple(loc) for loc in data['sim_locs']] # if undefined use code from function simulate_data
-phantom = np.array(data['phantom'])
-phantom_sim = np.array(data['phantom_sim'])
-noisy_phantom_sim = sim_noise(phantom_sim, is_phantom=True)
-# z_specs = {data['z_specs_k'][i]: data['z_specs_v'][i] for i in range(len(data['z_specs_k']))}
-z_specs = {}
-for loc in locs:
-    z = np.array([phantom_sim[o][loc] for o in range(len(offsets))])
-    z_noisy = sim_noise(z, is_zspec=True)
-    z_specs.update({loc: z_noisy})
-
-# calculate MTRasym
-mtr_asyms = {}
-for loc in locs:
-    mtr_asym = np.flip(z_specs[loc]) - z_specs[loc]
-    mtr_asyms[loc] = mtr_asym
-
-# show CEST pool offset phantom image
-dw_pool = 5
-idx = int(np.where(offsets == offsets[np.abs(offsets - dw_pool).argmin()])[0])
-fig = plt.figure()
-ax_im = plt.subplot(121)
-tmp = ax_im.imshow(noisy_phantom_sim[idx])
-plt.title("$Z({\Delta}{\omega})$ at offset " + str(offsets[idx]))
-plt.colorbar(tmp)
-# plt.show()
-
-# plot some tissue spectra
-# fig2 = figure()
-ax_t = plt.subplot(122)
-ax_t.set_ylim([0, 1])
-ax_t.set_ylabel('$Z({\Delta}{\omega})$')
-ax_t.set_xlabel('Offsets')
-labels = ["gm top", "gm mid", "gm bottom", "n1", "n2"]  # "wm", "csf"]
-locs = [(17, 64), (57, 64), (108, 64), (95, 60), (95, 80)] # (41, 50), (41, 78)]  # locs = [(61, 22), (61, 70)]
-for i in range(len(locs[:5])):
-    # TODO something is wrong with the indexing - matplotlib != numpy? imshow != annotate?
-    mz = z_specs[locs[i]]
-    plt.plot(offsets, mz, '.--', label=labels[i])
-plt.gca().invert_xaxis()
-plt.legend()
-plt.title('Z-Spectra for tifferent tissue types and phantom locations.')
-for i in range(len(locs[:5])):
-    ax_im.annotate(s=labels[i], xy=locs[i][::-1], arrowprops={'arrowstyle': 'simple'}, xytext=(locs[i][1]+5, locs[i][0]+5))
-fig.show()
+# offsets = np.array(data['offsets'])
+# locs = [tuple(loc) for loc in data['sim_locs']] # if undefined use code from function simulate_data
+# phantom = np.array(data['phantom'])
+# phantom_sim = np.array(data['phantom_sim'])
+# noisy_phantom_sim = sim_noise(phantom_sim, is_phantom=True)
+# # z_specs = {data['z_specs_k'][i]: data['z_specs_v'][i] for i in range(len(data['z_specs_k']))}
+# z_specs = {}
+# for loc in locs:
+#     z = np.array([phantom_sim[o][loc] for o in range(len(offsets))])
+#     z_noisy = sim_noise(z, is_zspec=True)
+#     z_specs.update({loc: z_noisy})
+#
+# # calculate MTRasym
+# mtr_asyms = {}
+# for loc in locs:
+#     mtr_asym = np.flip(z_specs[loc]) - z_specs[loc]
+#     mtr_asyms[loc] = mtr_asym
+# 
+# # show CEST pool offset phantom image
+# dw_pool = 5
+# idx = int(np.where(offsets == offsets[np.abs(offsets - dw_pool).argmin()])[0])
+# fig = plt.figure()
+# ax_im = plt.subplot(121)
+# tmp = ax_im.imshow(noisy_phantom_sim[idx])
+# plt.title("$Z({\Delta}{\omega})$ at offset " + str(offsets[idx]))
+# plt.colorbar(tmp)
+# # plt.show()
+#
+# # plot some tissue spectra
+# # fig2 = figure()
+# ax_t = plt.subplot(122)
+# ax_t.set_ylim([0, 1])
+# ax_t.set_ylabel('$Z({\Delta}{\omega})$')
+# ax_t.set_xlabel('Offsets')
+# labels = ["gm top", "gm mid", "gm bottom", "n1", "n2"]  # "wm", "csf"]
+# locs = [(17, 64), (57, 64), (108, 64), (95, 60), (95, 80)] # (41, 50), (41, 78)]  # locs = [(61, 22), (61, 70)]
+# for i in range(len(locs[:5])):
+#     # TODO something is wrong with the indexing - matplotlib != numpy? imshow != annotate?
+#     mz = z_specs[locs[i]]
+#     plt.plot(offsets, mz, '.--', label=labels[i])
+# plt.gca().invert_xaxis()
+# plt.legend()
+# plt.title('Z-Spectra for tifferent tissue types and phantom locations.')
+# for i in range(len(locs[:5])):
+#     ax_im.annotate(s=labels[i], xy=locs[i][::-1], arrowprops={'arrowstyle': 'simple'}, xytext=(locs[i][1]+5, locs[i][0]+5))
+# fig.show()
 
 # # plot some fraction spectra
 # fig3, ax1 = plt.subplots()

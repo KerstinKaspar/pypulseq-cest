@@ -10,7 +10,7 @@ from sim_bmc.bmc_tool_v2 import BMCTool
 from sim.params import Params
 # from phantom.plot_phantom import plot_phantom
 from sim.eval import get_offsets
-from sim.util import sim_noise
+from sim.util import get_noise_params
 from time import time
 import pickle
 from datetime import date
@@ -219,15 +219,6 @@ class Phantom():
         return [phantom[i] for i in range(n_layers)]
 
     def load(self, filename: str):
-        # # open json data
-        # with open(filename) as json_file:
-        #     data = json.load(json_file)
-        # phantom = np.array(data['phantom'])
-        # self.unstack(phantom=phantom)
-        # self.simulated = data['phantom_sim']
-        # # self.sim_data = data
-        # self.b0 = data['B0']
-        # # self.locs = data['locs']
         with open(filename, 'rb') as infile:
             data = pickle.load(infile)
 
@@ -248,7 +239,7 @@ class Phantom():
         return data
 
     def simulate(self, seq_file: str = 'example/example_test.seq', b0: float = 3, gamma: float = 267.5153,
-                 scale: float = 1, noise: bool = True, cest_pools=None, export_file: (bool, str) = False):
+                 scale: float = 1, noise: (bool, tuple) = True, cest_pools=None, export_file: (bool, str) = False):
         # if no phantom is defined
         if len(self.layers) < 1:
             self.set_defaults()
@@ -283,7 +274,7 @@ class Phantom():
             Sim.run(par_calc=True)
             # retrieve simulated spectrum
             m_out = Sim.Mout
-            mz = sp.get_zspec(m_out)
+            mz = sp.get_zspec(m_out, noise)
             simulations.update({loc: sp})
         time1 = time()
         secs = time1 - time0
@@ -291,17 +282,17 @@ class Phantom():
 
         # create phantom images of all magnetizations at each offsets
         offsets = np.array(get_offsets(seq_file))
-        phantom_sim = np.zeros([len(offsets), 128, 128])
+        self.simulated = np.zeros([len(offsets), 128, 128])
         for o in range(len(offsets)):
             for k in list(simulations.keys()):
-                if noise:
-                    zspec = sim_noise(simulations[k].zspec[o])
-                else:
-                    zspec = simulations[k].zspec[o]
-                phantom_sim[o, k[0], k[1]] = zspec
+                z = simulations[k].zspec[o]
+                self.simulated[o, k[0], k[1]] = z
+        self.z_specs = {k: v.zspec for k, v in simulations.items()}
+        # get noise values
+        if type(noise) is not tuple:
+            noise = get_noise_params()
+        noise_params = {'mean': noise[0], 'std': noise[1]}
 
-        self.simulated = phantom_sim
-        z_specs = self.get_z()
         today = date.today().strftime("%Y-%m-%d")
         data = {}
         data['seq_file'] = seq_file
@@ -318,8 +309,9 @@ class Phantom():
         if self.noise:
             data['phantom']['noise'] = self.noise
         data['sim_locs'] = list(self.locs)
-        data['phantom_sim'] = phantom_sim
-        data['z_specs'] = z_specs
+        data['phantom_sim'] = self.simulated
+        data['z_specs'] = self.z_specs
+        data['noise_params'] = noise_params
         data['offsets'] = offsets.tolist()
         if sp.cest_pools:
             data['n_cest_pools'] = len(sp.cest_pools)
@@ -335,18 +327,11 @@ class Phantom():
         with open(filename, 'wb') as outfile:
             pickle.dump(self.sim_data, outfile)
 
-    def get_z(self, locs: (list, tuple) = None, noise: bool = True):
-        if not locs:
-            locs = self.locs
-        z_specs = {}
-        if type(locs) is tuple:
-            locs = [locs]
-        for loc in locs:
-            z = np.array([self.simulated[o][loc[0]][loc[1]] for o in range(len(self.simulated))])
-            if noise:
-                z = sim_noise(z, is_zspec=True)
-            z_specs.update({tuple(loc): z})
-        self.z_specs = z_specs
+    def get_z_specs(self, locs: (list, tuple) = None):
+        if locs:
+            z_specs = {k: v for k, v in self.z_specs if k in locs}
+        else:
+            z_specs = self.z_specs
         return z_specs
 
     def plot(self, export: (bool, str) = False):
