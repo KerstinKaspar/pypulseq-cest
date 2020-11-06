@@ -1,0 +1,23 @@
+## Data in the pickle file:
+
+seq_file: path and name of the simulated sequence file
+
+B0: field strength [T]
+gamma: gyromagnetic ratio [rad/uT]
+scale: scale factor for initial magnetization vector
+
+phantom: (each arrays of values for each voxel location, *are optional)
+  t1: T1 times [s]
+  t2: T2 times [s]
+  b0_shift: field shift in ppm
+  b1_inhom: relative B1 inhomogeneity
+  *fractions: fraction sizes (relative to water)
+  *noise: optional noise
+
+sim_locs: list of locations (tuples) in the phantom where data is stored
+
+phantom_sim: simulated phantoms (arrays for each offset)
+
+z_specs: Z-spectra at each simulated voxel
+
+offsets: simulated offsets
