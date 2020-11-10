@@ -5,10 +5,10 @@ function fedinitions to pars the parameters into the C++ class
 from SimPulseqSBB import SimulationParameters, WaterPool, MTPool, CESTPool
 from sim_pulseq_sbb.params import Params
 from SimPulseqSBB import Lorentzian, SuperLorentzian, NoLineshape
-from pypulseq.Sequence.sequence import Sequence
 
 
-def parse_sp(sp: Params, seq_file: str):
+def parse_params(sp: Params,
+                 seq_file: str) -> SimulationParameters:
     """
     parsing python parameters into the according C++ functions
     :param sp: simulation parameter object
@@ -16,8 +16,10 @@ def parse_sp(sp: Params, seq_file: str):
     :return: SWIG object for C++ object handling
     """
     sp_sim = SimulationParameters()
+    # pass offsets and m0 to sp
+    sp.set_definitions(seq_file=seq_file)
     # init magnetization vector
-    num_adc_events = get_num_adc_events(seq_file) +1
+    num_adc_events = sp.get_num_adc_events() + 1
     sp_sim.InitMagnetizationVectors(sp.m_vec, num_adc_events)
     # constructwater pool
     water_pool = WaterPool(sp.water_pool['r1'], sp.water_pool['r2'], sp.water_pool['f'])
@@ -40,7 +42,7 @@ def parse_sp(sp: Params, seq_file: str):
     return sp_sim
 
 
-def set_lineshape(ls: str = None):
+def set_lineshape(ls: str = None) -> (Lorentzian, SuperLorentzian, NoLineshape):
     """
     return the according lineshape object
     """
@@ -53,46 +55,6 @@ def set_lineshape(ls: str = None):
             return NoLineshape
     except ValueError:
         print(ls + ' is not a valid lineshape for MT Pool.')
-
-
-def get_offsets(seq_file: str) -> list:
-    """
-    read the offsets from the sequence file
-    :param seq_file: sequence file to read the offsets from
-    :return: list of offsets
-    """
-    seq = Sequence(version=1.3)
-    seq.read(seq_file)
-    try:
-        offsets = list(seq.definitions['offsets_ppm'])
-    except ValueError:
-        print('Could not read offsets from seq-file.')
-    return offsets
-
-
-def get_num_adc_events(seq_file: str) -> int:
-    """
-    number of ADC events should equla number of offsets
-    :param seq_file: sequence file to read the offsets from
-    :return: num_adc_events
-    """
-    offsets = get_offsets(seq_file)
-    num_adc_events = len(offsets)
-    return num_adc_events
-
-
-def check_m0(seq_file: str) -> bool:
-    """
-    check wether m0 simulation is defined in the sequence file
-    :param seq_file: sequence file to read the declaration from
-    :return: boolean
-    """
-    seq = Sequence(version=1.3)
-    seq.read(seq_file)
-    if 1 in seq.definitions['run_m0_scan'] or 'True' in seq.definitions['run_m0_scan']:
-        return True
-    else:
-        return False
 
 
 

@@ -11,7 +11,6 @@ APTw_1 : APT-weighted, low DC, t_sat=1.8s (//GLINT//)
      T_rec = 2.4/12 s (saturated/M0)
 """
 
-import math
 import numpy as np
 
 from pypulseq.Sequence.sequence import Sequence
@@ -22,8 +21,10 @@ from pypulseq.make_gauss_pulse import make_gauss_pulse
 from pypulseq.opts import Opts
 from seq_util.conversion import convert_seq_12_to_pseudo_13
 
+# initiate the Sequence
 seq = Sequence()
 
+# set CEST parameters
 offset_range = 10  # [ppm]
 num_offsets = 40  # number of measurements (not including M0)
 run_m0_scan = True  # if you want an M0 scan at the beginning
@@ -36,6 +37,7 @@ n_pulses = 20  # number of sat pulses per measurement
 b0 = 3  # B0 [T]
 spoiling = 1  # 0=no spoiling, 1=before readout, Gradient in x,y,z
 
+# name of the output file
 seq_filename = 'example_APTw.seq'  # filename
 
 # scanner limits

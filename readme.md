@@ -5,7 +5,7 @@ This repository contains the necessary code and tools to build CEST saturation b
 which in itself is a python adaption of the matlab-based [pulseq](https://github.com/pulseq/pulseq). The documentation
 of the open file format for MR sequences can be found [here](https://pulseq.github.io/specification.pdf).
 
-An example script and sequences can be found in the [example](./example) subfolder. Please find further remarks in that subfolders [readme](./example/readme.md)
+An example script and sequences can be found in the [example](example) subfolder. Please find further remarks in that subfolders [readme](./example/readme.md)
 Since pypulseq is producing files of the version 1.2, we provide a function to create 
 
 ## Simulation of CEST sequences
@@ -18,5 +18,5 @@ You can then run the simulation with the [simulate](simulate.py) script.
 Parameter handling and evaluation tools are defined in the [sim_pulseq_sbb](sim_pulseq_sbb) folder. The package code and C++ source code can be found in the [src](sim_pulseq_sbb/src) subfolder.
 
 ## Installation
-Please refer to the [readme](./sim_pulseq_sbb/src/readme.md) in [sim_pulseq_sbb/src](./sim_pulseq_sbb/src) for 
+Please refer to the [readme](sim_pulseq_sbb/src/readme.md) in [sim_pulseq_sbb/src](sim_pulseq_sbb/src) for 
 installation of the necessary python module.

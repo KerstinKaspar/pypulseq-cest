@@ -1,20 +1,24 @@
 """
-class definition to store simulation parameters
+params.py
+    Class definition to store simulation parameters
 """
+
 import numpy as np
-from sim_pulseq_sbb.util import sim_noise
+from sim_pulseq_sbb.util import check_m0_scan, get_offsets
+from seq_util.read import read_any_version
 
 
 class Params:
     """
     Class to store simulation parameters
-    Default parameters are for a Z-spectrum for gray matter at 3T
-    with an amide CEST pool and a Lorentzian shaped MT pool
     """
-    def __init__(self, set_defaults: bool = False, config: dict = None):
+    def __init__(self,
+                 set_defaults: bool = False,
+                 config: dict = None):
         """
         :param set_defaults: if True, class initializes with parameters for a standard APT weightedCEST simulation of
         gray matter at 3T with an amide CEST pool, a creatine CEST pool and a Lorentzian shaped MT pool
+        :param config: configurations from which the parameters were initialized
         """
         self.water_pool = {}
         self.cest_pools = []
@@ -28,8 +32,15 @@ class Params:
         self.zspec = None
         self.b1_nom = None
         self.config = config
+        self.offsets = None
+        self.m0_scan = None
 
-    def set_water_pool(self, r1: float = None, r2: float= None, f: float = 1, set_gm_3t_default: bool = False) -> dict:
+    def set_water_pool(self,
+                       r1: float = None,
+                       r2: float = None,
+                       f: float = 1,
+                       set_gm_3t_default: bool = False) \
+            -> dict:
         """
         defining the water pool for simulation
         :param r1: relaxation rate R1 = 1/ T1 [Hz]
@@ -49,8 +60,15 @@ class Params:
         self.mz_loc += 2
         return water_pool
 
-    def set_cest_pool(self, r1: float = None, r2: float = None, k: int = None, f: float = None, dw: float = None,
-                      set_amide_defaults: bool = False, set_creatine_defaults: bool = False) -> dict:
+    def set_cest_pool(self,
+                      r1: float = None,
+                      r2: float = None,
+                      k: int = None,
+                      f: float = None,
+                      dw: float = None,
+                      set_amide_defaults: bool = False,
+                      set_creatine_defaults: bool = False) \
+            -> dict:
         """
         defines a CEST pool for simulation
         :param r1: relaxation rate R1 = 1/T1 [Hz]
@@ -85,8 +103,15 @@ class Params:
         self.mz_loc += 2
         return cest_pool
 
-    def set_mt_pool(self, r1: float = 1, r2: float = 1e5, k: int = 23, f: float = 0.05, dw: int = 0,
-                    lineshape: str = 'SuperLorentzian', set_lorentzian_default: bool = False) -> dict:
+    def set_mt_pool(self,
+                    r1: float = 1,
+                    r2: float = 1e5,
+                    k: int = 23,
+                    f: float = 0.05,
+                    dw: int = 0,
+                    lineshape: str = 'SuperLorentzian',
+                    set_lorentzian_default: bool = False) \
+            -> dict:
         """
         defines an MT pool for simulation
         :param r1: relaxation rate R1 = 1/ T1 [Hz]
@@ -113,7 +138,10 @@ class Params:
         # self.mz_loc += 2
         return mt_pool
 
-    def set_m_vec(self, scale: float = 1, set_flash_default: bool = False) -> np.array:
+    def set_m_vec(self,
+                  scale: float = 1,
+                  set_flash_default: bool = False) \
+            -> np.array:
         """
         Sets the initial magnetization vector (fully relaxed) from the defined pools
         e. g. for 2 CEST pools: [MxA, MxB, MxD, MyA, MyB, MyD, MzA, MzB, MzD, MzC]
@@ -149,7 +177,11 @@ class Params:
         self.scale = scale
         return m_vec
 
-    def set_scanner(self, b0: float = 3, gamma: float = 267.5153, b0_inhom: float = None, rel_b1: float = 1.0) \
+    def set_scanner(self,
+                    b0: float = 3,
+                    gamma: float = 267.5153,
+                    b0_inhom: float = None,
+                    rel_b1: float = 1.0) \
             -> dict:
         """
         Sets the scanner values
@@ -176,26 +208,6 @@ class Params:
         self.options.update(options)
         return options
 
-    def get_zspec(self, m_out: np.array = None, m0: bool = False, noise: (bool, tuple) = True):
-        """
-        returns the Z- spectra and optionally simulates noise
-        :param m_out: Output magnetization from the simulation
-        :param m0: bool, True if m_out contains m0 at the first position
-        :param noise: bool or tuple, toggle to simulate standard gaussian noise on the spectra or set values (mean, std)
-        """
-        if not np.any(m_out) and not np.any(self.zspec):
-            print("mz not yet retrieved from m_out. Use Params.get_mz(m_out).")
-        elif np.any(m_out):
-            if m0:
-                zspec = np.abs(m_out[self.mz_loc, 1:]) # TODO *M0? Move into simulation!
-            else:
-                zspec = np.abs(m_out[self.mz_loc, :])
-            if noise:
-                self.zspec = sim_noise(zspec, set=noise)
-            else:
-                self.z_spec = zspec
-        return self.zspec
-
     def print_settings(self):
         """
         function to print the current parameter settings
@@ -208,15 +220,40 @@ class Params:
         print("\t Scanner:\n", self.scanner)
         print("\t Options:\n", self.options)
 
-    def _set_defaults(self, set_defaults):
-        self.set_options(verbose=False, reset_init_mag=True, max_pulse_samples=500)
+    def _set_defaults(self, set_defaults: bool):
+        """
+        initiates params with default parameters
+        :params set_defaults: toggle the initiation with default parameters
+        """
         if set_defaults:
+            self.set_options(verbose=False, reset_init_mag=True, max_pulse_samples=500)
             self.set_water_pool(set_gm_3t_default=True)
             self.set_mt_pool(set_lorentzian_default=True)
             self.set_cest_pool(set_amide_defaults=True)
             self.set_cest_pool(set_creatine_defaults=True)
             self.set_m_vec(set_flash_default=True)
             self.set_scanner()
+
+    def set_definitions(self,
+                        seq_file: str) \
+            -> [np.ndarray, bool]:
+        """
+        saves the definitions from the sequence file to the Params object
+        :param seq_file: path to the sequence file
+        :return (offsets, m0_scan): the offsets and m0_scan values defined in the sequence file
+        """
+        seq = read_any_version(seq_file)
+        self.offsets = get_offsets(seq)
+        self.m0_scan = check_m0_scan(seq)
+        return self.offsets, self.m0_scan
+
+    def get_num_adc_events(self) -> int:
+        """
+        :return num_adc_events: number of ADC events based on the number of offsets
+        """
+        num_adc_events = len(self.offsets)
+        return num_adc_events
+
 
 
 

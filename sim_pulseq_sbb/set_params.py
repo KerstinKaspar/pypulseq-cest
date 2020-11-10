@@ -1,19 +1,6 @@
 """
-param_configs.py
-    Script to set the parameters used for the simulation.
-
-Only the parameter values need to be adapted: If the simulation is started from simulate.py, this file does not need
-to be run separately, the setting of the parameters into the class instance will be handled automatically.
-
-PARAMETERS:
-    b0: field strength [T]
-    gamma: gyromagnetic ratio [rad / uT]
-    b0_inhom: field inhomogeneity [ppm]
-    rel_b1: relative b1
-    f: proton fraction (relative)
-    dw: chemical shift from water [ppm]
-    k: exchange rate [Hz]
-    lineshape_mt: lineshape of the MT Pool ('Lorentzian', 'SuperLorentzian' or 'None')
+set_params.py
+    Functions to load the parameters for the simulation from the config files.
 """
 
 from sim_pulseq_sbb.params import Params
@@ -24,7 +11,7 @@ import yaml
 def load_config(*args: str) -> dict:
     """
     Load config yaml files from path.
-    :params args: path(s) of the file(s) containing comfiguration parameters
+    :param args: path(s) of the file(s) containing comfiguration parameters
     """
     config = {}
     for filepath in args:
@@ -33,7 +20,18 @@ def load_config(*args: str) -> dict:
     return config
 
 
-def check_values(val_dict, config, invalid, dict_key=None):
+def check_values(val_dict: dict,
+                 config: dict,
+                 invalid: list,
+                 dict_key: str = None) -> [dict, list]:
+    """
+    checking and correcting the nested dictionaries from the loaded configuration for definition errors
+    :param val_dict: dictionary containing values to check
+    :param config: data loaded from config files
+    :param invalid: list to save invalid definitions in
+    :param dict_key: key to save the value in the right place in theparent dictionary
+    :return (config, invalid): the corrected data and list of invalid definitions
+    """
     valids = load_config('param_configs/maintenance/valid_params.yaml')
     valid_num = valids['valid_num']
     valid_str = valids['valid_str']
@@ -94,18 +92,37 @@ def check_values(val_dict, config, invalid, dict_key=None):
     return config, invalid
 
 
-def check_cest_values(dv, config, invalid, k, dk):
+def check_cest_values(val_dict: dict,
+                      config: dict,
+                      invalid: list,
+                      dict_key: str) -> [dict, list]:
+    """
+    checking and correcting cest pool values loaded configuration for definition errors
+    :param val_dict: dictionary containing values to check
+    :param config: data loaded from config files
+    :param invalid: list to save invalid definitions in
+    :param dict_key: key to save the value in the right place in theparent dictionary
+    :return (config, invalid): the corrected data and list of invalid definitions
+    """
     if 'cest_pools' in config.keys():
         config['cest_pool'] = config.pop('cest_pools')
     conf_temp = config['cest_pool']
-    conf_temp, invalid_new = check_values(dv, conf_temp, invalid, dk)
+    conf_temp, invalid_new = check_values(val_dict, conf_temp, invalid, dict_key)
     if invalid_new != invalid:
         invalid_new.append('some definition in cest_pool')
     config['cest_pool'] = conf_temp
     return config, invalid
 
 
-def check_necessary(config: dict, necessary, necessary_w):
+def check_necessary(config: dict,
+                    necessary: list,
+                    necessary_w: list):
+    """
+    checking for necessary parameters in the loaded values
+    :param config: data loaded from config files
+    :param necessary: list containing necessary parameters (from valid_params.yaml)
+    :param necessary_w: list containing necessary parameters for the water pool (from valid_params.yaml)
+    """
     missing = []
     for n in necessary:
         if n not in config.keys():
@@ -121,7 +138,12 @@ def check_necessary(config: dict, necessary, necessary_w):
                              ''.join(m + ', ' for m in missing[:-1]) + missing[-1])
 
 
-def check_params(config):
+def check_params(config: dict) -> dict:
+    """
+    checking and correcting the loaded parameters
+    :param config: data loaded from config files
+    :return config: corrected (or unchanged) data
+    """
     invalid = []
     valids = load_config('param_configs/maintenance/valid_params.yaml')
     valid = valids['valid_first']
@@ -151,11 +173,19 @@ def check_params(config):
 
 
 def pprint_dict(dictionary: dict):
+    """
+    readable printing of dictionaries
+    :param dictionary: dict to print
+    """
     for k, v in dictionary.items():
         print(k, ':', v)
 
 
 def verbose_output(config: dict):
+    """
+    Printing the parameters set in set_params
+    :param config: data loaded from config files
+    """
     print('You defined the following parameters:')
     pprint_dict({k: v for k, v in config.items() if type(v) is not dict})
     print('You set a water pool with the parameters:')
@@ -170,7 +200,8 @@ def verbose_output(config: dict):
             pprint_dict(v)
 
 
-def load_params(sample_filepath: str, experimental_filepath: str) -> Params:
+def load_params(sample_filepath: str,
+                experimental_filepath: str) -> Params:
     """
     Load parameters into simulation parameter object
     :param sample_filepath: path for the file containing sample parameters
