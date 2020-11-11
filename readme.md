@@ -6,7 +6,19 @@ which in itself is a python adaption of the matlab-based [pulseq](https://github
 of the open file format for MR sequences can be found [here](https://pulseq.github.io/specification.pdf).
 
 An example script and sequences can be found in the [example](example) subfolder. Please find further remarks in that subfolders [readme](./example/readme.md)
-Since pypulseq is producing files of the version 1.2, we provide a function to create 
+Since pypulseq is producing files of the version 1.2, we provide a function to create a pseudo 1.3 file and one to load files of either of these versions in the [seq_util submodule](seq_util).
+You can use the following to change the 1.2 file into a pseudo 1.3 version:
+````python
+from seq_util.conversion import convert_seq_12_to_pseudo_13
+convert_seq_12_to_pseudo_13(file_path)
+````
+
+To load any sequence file of version 1.2 or 1.3, use:
+````python
+from seq_util.read import read_any_version
+seq = read_any_version(file_path)
+````
+
 
 ## Simulation of CEST sequences
 The goal of this repository is to enable the simulation for CEST spectra in python. Therefore, we provide a python implementation of the C++ based simulation tool [pulseq-cest-sim](https://github.com/kherz/pulseq-cest/tree/master/pulseq-cest-sim)
