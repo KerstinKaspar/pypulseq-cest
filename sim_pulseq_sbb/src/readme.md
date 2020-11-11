@@ -1,59 +1,39 @@
-# Installing the python module
-This simulation tool can run a solver in C++ code, for which the following is necessary:
-## Installation guide:
-The C++ code is precompiled into a shared library such that it should suffice to install the package according to your operating system. Should you still need to compile the files for yourself, see **Compilation guide** section below.
+## Installation
+This simulation tool can run a solver in C++ code, for which the installation of the pre-compiled python distribution is necessary.
+Alternatively, if [Swig](http://www.swig.org/) and [Visual C++](https://support.microsoft.com/de-de/help/2977003/the-latest-supported-visual-c-downloads) are installed, the compilation and installation might be preferrable, see **Compilation guide** section below.
+If all fails, you will find some "dumb" distributions (operating system dependent) that you can unpack into your python environment **Lib/site-packages* similar to the structure of the compressed folder.
+
+## Distribution Installation guide:
 ### Windows
-- from this *pypulseq_cest/src* folder run the following command in the terminal:
-    - *(you may have to substitute python with your python version, e.g. python3)*
+- from the *pulseq-cest-sim/src/dist* folder run the following command in the terminal to install into your current python environment:
+    - choose the correct executable for your operating system (32 or 64 bit) and python version and replace the filename in the following code
+    - if you don't find a suitable executable, please follow the instructions in the **Compilation guide** section below
 ```
-    python setup_win.py install
+    # example for installation
+    easy_install pySimPulseqSBB-1.0.win-amd64-py3.7.exe
 ``` 
 
 ### Linux
-- from this *pypulseq_cest/src* folder run the following command in the terminal:
-    - *(you may have to substitute python with your python version, e.g. python3)*
-```
-    sudo python setup_ux.py install
-``` 
+not yet built, please refer to the **Compilation guide** below
 ### Mac
-**???**
-- from this *pypulseq_cest/src* folder run the following command in the terminal:
-    - *(you may have to substitute python with your python version, e.g. python3)*
-```
-    python setup_ux.py install
-``` 
+not yet built, please refer to the **Compilation guide** below
 
 ## Compilation guide
-### Windows
 - Prerequisites: 
     - [Swig](http://www.swig.org/)
-    - [Visual C++](https://support.microsoft.com/de-de/help/2977003/the-latest-supported-visual-c-downloads) min. v12.0
-- from the *pypulseq_cest/src/compile* folder run the following command in the terminal:
-    - *(you may have to substitute python with your python version, e.g. python3)*
+    - for Windows: [Visual C++](https://support.microsoft.com/de-de/help/2977003/the-latest-supported-visual-c-downloads) min. v12.0
+- to install the packages run the following command in the terminal from the [pulseq-cest-sim/src/](pulseq-cest-sim/src/) folder:
 ```
-    swig -c++ -python SimPulseqSBB.i 
-    python setup_win.py build_ext --inplace
-    python setup_win.py install
+    python setup.py build_dist --inplace
+    python setup.py install
 ```
-### Linux
-- Prerequisites: 
-    - [Swig](http://www.swig.org/)
-    - gpp compiler should be installed by default
-- from the *pypulseq_cest/src/compile* folder run the following command in the terminal:
-    - *(you may have to substitute python with your python version, e.g. python3)*
+
+- to build an executable for your distribution and python version:
 ```
-    swig -c++ -python SimPulseqSBB.i 
-    python setup_ux.py build_ext --inplace
-    python setup_ux.py install
+    python setup.py bdist --format=wininst
 ```
-### Mac
-**???**
-- Prerequisites: 
-    - [Swig](http://www.swig.org/)
-- from the *pypulseq_cest/src/compile* folder run the following commands in the terminal:
-    - *(you may have to substitute python with your python version, e.g. python3)*
+
+- to build a compressed "dumb" distribution folder (compiled python packages that hav to be unpacked into the environment library):
 ```
-    swig -c++ -python SimPulseqSBB.i 
-    python setup.py build_ext --inplace
-    python setup_os.py install
+    python setup.py bdist
 ```
