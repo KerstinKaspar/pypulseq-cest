@@ -160,7 +160,7 @@ def check_params(config: dict) -> dict:
         if type(v[list(v.keys())[0]]) is dict:
             if k in valid_dict:
                 for dk, dv in v.items():
-                    config, invalid = check_cest_values(dv, config, invalid, k, dk)
+                    config, invalid = check_cest_values(dv, config, invalid, dk)
             else:
                 invalid.append(k)
         else:

@@ -5,7 +5,6 @@ sim.util.py
 import numpy as np
 
 from pypulseq.Sequence.sequence import Sequence
-from sim_pulseq_sbb.params import Params
 
 
 def get_noise_params(mean: float = None,
@@ -100,8 +99,7 @@ def check_m0_scan(seq: Sequence = None,
         return False
 
 
-def get_num_adc_events(params: Params = None,
-                       seq: Sequence = None,
+def get_num_adc_events(seq: Sequence = None,
                        seq_file: str = None
                        ) -> int:
     """

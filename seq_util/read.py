@@ -29,7 +29,7 @@ def read_any_version(seq_file: str,
     if version == 2:
         seq.read(seq_file)
     elif version == 3:
-        fd, tmp_file = convert_seq_13_to_12(seq_file, temp=True)
+        tmp_file = convert_seq_13_to_12(seq_file, temp=True)
         seq.read(tmp_file)
         remove(tmp_file)
     else:

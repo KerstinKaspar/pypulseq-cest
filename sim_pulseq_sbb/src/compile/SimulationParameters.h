@@ -21,7 +21,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 #pragma once
 
 #include "ExternalSequence.h"
-#include "3rdParty/Eigen/Eigen"
+#include "Eigen"
 //using namespace Eigen;
 
 #define _USE_MATH_DEFINES
