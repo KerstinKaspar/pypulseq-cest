@@ -32,3 +32,9 @@ Parameter handling and evaluation tools are defined in the [sim_pulseq_sbb](sim_
 ## Installation
 Please refer to the [readme](sim_pulseq_sbb/src/readme.md) in [sim_pulseq_sbb/src](sim_pulseq_sbb/src) for 
 installation of the necessary python module.
+
+## Prerequisites
+Other package prerequisites are:
+- numpy
+- matplotlib
+- yaml

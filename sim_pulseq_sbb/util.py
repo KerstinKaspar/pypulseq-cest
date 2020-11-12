@@ -99,22 +99,4 @@ def check_m0_scan(seq: Sequence = None,
         return False
 
 
-def get_num_adc_events(seq: Sequence = None,
-                       seq_file: str = None
-                       ) -> int:
-    """
-    number of ADC events should equal number of offsets
-    :param Params: parameter object containing offsets
-    :param seq_file: sequence file to read the offsets from
-    :param seq: Sequence object to get the offsets from
-    :return: num_adc_events
-    """
-    if not seq and not seq_file:
-        raise ValueError('You need to pass either the sequence filename or the Sequence object to get offsets for the '
-                         'ADC events.')
-    offsets = get_offsets(seq_file)
-    num_adc_events = len(offsets)
-    return num_adc_events
-
-
 
