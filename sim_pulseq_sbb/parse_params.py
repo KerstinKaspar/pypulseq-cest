@@ -2,9 +2,9 @@
 function fedinitions to pars the parameters into the C++ class
 """
 
-from SimPulseqSBB import SimulationParameters, WaterPool, MTPool, CESTPool
+from pySimPulseqSBB import SimulationParameters, WaterPool, MTPool, CESTPool
 from sim_pulseq_sbb.params import Params
-from SimPulseqSBB import Lorentzian, SuperLorentzian, NoLineshape
+from pySimPulseqSBB import Lorentzian, SuperLorentzian, NoLineshape
 
 
 def parse_params(sp: Params,
