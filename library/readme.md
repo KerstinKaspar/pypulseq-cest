@@ -12,6 +12,7 @@ More information about the structure and the content of these files can be found
 [seq-library readme](https://github.com/kherz/pulseq-cest-library/blob/master/seq-library/Readme.md) and 
 [sim-library readme](https://github.com/kherz/pulseq-cest-library/blob/master/sim-library/Readme.md) files.
 
+### How to dowload the pulse-cest-library in case it's empty
 The [pulseq-cest-library](https://github.com/kherz/pulseq-cest-library) is uncluded as a 
 [GitHub submodule](https://git-scm.com/book/en/v2/Git-Tools-Submodules). If your 
 [pulseq-cest-library](pulseq-cest-library) folder ist empty, you didn't clone the the pypulseq-cest repository including
@@ -26,3 +27,9 @@ git submodule update
 **Option 2:** Download the [pulseq-cest-library](https://github.com/kherz/pulseq-cest-library) as a 
 [ZIP file](https://github.com/kherz/pulseq-cest-library/archive/master.zip) and extract it into the 
 [pulseq-cest-library](pulseq-cest-library).
+
+### Update the pulseq-cest-library
+If the pulseq-cest-library was updated and you want to pull these updates, use the following command:
+```
+git submodule update --remote
+``` 
