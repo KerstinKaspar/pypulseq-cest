@@ -1,9 +1,13 @@
-from seq_util.conversion import *
+"""
+read.py
+    Functions for reading single entries from seq files.
+"""
 from pypulseq.Sequence.sequence import Sequence
+from sim.utils.seq.conversion import convert_seq_13_to_12
 from os import remove
 
 
-def get_minor_version(seq_file: str):
+def get_minor_version(seq_file: str) -> int:
     """
     :param seq_file: path to the sequence file to read into the Sequence object
     :return version: version from the sequence file

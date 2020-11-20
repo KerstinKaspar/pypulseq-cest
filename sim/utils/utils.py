@@ -1,9 +1,8 @@
 """
-sim.util.py
-    useful additional functions for simulation
+utils.py
+    Useful additional functions
 """
 import numpy as np
-
 from pypulseq.Sequence.sequence import Sequence
 
 
@@ -61,7 +60,8 @@ def sim_noise(data: (float, np.ndarray, dict),
 
 
 def get_offsets(seq: Sequence = None,
-                seq_file: str = None) -> list:
+                seq_file: str = None) \
+        -> list:
     """
     read the offsets either from the sequence file or from the Sequence object
     :param seq_file: sequence file to read the offsets from
@@ -81,7 +81,8 @@ def get_offsets(seq: Sequence = None,
 
 
 def check_m0_scan(seq: Sequence = None,
-                  seq_file: str = None) -> bool:
+                  seq_file: str = None) \
+        -> bool:
     """
     check wether m0 simulation is defined in either the sequence file or the Sequence object
     :param seq_file: sequence file to read the offsets from
@@ -99,4 +100,18 @@ def check_m0_scan(seq: Sequence = None,
         return False
 
 
-
+def get_num_adc_events(seq: Sequence = None,
+                       seq_file: str = None) \
+        -> int:
+    """
+    Reads number of ADC events (should equal number of offsets)
+    :param seq: Sequence object to get the offsets from
+    :param seq_file: sequence file to read the offsets from
+    :return: num_adc_events
+    """
+    if not seq and not seq_file:
+        raise ValueError('You need to pass either the sequence filename or the Sequence object to get offsets for the '
+                         'ADC events.')
+    offsets = get_offsets(seq_file)
+    num_adc_events = len(offsets)
+    return num_adc_events

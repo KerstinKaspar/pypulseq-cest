@@ -1,3 +1,7 @@
+"""
+conversion.py
+    Functions to convert between different versions of seq files.
+"""
 from tempfile import mkstemp
 from shutil import move, copymode
 from os import fdopen, remove
@@ -58,7 +62,7 @@ def convert_seq_13_to_12(file_path: str,
     """
 
     # create a temp file
-    tmp, tmp_path = mkstemp(suffix='_temp')
+    tmp, abs_path = mkstemp(suffix='_temp')
     in_blocks = False
 
     with fdopen(tmp, 'w') as new_file:
@@ -85,11 +89,11 @@ def convert_seq_13_to_12(file_path: str,
                         in_blocks = False
 
     if temp:
-        return tmp_path
+        return abs_path
     else:
         # copy permissions from old file to new file
-        copymode(file_path, tmp_path)
+        copymode(file_path, abs_path)
         # remove old file
         remove(file_path)
         # move new file
-        move(tmp_path, file_path)
+        move(abs_path, file_path)

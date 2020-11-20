@@ -27,10 +27,10 @@ by Kai Herz, which was originally made available for use in MATLAB. The installa
 We also provide config files to set parameters for an exemplary standard simulation and to simulate the WASABI approach. 
 You can then run the simulation with the [simulate](simulate.py) script.
  
-Parameter handling and evaluation tools are defined in the [sim_pulseq_sbb](sim_pulseq_sbb) folder. The package code and C++ source code can be found in the [src](sim_pulseq_sbb/src) subfolder.
+Parameter handling and evaluation tools are defined in the [sim_pulseq_sbb](sim) folder. The package code and C++ source code can be found in the [src](sim/src) subfolder.
 
 ## Installation
-Please refer to the [readme](sim_pulseq_sbb/src/readme.md) in [sim_pulseq_sbb/src](sim_pulseq_sbb/src) for 
+Please refer to the [readme](sim/src/readme.md) in [sim_pulseq_sbb/src](sim/src) for 
 installation of the necessary python module.
 
 ## Prerequisites

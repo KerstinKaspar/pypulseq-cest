@@ -3,14 +3,13 @@ eval.py
     Tool independent functions for plotting and calculations
 """
 import numpy as np
-
-from sim_pulseq_sbb.params import Params
-from sim_pulseq_sbb.util import sim_noise
 import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
+from sim.utils.utils import sim_noise
+from sim.params import Params
 
 
-def calc_mtr_asym(z: np.ndarray) \
-        -> np.ndarray:
+def calc_mtr_asym(z: np.ndarray) -> np.ndarray:
     """
     calculating MTRasym from the magnetization vector
     :param z: magnetization
@@ -41,7 +40,11 @@ def get_zspec(m_out: np.ndarray,
     return zspec
 
 
-def plot_z(mz: np.array, offsets: np.array = None, plot_mtr_asym: bool = False, title: str = None):
+def plot_z(mz: np.array,
+           offsets: np.array = None,
+           plot_mtr_asym: bool = False,
+           title: str = None) \
+        -> Figure:
     """
     initiating calculations and plotting functions
     :param mz: magnetization vector
@@ -76,10 +79,3 @@ def plot_z(mz: np.array, offsets: np.array = None, plot_mtr_asym: bool = False, 
     plt.title(title)
     plt.show()
     return fig
-
-
-
-
-
-
-
