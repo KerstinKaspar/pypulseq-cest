@@ -13,7 +13,9 @@ valid_num: ['f', 'r1', 'r2', 'k', 'dw', 'b0', 'gamma', 'b0_inhom', 'rel_b1', 'sc
 
 valid_bool: ['reset_init_mag', 'verbose', 'par_calc', 'lineshape']
 
-valid_dict: ['cest_pool', 'cest_pools']
+valid_dict: ['cest_pool', 'cest_pools', 'water_pool', 'mt_pool']
+
+valid_list: []
 
 # valid lineshapes
 valid_lineshapes: ['Lorentzian', 'SuperLorentzian', None]
