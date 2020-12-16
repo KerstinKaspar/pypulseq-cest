@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 """
-setup_win.py file from src_old
-TODO write setup_win, setup_ux, setup_os files for pure installation of precompiled shared libraries
+setup.py
+    Setup definitions for distutils package creation
+TODO write setup_ux, setup_os files for pure installation of precompiled shared libraries
 """
 
 from distutils.core import setup, Extension
