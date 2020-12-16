@@ -24,7 +24,7 @@ not yet built, please refer to the **Compilation guide** below
     - for Windows: [Visual C++](https://support.microsoft.com/de-de/help/2977003/the-latest-supported-visual-c-downloads) min. v12.0
 - to install the packages run the following command in the terminal from the [pulseq-cest-sim/src/](pulseq-cest-sim/src/) folder:
 ```
-    python setup.py build_dist --inplace
+    python setup.py build_ext --inplace
     python setup.py install
 ```
 

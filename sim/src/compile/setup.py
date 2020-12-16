@@ -42,21 +42,26 @@ def windows_setup(eigen_path: Path, np_path: Path):
           )
 
 
-if platform == "linux":
-    print("Initiating setup for Linux operating system.")
+def swig_setup():
+    if platform == "linux":
+        print("Initiating setup for Linux operating system.")
 
-elif platform == "win32":
-    print("Initiating setup for Windows 32bit operating system.")
-    windows_setup(eigen_path=eigen_path, np_path=np_path)
+    elif platform == "win32":
+        print("Initiating setup for Windows 32bit operating system.")
+        windows_setup(eigen_path=eigen_path, np_path=np_path)
 
-elif platform == "win64":
-    print("Initiating setup for Windows 64bit operating system.")
-    windows_setup(eigen_path=eigen_path, np_path=np_path)
+    elif platform == "win64":
+        print("Initiating setup for Windows 64bit operating system.")
+        windows_setup(eigen_path=eigen_path, np_path=np_path)
 
-elif platform == "darwin":  # Mac OS
-    print("Initiating setup for OS X operating system.")
-else:
-    print("Setup for operating system", platform, "not implemented.")
+    # elif platform == "darwin":  # Mac OS
+        # print("Initiating setup for OS X operating system.")
+    else:
+        print("Setup for operating system", platform, "not implemented.")
+
+
+if __name__ == "__main__":
+    swig_setup()
 
 
 

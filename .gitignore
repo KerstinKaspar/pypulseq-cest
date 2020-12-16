@@ -1,7 +1,8 @@
 .idea/
 __pycache__/
 .ipynb_checkpoints/
-venv/
+**venv**
 build/
 *long*
 example/test/
+pulseq-cest-library/
