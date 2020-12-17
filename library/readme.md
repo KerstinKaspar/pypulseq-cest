@@ -13,23 +13,21 @@ More information about the structure and the content of these files can be found
 [sim-library readme](https://github.com/kherz/pulseq-cest-library/blob/master/sim-library/Readme.md) files.
 
 ### How to dowload the pulse-cest-library in case it's empty
-The [pulseq-cest-library](https://github.com/kherz/pulseq-cest-library) is uncluded as a 
-[GitHub submodule](https://git-scm.com/book/en/v2/Git-Tools-Submodules). If your 
-[pulseq-cest-library](pulseq-cest-library) folder ist empty, you didn't clone the the pypulseq-cest repository including
-submodules (as explained in the [pypulseq-cest readme](../readme.md)) or you downloaded the [pypulseq-cest repository]() 
-as a ZIP file. However, you can still get the files using one of these two options:
+The [pulseq-cest-library](https://github.com/kherz/pulseq-cest-library) is automatically cloned if you run the installation from the [pypulseq-cest readme](../readme.md). If your 
+If the [pulseq-cest-library](pulseq-cest-library) folder ist empty, you can still get the files using one of these two options:
 
-**Option 1:** Use the following GitHub commands (in the [pypulseq-cest]() directory) to initialize your local configuration file and to fetch all data:
+**Recommended:** Run the clone_pulseq-cest-library.py file.
+You can do that from your terminal (in the [library](.) subdirectory):
 ```
-git submodule init
-git submodule update
+python clone_pulseq-cest-library.py
+```
+Troubleshoot denied permissions by running it with administrative rights (Windows: start the terminal with administrative rights, Linux: ```sudo python install.py```)
+You might need to adapt your python executable, e.g. ```python3```
+
+**Option 2:** Use the following GitHub command (in the [library](.) subdirectory) to initialize your local configuration file and to fetch all data:
+```
+git clone https://github.com/kherz/pulseq-cest-library
 ``` 
-**Option 2:** Download the [pulseq-cest-library](https://github.com/kherz/pulseq-cest-library) as a 
+**Option 3:** Download the [pulseq-cest-library](https://github.com/kherz/pulseq-cest-library) as a 
 [ZIP file](https://github.com/kherz/pulseq-cest-library/archive/master.zip) and extract it into the 
 [pulseq-cest-library](pulseq-cest-library).
-
-### Update the pulseq-cest-library
-If the pulseq-cest-library was updated and you want to pull these updates, use the following command:
-```
-git submodule update --remote
-``` 

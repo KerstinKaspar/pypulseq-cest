@@ -8,7 +8,7 @@ from pathlib import Path
 root_path = Path(os.path.abspath(__file__)).parent
 library_path = root_path / 'library'
 ext_library_path = library_path / 'pulseq-cest-library'
-seq_library_readme = ext_library_path / 'seq-library/Readme.md'
+seq_library_readme = ext_library_path / 'seq-library/readme.md'
 sim_path = root_path / 'sim/src/compile'
 setup_filepath = sim_path / 'setup.py'
 
@@ -85,11 +85,7 @@ def clone_library():
         print('pulseq-cest-library already exists in folder \'library\'.')
 
 
-def setup_lib_sim():
-    print('Starting automatic setup. Please refer to the Readme.md for further information.')
+if __name__ == '__main__':
+    print('Starting automatic setup. Please refer to the readme.md for further information.')
     clone_library()
     sim_setup()
-
-
-if __name__ == '__main__':
-    setup_lib_sim()

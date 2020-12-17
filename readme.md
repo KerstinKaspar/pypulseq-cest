@@ -5,23 +5,29 @@ This repository contains the necessary code and tools to build CEST saturation b
 [pulseq](https://github.com/pulseq/pulseq) project. The documentation of the **pulseq** open file format for MR 
 sequences can be found [here](https://pulseq.github.io/specification.pdf). 
 
-## IMPORTANT: How to clone this repository
-As the [pypulseq-cest]() repository includes a library, which is included as a 
-[GitHub submodule](https://git-scm.com/book/en/v2/Git-Tools-Submodules), you should clone this repository using the
-following command:
-```
-git clone --recurse-submodules https://github.com/KerstinHut/pypulseq-cest.git
-```
-This ensures that the [pulseq-cest-library](https://github.com/kherz/pulseq-cest-library) will we cloned as well.
+## INSTALLATION
+**IMPORTANT**: The following installation is recommended. If it should fail or you cannot run it, please follow both instructions in the [sim/src/readme](sim/src/readme.md) and [library/readme](library/readme.md) individually.
+####Prerequisites
+To be able to create and simulate your own CEST saturation blocks using [pypulseq-cest](.), you need to install the following python packages:
+- [pypulseq](https://github.com/imr-framework/pypulseq)
+- [numpy](https://numpy.org/)
+- [matlpotlib](https://matplotlib.org/)
+- [yaml](https://yaml.org/) 
 
-## Installation
-To be able to create and simulate your own CEST saturation blocks using [pypulseq-cest](), you need to install the
-[pypulseq](https://github.com/imr-framework/pypulseq), [numpy](https://numpy.org/), 
-[matlpotlib](https://matplotlib.org/) and [yaml](https://yaml.org/) python packages as well as the C++ solver. 
-This is explained in detail in a separate [readme file](sim/src/readme.md), which can be found in the 
-[sim/src](sim/src) subfolder. 
+You also need to have the following installed on your machine:
+- [Git](https://git-scm.com/)
+- [SWIG](http://www.swig.org/exec.html)
+- a working C++ compiler
+    - for Windows, you need Visual C++ v.12.0 or higher, e.g. [Microsoft Visual C++ Redistributable](https://visualstudio.microsoft.com/downloads/)
 
-**Please make sure to read it!**
+####Installation
+If you fulfill the prerequisites, you just need to run the [install.py](install.py) file.
+You can do this from the terminal (from this [pypulseq-cest folder](.)):
+```
+python install.py
+```
+Troubleshoot denied permissions by running it with administrative rights (Windows: start the terminal with administrative rights, Linux: ```sudo python install.py```)
+You might need to adapt your python executable, e.g. ```python3```
 
 ## Config and seq-file library
 All simulations in [pypulseq-cest]() require a *yaml file* that includes all simulation settings and a *seq file*, which
@@ -29,8 +35,9 @@ defines the pre-saturation block. An [example seq-file](library/seq_example.seq)
 [example script](library/write_seq_example.py) to create the [seq_example.seq](library/seq_example.seq) file can be 
 found in the [library](library) subfolder. 
 
-Please read the subfolders [readme file](library/readme.md) to learn how to
-download further pre-defined and approved pre-saturation schemes and simulation configs.
+You will find further pre-defined and approved pre-saturation schemes and simulation configs in the [pulseq-cest-library](library/pulseq-cest-library)
+If you have not successfully used the above installation, please read the subfolders [readme file](library/readme.md) to learn how to
+download from the [pulseq-cest-library repository](https://github.com/kherz/pulseq-cest-library).
 
 ## Pulseq version compatibility
 Since [pypulseq](https://github.com/imr-framework/pypulseq) is producing files of version 1.2, we provide functions 
