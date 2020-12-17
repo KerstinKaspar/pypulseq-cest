@@ -6,8 +6,9 @@ This repository contains the necessary code and tools to build CEST saturation b
 sequences can be found [here](https://pulseq.github.io/specification.pdf). 
 
 ## INSTALLATION
-**IMPORTANT**: The following installation is recommended. If it should fail or you cannot run it, please follow both instructions in the [sim/src/readme](sim/src/readme.md) and [library/readme](library/readme.md) individually.
-####Prerequisites
+### IMPORTANT 
+The following installation is recommended. If it should fail or you cannot run it, please follow both instructions in the [sim/src/readme](sim/src/readme.md) and [library/readme](library/readme.md) individually.
+### Prerequisites
 To be able to create and simulate your own CEST saturation blocks using [pypulseq-cest](.), you need to install the following python packages:
 - [pypulseq](https://github.com/imr-framework/pypulseq)
 - [numpy](https://numpy.org/)
@@ -20,13 +21,13 @@ You also need to have the following installed on your machine:
 - a working C++ compiler
     - for Windows, you need Visual C++ v.12.0 or higher, e.g. [Microsoft Visual C++ Redistributable](https://visualstudio.microsoft.com/downloads/)
 
-####Installation
+### Installation
 If you fulfill the prerequisites, you just need to run the [install.py](install.py) file.
 You can do this from the terminal (from this [pypulseq-cest folder](.)):
 ```
 python install.py
 ```
-Troubleshoot denied permissions by running it with administrative rights (Windows: start the terminal with administrative rights, Linux: ```sudo python install.py```)
+To avoid permission problems, run it with administrative rights (Windows: start the terminal with administrative rights, Linux: ```sudo python install.py```)
 You might need to adapt your python executable, e.g. ```python3```
 
 ## Config and seq-file library
