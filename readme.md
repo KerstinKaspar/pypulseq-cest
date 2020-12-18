@@ -11,7 +11,6 @@ The following installation is recommended. If it should fail or you cannot run i
 ### Prerequisites
 To be able to create and simulate your own CEST saturation blocks using [pypulseq-cest](.), you need to install the following python packages:
 - [pypulseq](https://github.com/imr-framework/pypulseq)
-- [matlpotlib](https://matplotlib.org/)
 - [yaml](https://yaml.org/) 
 
 You also need to have the following installed on your machine:
