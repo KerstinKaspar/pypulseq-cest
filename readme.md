@@ -15,7 +15,7 @@ To be able to create and simulate your own CEST saturation blocks using [pypulse
 
 You also need to have the following installed on your machine:
 - [Git](https://git-scm.com/)
-- [SWIG](http://www.swig.org/exec.html)
+- [SWIG](http://www.swig.org/exec.html) (Installation for [Windows link](http://www.swig.org/Doc1.3/Windows.html))
 - a working C++ compiler
     - for Windows, you need Visual C++ v.12.0 or higher, e.g. [Microsoft Visual C++ Redistributable](https://visualstudio.microsoft.com/downloads/)
 
