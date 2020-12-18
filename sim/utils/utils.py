@@ -80,26 +80,6 @@ def get_offsets(seq: Sequence = None,
     return offsets
 
 
-def check_m0_scan(seq: Sequence = None,
-                  seq_file: str = None) \
-        -> bool:
-    """
-    check wether m0 simulation is defined in either the sequence file or the Sequence object
-    :param seq_file: sequence file to read the offsets from
-    :param seq: Sequence object to get the offsets from
-    :return: boolean
-    """
-    if not seq and not seq_file:
-        raise ValueError('You need to pass either the sequence filename or the Sequence object to get m0_scan.')
-    if not seq:
-        seq = Sequence(version=1.3)
-        seq.read(seq_file)
-    if 1 in seq.definitions['run_m0_scan'] or 'True' in seq.definitions['run_m0_scan']:
-        return True
-    else:
-        return False
-
-
 def get_num_adc_events(seq: Sequence = None,
                        seq_file: str = None) \
         -> int:
