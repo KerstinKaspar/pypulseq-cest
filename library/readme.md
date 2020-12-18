@@ -21,7 +21,7 @@ You can do that from your terminal (in the [library](.) subdirectory):
 ```
 python clone_pulseq-cest-library.py
 ```
-Troubleshoot denied permissions by running it with administrative rights (Windows: start the terminal with administrative rights, Linux: ```sudo python install.py```)
+To avoid permission problems, run it with administrative rights (Windows: start the terminal with administrative rights, Linux: ```sudo python install.py```)
 You might need to adapt your python executable, e.g. ```python3```
 
 **Option 2:** Use the following GitHub command (in the [library](.) subdirectory) to initialize your local configuration file and to fetch all data:
