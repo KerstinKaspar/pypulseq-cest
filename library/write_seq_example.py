@@ -1,5 +1,5 @@
 # write_seq_example.py
-# Creates an example sequence file (10 offsets, 10 block pulses with tp = 100 ms, td = 10 ms, B1 = 1µT)
+# Creates an example sequence file (10 offsets, 10 block pulses with tp = 100 ms, td = 10 ms, B1 = 2 µT)
 #
 # P. Schuenke and K. Heinecke 2020
 # patrick.schuenke@ptb.de
@@ -23,10 +23,9 @@ plot_sequence = False  # plot preparation block?
 convert_to_1_3 = True  # convert seq-file to a pseudo version 1.3 file?
 
 # sequence definitions (everything in seq_defs will be written to definitions in .seq-file)
-b1: float = 1.0  # B1 peak amplitude [µT] (the cw power equivalent will be written to definitions later)
 seq_defs:dict = {}
 seq_defs['b0'] = 7  # B0 [T]
-seq_defs['b1cwpe'] = 1.0  # cw power equivalent [µT]
+seq_defs['b1cwpe'] = 2.0  # cw power equivalent [µT]
 seq_defs['n_pulses'] = 10  # number of pulses
 seq_defs['tp'] = 100e-3  # pulse duration [s]
 seq_defs['td'] = 10e-3  # interpulse delay [s]
@@ -62,7 +61,7 @@ gx_spoil, gy_spoil, gz_spoil = [make_trapezoid(channel=c, system=sys, amplitude=
                                                rise_time=rise_time) for c in ['x', 'y', 'z']]
 
 # RF pulses
-flip_angle_sat = b1 * gamma_hz * 2 * np.pi * seq_defs['tp']
+flip_angle_sat = seq_defs['b1cwpe'] * gamma_hz * 2 * np.pi * seq_defs['tp']
 sat_pulse, _ = make_block_pulse(flip_angle=flip_angle_sat, duration=seq_defs['tp'], system=sys)
 
 # ADC events
@@ -113,5 +112,4 @@ write_seq(seq=seq,
 
 # plot the sequence
 if plot_sequence:
-    # Todo: plot first measurement only !?
-    seq.plot(time_range=[0, seq_defs['trec_m0']+seq_defs['tsat']])
+    seq.plot(time_range=[0, seq_defs['trec_m0']+seq_defs['tsat']])  # to plot all offsets, remove time_range argument
