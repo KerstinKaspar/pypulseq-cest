@@ -16,11 +16,10 @@ def parse_params(sp: Params,
     :return: SWIG object for C++ object handling
     """
     sp_sim = SimulationParameters()
-    # pass offsets and m0 to sp
+    # pass offsets to sp
     sp.set_definitions(seq_file=seq_file)
     # init magnetization vector
-    num_adc_events = sp.get_num_adc_events() + 1
-    sp_sim.InitMagnetizationVectors(sp.m_vec, num_adc_events)
+    sp_sim.InitMagnetizationVectors(sp.m_vec, sp.get_num_adc_events())
     # constructwater pool
     water_pool = WaterPool(sp.water_pool['r1'], sp.water_pool['r2'], sp.water_pool['f'])
     sp_sim.SetWaterPool(water_pool)
@@ -55,7 +54,3 @@ def set_lineshape(ls: str = None) -> (Lorentzian, SuperLorentzian, NoLineshape):
             return NoLineshape
     except ValueError:
         print(ls + ' is not a valid lineshape for MT Pool.')
-
-
-
-

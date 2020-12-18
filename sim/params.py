@@ -3,7 +3,7 @@ params.py
     Class definition to store simulation parameters
 """
 import numpy as np
-from sim.utils.utils import check_m0_scan, get_offsets
+from sim.utils.utils import get_offsets
 from sim.utils.seq.read import read_any_version
 
 
@@ -24,7 +24,6 @@ class Params:
         self.mz_loc = 0
         self.m_vec = None
         self.offsets = None
-        self.m0_scan = None
         self.set_options()
 
     def set_water_pool(self,
@@ -285,12 +284,11 @@ class Params:
         """
         saves the definitions from the sequence file to the Params object
         :param seq_file: path to the sequence file
-        :return (offsets, m0_scan): the offsets and m0_scan values defined in the sequence file
+        :return offsets: the offsets defined in the sequence file
         """
         seq = read_any_version(seq_file)
         self.offsets = get_offsets(seq)
-        self.m0_scan = check_m0_scan(seq)
-        return self.offsets, self.m0_scan
+        return self.offsets
 
     def get_num_adc_events(self) -> int:
         """

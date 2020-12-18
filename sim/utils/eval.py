@@ -29,14 +29,11 @@ def get_zspec(m_out: np.ndarray,
     :param noise: bool or tuple, toggle to simulate standard gaussian noise on the spectra or set values (mean, std)
     """
     if np.any(m_out):
-        if sp.m0_scan:
-            zspec = np.abs(m_out[sp.mz_loc, 1:] / m_out[sp.mz_loc, 0])
-        else:
-            zspec = np.abs(m_out[sp.mz_loc, :])
+        zspec = np.abs(m_out[sp.mz_loc, :])
         if noise:
             zspec = sim_noise(zspec, set_vals=noise)
     else:
-        raise ValueError('No valid M0 defined.')
+        raise ValueError('No valid m_out defined.')
     return zspec
 
 
