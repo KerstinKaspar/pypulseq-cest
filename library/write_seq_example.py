@@ -1,96 +1,117 @@
-"""
-Script to output a seq file for test purposes.
-parameter settings:
-     pulse shape = block
-     B1 = 1 uT
-     n = 10
-     t_p = 100 ms
-     t_d = 10 ms
-     T_rec = 2/12 s (saturated/M0)
-"""
+# write_seq_example.py
+# Creates an example sequence file (10 offsets, 10 block pulses with tp = 100 ms, td = 10 ms, B1 = 1µT)
+#
+# P. Schuenke and K. Heinecke 2020
+# patrick.schuenke@ptb.de
 
+import os
 import numpy as np
-
 from pypulseq.Sequence.sequence import Sequence
 from pypulseq.make_adc import make_adc
 from pypulseq.make_delay import make_delay
 from pypulseq.make_trap_pulse import make_trapezoid
 from pypulseq.make_block_pulse import make_block_pulse
 from pypulseq.opts import Opts
-from sim.utils.seq.conversion import convert_seq_12_to_pseudo_13
+from sim.utils.seq.write_seq import write_seq
 
-seq = Sequence()
+# get id of generation file
+seqid = 'seq_example'
 
-offset_range = 10  # [ppm]
-num_offsets = 51  # 100  # number of measurements (not including M0)
-run_m0_scan = True  # if you want an M0 scan at the beginning
-t_rec = 3  # recovery time between scans [s]
-m0_t_rec = 12  # recovery time before m0 scan [s]
-sat_b1 = 2  # mean sat pulse b1 [uT]
-t_p = 100e-3  # sat pulse duration [s]
-t_d = 10e-3  # delay between pulses [s]
-n_pulses = 10  # number of sat pulses per measurement
-b0 = 7  # B0 [T]
-spoiling = 1  # 0=no spoiling, 1=before readout, Gradient in x,y,z
+# general settings
+author = 'P. Schuenke and K. Heinecke'
+plot_sequence = False  # plot preparation block?
+convert_to_1_3 = True  # convert seq-file to a pseudo version 1.3 file?
 
-seq_filename = 'seq_example.seq'  # filename
+# sequence definitions (everything in seq_defs will be written to definitions in .seq-file)
+b1: float = 1.0  # B1 peak amplitude [µT] (the cw power equivalent will be written to definitions later)
+seq_defs:dict = {}
+seq_defs['b0'] = 7  # B0 [T]
+seq_defs['b1cwpe'] = 1.0  # cw power equivalent [µT]
+seq_defs['n_pulses'] = 10  # number of pulses
+seq_defs['tp'] = 100e-3  # pulse duration [s]
+seq_defs['td'] = 10e-3  # interpulse delay [s]
+seq_defs['trec'] = 3  # recovery time [s]
+seq_defs['trec_m0'] = 12  # recovery time before M0 [s]
+
+seq_defs['m0_offset'] = -300  # m0 offset [ppm]
+seq_defs['offsets_ppm'] = np.append(seq_defs['m0_offset'], np.linspace(-10, 10, 51))  # offset vector [ppm]
+
+seq_defs['dcsat'] = (seq_defs['tp']) / (seq_defs['tp'] + seq_defs['td'])  # duty cycle
+seq_defs['num_meas'] = seq_defs['offsets_ppm'].size  # number of repetition
+seq_defs['tsat'] = seq_defs['n_pulses'] * (seq_defs['tp'] + seq_defs['td']) - seq_defs['td']  # saturation time [s]
+seq_defs['seq_id_string'] = seqid  # unique seq id
+
+seq_filename = seq_defs['seq_id_string'] + '.seq'
 
 # scanner limits
-sys = Opts(max_grad=40, grad_unit='mT/m', max_slew=130, slew_unit='T/m/s', rf_ringdown_time=30e-6, rf_dead_time=100e-6,
-           rf_raster_time=1e-6)
-gamma = sys.gamma * 1e-6
+sys = Opts(max_grad=40, grad_unit='mT/m', max_slew=130, slew_unit='T/m/s',
+           rf_ringdown_time=30e-6, rf_dead_time=100e-6, rf_raster_time=1e-6)
 
-# scanner events
-# sat pulse
-flip_angle_sat = sat_b1 * gamma * 2 * np.pi * t_p  # rad
-rf_sat, _ = make_block_pulse(flip_angle=flip_angle_sat, duration=t_p, system=sys, time_bw_product=3)
+gamma_hz = 42.5764
 
-# spoilers
+# ===========
+# PREPARATION
+# ===========
+
+# spoiler
 spoil_amp = 0.8 * sys.max_grad  # Hz/m
-spoil_dur = 4.5e-3  # 4.5 ms
-rise_time = 1.0e-6  # 1.0 ms
+rise_time = 1.0e-3  # spoiler rise time in seconds
+spoil_dur = 4.5e-3  # complete spoiler duration in seconds
+
 gx_spoil, gy_spoil, gz_spoil = [make_trapezoid(channel=c, system=sys, amplitude=spoil_amp, duration=spoil_dur,
                                                rise_time=rise_time) for c in ['x', 'y', 'z']]
 
-# pseudo adc (not played out)
-pseudo_adc = make_adc(num_samples=1, duration=1e-3)
+# RF pulses
+flip_angle_sat = b1 * gamma_hz * 2 * np.pi * seq_defs['tp']
+sat_pulse, _ = make_block_pulse(flip_angle=flip_angle_sat, duration=seq_defs['tp'], system=sys)
 
-# loop through z spectrum offsets
-offsets_ppm = np.linspace(-offset_range, offset_range, num_offsets)
-offsets = offsets_ppm * gamma * b0
+# ADC events
+pseudo_adc = make_adc(num_samples=1, duration=1e-3)  # (not played out; just used to split measurements)
 
-if run_m0_scan:
-    seq.add_block(make_delay(m0_t_rec))
-    seq.add_block(pseudo_adc)
+# DELAYS
+post_spoil_delay = make_delay(50e-6)
+td_delay = make_delay(seq_defs['td'])
+trec_delay = make_delay(seq_defs['trec'])
+m0_delay = make_delay(seq_defs['trec_m0'])
 
-# loop through offsets and set pulses and delays
-for offset in offsets:
-    # take care of phase accumulation during off-res pulse
+# Sequence object
+seq = Sequence()
+
+# ===
+# RUN
+# ===
+
+offsets_hz = seq_defs['offsets_ppm'] * gamma_hz * seq_defs['b0']  # convert from ppm to Hz
+
+for offset in offsets_hz:
+    # add delay
+    if offset == seq_defs['m0_offset'] * gamma_hz * seq_defs['b0']:
+        if seq_defs['trec_m0'] > 0:
+            seq.add_block(m0_delay)
+    else:
+        if seq_defs['trec'] > 0:
+            seq.add_block(trec_delay)
+    # set sat_pulse
+    sat_pulse.freq_offset = offset
     accum_phase = 0
-    seq.add_block(make_delay(t_rec))  # recovery time
-    rf_sat.freq_offset = offset
-    for n in range(n_pulses):
-        rf_sat.phase_offset = accum_phase
-        seq.add_block(rf_sat)
-        accum_phase = np.mod(accum_phase + offset * 2 * np.pi * np.where(np.abs(rf_sat.signal) > 0)[0].size * 1e-6, 2 * np.pi)
-        if n < n_pulses-1:
-            seq.add_block(make_delay(t_d))
-    print(np.where(offsets == offset)[0][0], '/', len(offsets), ': offset ', offset)
-    if spoiling:
-        seq.add_block(gx_spoil, gy_spoil, gz_spoil)
+    for n in range(seq_defs['n_pulses']):
+        sat_pulse.phase_offset = accum_phase % (2 * np.pi)
+        seq.add_block(sat_pulse)
+        accum_phase = (accum_phase + offset * 2 * np.pi * np.sum(sat_pulse.signal > 0) * 1e-6) % (2 * np.pi)
+        if n < seq_defs['n_pulses']-1:
+            seq.add_block(td_delay)
+    print(np.where(offsets_hz == offset)[0][0], '/', len(offsets_hz), ': offset ', offset)
+    seq.add_block(gx_spoil, gy_spoil, gz_spoil)
     seq.add_block(pseudo_adc)
 
-seq.set_definition('offsets_ppm', offsets_ppm)
-seq.set_definition('run_m0_scan', str(run_m0_scan))
+write_seq(seq=seq,
+          seq_defs=seq_defs,
+          filename=seqid+'.seq',
+          author=author,
+          use_matlab_names=True,
+          convert_to_1_3=convert_to_1_3)
 
 # plot the sequence
-# seq.plot()
-
-# print shape library
-print(seq.shape_library)
-
-# write seq file
-seq.write(seq_filename)
-
-# convert to pseudo version 1.3
-convert_seq_12_to_pseudo_13(seq_filename)
+if plot_sequence:
+    # Todo: plot first measurement only !?
+    seq.plot(time_range=[0, seq_defs['trec_m0']+seq_defs['tsat']])
