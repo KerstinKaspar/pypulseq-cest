@@ -63,7 +63,6 @@ def generate_hsexp_pulses(amp: float = 1.0,
     """
 
     pulse_dict = {}  # create empty dict for the 4 different pulses
-
     samples = int(t_p * 1e6)
     t_pulse = np.divide(np.arange(1, samples + 1), samples) * t_p  # time point array
 
@@ -81,16 +80,17 @@ def generate_hsexp_pulses(amp: float = 1.0,
     w1[:idx_window] = w1[:idx_window] * window_mod
 
     # calculate freq modulation of pulse
-    dfreq = calculate_hsexp_freq(t_pulse, t0, bandwidth, ef, -1)
+    dfreq = calculate_hsexp_freq(t_pulse, t0, bandwidth, ef, 1)
 
-    # make freq modulation start with dw = 0
-    dfreq -= np.min(np.abs(dfreq))
+    # make freq modulation end (pre-pulse) or start (post-pulse) with dw = 0
+    diff_idx = np.argmin(np.abs(dfreq))
+    dfreq -= dfreq[diff_idx]
 
     # calculate phase (= integrate over dfreq)
-    dphase = calculate_phase(dfreq, t_p, samples, shift_idx=-1, pos_offsets=False)
+    dphase = calculate_phase(dfreq, t_p, samples, shift_idx=-1, pos_offsets=True)
 
     # create pypulseq rf pulse object
-    signal = w1 + 1j * dphase
+    signal = w1 * np.exp(1j * dphase)  # create complex array with amp and phase
     flip_angle = amp * 1e-6 * system.gamma * 2 * np.pi  # factor 1e-6 converts from µT to T
     hsexp, _ = make_arbitrary_rf_with_phase(signal=signal, flip_angle=flip_angle, system=system)
 
@@ -110,16 +110,17 @@ def generate_hsexp_pulses(amp: float = 1.0,
     w1[:idx_window] = w1[:idx_window] * window_mod
 
     # calculate freq modulation of pulse
-    dfreq = calculate_hsexp_freq(t_pulse, t0, bandwidth, ef, 1)
+    dfreq = calculate_hsexp_freq(t_pulse, t0, bandwidth, ef, -1)
 
-    # make freq modulation start with dw = 0
-    dfreq -= np.min(np.abs(dfreq))
+    # make freq modulation end (pre-pulse) or start (post-pulse) with dw = 0
+    diff_idx = np.argmin(np.abs(dfreq))
+    dfreq -= dfreq[diff_idx]
 
     # calculate phase (= integrate over dfreq)
-    dphase = calculate_phase(dfreq, t_p, samples, shift_idx=-1, pos_offsets=True)
+    dphase = calculate_phase(dfreq, t_p, samples, shift_idx=-1, pos_offsets=False)
 
     # create pypulseq rf pulse object
-    signal = w1 + 1j * dphase  # create complex array with amp and phase modulation
+    signal = w1 * np.exp(1j * dphase)  # create complex array with amp and phase
     flip_angle = amp * 1e-6 * system.gamma * 2 * np.pi  # factor 1e-6 converts from µT to T
     hsexp, _ = make_arbitrary_rf_with_phase(signal=signal, flip_angle=flip_angle, system=system)
 
@@ -139,13 +140,17 @@ def generate_hsexp_pulses(amp: float = 1.0,
     w1[-idx_window:] = w1[-idx_window:] * np.flip(window_mod)
 
     # calculate freq modulation of pulse
-    dfreq = calculate_hsexp_freq(np.flip(t_pulse), t_pulse[-1], bandwidth, ef, 1)
+    dfreq = calculate_hsexp_freq(np.flip(t_pulse), t_pulse[-1], bandwidth, ef, -1)
+
+    # make freq modulation end (pre-pulse) or start (post-pulse) with dw = 0
+    diff_idx = np.argmin(np.abs(dfreq))
+    dfreq -= dfreq[diff_idx]
 
     # calculate phase (= integrate over dfreq)
-    dphase = calculate_phase(dfreq, t_p, samples, shift_idx=0, pos_offsets=False)
+    dphase = calculate_phase(dfreq, t_p, samples, shift_idx=0, pos_offsets=True)
 
     # create pypulseq rf pulse object
-    signal = w1 + 1j * dphase  # create complex array with amp and phase modulation
+    signal = w1 * np.exp(1j * dphase)  # create complex array with amp and phase
     flip_angle = amp * 1e-6 * system.gamma * 2 * np.pi  # factor 1e-6 converts from µT to T
     hsexp, _ = make_arbitrary_rf_with_phase(signal=signal, flip_angle=flip_angle, system=system)
 
@@ -165,13 +170,17 @@ def generate_hsexp_pulses(amp: float = 1.0,
     w1[-idx_window:] = w1[-idx_window:] * np.flip(window_mod)
 
     # calculate freq modulation of pulse
-    dfreq = calculate_hsexp_freq(np.flip(t_pulse), t_pulse[-1], bandwidth, ef, -1)
+    dfreq = calculate_hsexp_freq(np.flip(t_pulse), t_pulse[-1], bandwidth, ef, 1)
+
+    # make freq modulation end (pre-pulse) or start (post-pulse) with dw = 0
+    diff_idx = np.argmin(np.abs(dfreq))
+    dfreq -= dfreq[diff_idx]
 
     # calculate phase (= integrate over dfreq)
-    dphase = calculate_phase(dfreq, t_p, samples, shift_idx=0, pos_offsets=True)
+    dphase = calculate_phase(dfreq, t_p, samples, shift_idx=0, pos_offsets=False)
 
     # create pypulseq rf pulse object
-    signal = w1 + 1j * dphase  # create complex array with amp and phase modulation
+    signal = w1 * np.exp(1j * dphase)  # create complex array with amp and phase
     flip_angle = amp * 1e-6 * system.gamma * 2 * np.pi  # factor 1e-6 converts from µT to T
     hsexp, _ = make_arbitrary_rf_with_phase(signal=signal, flip_angle=flip_angle, system=system)
 
@@ -186,10 +195,10 @@ if __name__ == '__main__':
     fig, ax = plt.subplots(2, 4)
 
     for n, key in enumerate(pulse_dict):
-        amp_ = np.real(pulse_dict[key].signal)
-        phase_ = np.imag(pulse_dict[key].signal)
-        ax[0, n].plot(amp_)
+        real_ = np.real(pulse_dict[key].signal)
+        imag_ = np.imag(pulse_dict[key].signal)
+        ax[0, n].plot(np.abs(pulse_dict[key].signal))
         ax[0, n].set_title(key, fontsize=14)
-        ax[1, n].plot(phase_)
+        ax[1, n].plot(np.arctan2(imag_, real_))
 
     plt.show()

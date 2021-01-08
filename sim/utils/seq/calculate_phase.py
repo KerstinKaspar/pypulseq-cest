@@ -27,6 +27,6 @@ def calculate_phase(frequency: np.ndarray,
     phase_shift = phase[shift_idx]
     for i in range(samples):
         phase[i] = np.fmod(phase[i] - phase_shift, 2 * np.pi)
-    if pos_offsets:
+    if not pos_offsets:
         phase += 2 * np.pi
     return phase
