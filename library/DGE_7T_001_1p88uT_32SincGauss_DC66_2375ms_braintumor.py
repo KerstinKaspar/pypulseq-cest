@@ -34,12 +34,11 @@ seq_defs['b0'] = 7  # B0 [T]
 seq_defs['n_pulses'] = 32  # number of pulses  #
 seq_defs['tp'] = 50e-3  # pulse duration [s]
 seq_defs['td'] = 25e-3  # interpulse delay [s]
-seq_defs['trec'] = 2.0  # recovery time [s]
+seq_defs['trec'] = 2  # recovery time [s]
 seq_defs['num_meas'] = 10  # should be enough for a sketch
 seq_defs['offsets_ppm'] = np.repeat(1.2, seq_defs['num_meas'])
 
 seq_defs['dcsat'] = (seq_defs['tp']) / (seq_defs['tp'] + seq_defs['td'])  # duty cycle
-seq_defs['num_meas'] = 10  # should be enough for a sketch
 seq_defs['tsat'] = seq_defs['n_pulses'] * (seq_defs['tp'] + seq_defs['td']) - seq_defs['td']  # saturation time [s]
 seq_defs['seq_id_string'] = seqid  # unique seq id
 
