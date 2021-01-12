@@ -1,7 +1,7 @@
 """
     write_seq.py
 """
-
+import math
 from os import fdopen, remove
 from shutil import move, copymode
 from tempfile import mkstemp
@@ -10,6 +10,16 @@ from pathlib import Path
 import numpy as np
 from pypulseq.Sequence import sequence
 from sim.utils.seq.conversion import convert_seq_12_to_pseudo_13
+
+
+def round_number(number, significant_digits):
+    """
+    Rounds a number to the specified number of significant digits
+    :param number: number to be rounded
+    :param significant_digits: number of significant digits
+    :return:
+    """
+    return round(number, significant_digits - int(math.floor(math.log10(abs(number)))) - 1)
 
 
 def insert_seq_file_header(filepath: (Path, str),
@@ -81,8 +91,13 @@ def write_seq_defs(seq: sequence,
 
     # write definitions in alphabetical order and convert to correct value types
     for k, v in sorted(dict_.items()):
+        print(f'key: {k}   value: {v}   type:{type(v)}')
         # convert value types
-        if type(v) != np.ndarray:
+        if type(v) == np.ndarray:
+            pass
+        elif type(v) in [int, float, np.float32, np.float64, np.float]:
+            v = str(round_number(v, 6))
+        else:
             v = str(v)
         seq.set_definition(key=k, val=v)
 

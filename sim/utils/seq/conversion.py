@@ -13,6 +13,8 @@ def convert_seq_12_to_pseudo_13(file_path: str):
     :param file_path: path to the sequence file that should be converted
     """
 
+    n_digits = [4, 2, 2, 3, 3, 3, 2, 2, 0, 0, 0]
+
     # create a temp file
     tmp, abs_path = mkstemp()
 
@@ -35,8 +37,7 @@ def convert_seq_12_to_pseudo_13(file_path: str):
                     if in_blocks and line.strip() != '' and len(line.strip().split()) == 7:
                         block_list = line.strip().split()
                         block_list.append('0')  # add pseudo EXT entry
-                        block_list.append('\n')  # append line ending
-                        new_file.write(' '.join([f'{x:>3}' for x in block_list]))
+                        new_file.write(' '.join([f'{x:>{n_digits[n]}}' for n, x in enumerate(block_list)]) + '\n')
                     else:
                         new_file.write(line)
                         in_blocks = False
@@ -61,6 +62,8 @@ def convert_seq_13_to_12(file_path: str,
                 independently after usage
     """
 
+    n_digits = [4, 2, 2, 3, 3, 3, 2, 2]
+
     # create a temp file
     tmp, abs_path = mkstemp(suffix='_temp')
     in_blocks = False
@@ -83,7 +86,7 @@ def convert_seq_13_to_12(file_path: str,
                     if in_blocks and line.strip() != '' and len(line.strip().split()) == 8:
                         block_list = line.strip().split()[:-1]  # remove last entry
                         block_list.append('\n')  # append line ending
-                        new_file.write(' '.join([f'{x:>3}' for x in block_list]))
+                        new_file.write(' '.join([f'{x:>{n_digits[n]}}' for n, x in enumerate(block_list)]))
                     else:
                         new_file.write(line)
                         in_blocks = False
