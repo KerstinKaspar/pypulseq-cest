@@ -1,4 +1,4 @@
-# DGE_7T_001_1p88uT_32SincGauss_DC66_2375ms_braintumor
+# DGE_7T_001_1uT_32SincGauss_DC66_2375ms_braintumor
 # Creates a sequence file for a DGE protocol with Sinc-Gaussian pulses, 66% DC and tsat of 2.3 s
 #
 # Reference:
@@ -63,9 +63,10 @@ gx_spoil, gy_spoil, gz_spoil = [make_trapezoid(channel=c, system=sys, amplitude=
                                                rise_time=rise_time) for c in ['x', 'y', 'z']]
 
 # RF pulses
-flip_angle_sat = b1 * gamma_hz * 2 * np.pi * seq_defs['tp']
+flip_angle_sat = gamma_hz * 2 * np.pi * seq_defs['tp']  # dummy flip angle
 sat_pulse, _, _ = make_sinc_pulse(flip_angle=flip_angle_sat, duration=seq_defs['tp'], system=sys,
-                                  time_bw_product=2, apodization=0.15)  # philips-like sinc
+                                  time_bw_product=2, apodization=0.15)
+sat_pulse.signal *= (1/np.max(sat_pulse.signal)) * b1 * gamma_hz
 
 seq_defs['b1cwpe'] = calc_power_equivalent(rf_pulse=sat_pulse, tp=seq_defs['tp'], td=seq_defs['td'], gamma_hz=gamma_hz)
 
