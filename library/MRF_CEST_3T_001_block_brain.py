@@ -86,7 +86,7 @@ for m, offset in enumerate(offsets_hz):
     seq.add_block(trec_delay)
 
     # prep and set rf pulse
-    flip_angle_sat = seq_defs['B1pa'][m] * gamma_hz * seq_defs['tp']
+    flip_angle_sat = seq_defs['B1pa'][m] * gamma_hz * 2 * np.pi * seq_defs['tp']
     sat_pulse, _ = make_block_pulse(flip_angle=flip_angle_sat, duration=seq_defs['tp'], system=sys)
     sat_pulse.freq_offset = offset
 
