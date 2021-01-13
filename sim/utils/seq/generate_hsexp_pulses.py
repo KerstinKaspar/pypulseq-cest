@@ -4,7 +4,6 @@ generate_hsexp_pulses.py
 """
 
 import numpy as np
-import matplotlib.pyplot as plt
 from pypulseq.opts import Opts
 from sim.utils.seq.make_arbitrary_rf_with_phase import make_arbitrary_rf_with_phase
 from sim.utils.seq.make_hypsec_half_passage import calculate_hypsec_amplitude as hypsec_amp
@@ -189,18 +188,3 @@ def generate_hsexp_pulses(amp: float = 1.0,
     pulse_dict.update({'post_neg': hsexp})
 
     return pulse_dict
-
-
-if __name__ == '__main__':
-    pulse_dict = generate_hsexp_pulses()
-
-    fig, ax = plt.subplots(2, 4)
-
-    for n, key in enumerate(pulse_dict):
-        real_ = np.real(pulse_dict[key].signal)
-        imag_ = np.imag(pulse_dict[key].signal)
-        ax[0, n].plot(np.abs(pulse_dict[key].signal))
-        ax[0, n].set_title(key, fontsize=14)
-        ax[1, n].plot(np.arctan2(imag_, real_))
-
-    plt.show()
