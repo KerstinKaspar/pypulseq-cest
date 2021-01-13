@@ -19,7 +19,10 @@ def round_number(number, significant_digits):
     :param significant_digits: number of significant digits
     :return:
     """
-    return round(number, significant_digits - int(math.floor(math.log10(abs(number)))) - 1)
+    if number != 0:
+        return round(number, significant_digits - int(math.floor(math.log10(abs(number)))) - 1)
+    else:
+        return 0
 
 
 def insert_seq_file_header(filepath: (Path, str),
