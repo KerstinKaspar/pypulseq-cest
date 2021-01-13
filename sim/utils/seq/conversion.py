@@ -5,6 +5,7 @@ conversion.py
 from tempfile import mkstemp
 from shutil import move, copymode
 from os import fdopen, remove
+from pypulseq.Sequence.sequence import Sequence
 
 
 def convert_seq_12_to_pseudo_13(file_path: str):
@@ -13,7 +14,10 @@ def convert_seq_12_to_pseudo_13(file_path: str):
     :param file_path: path to the sequence file that should be converted
     """
 
-    n_digits = [4, 2, 2, 3, 3, 3, 2, 2, 0, 0, 0]
+    seq = Sequence()
+    seq.read(file_path)
+    n_rf = len(seq.block_events)
+    n_digits = [len(str(n_rf)), 2, 2, 3, 3, 3, 2, 2]
 
     # create a temp file
     tmp, abs_path = mkstemp()
@@ -62,7 +66,10 @@ def convert_seq_13_to_12(file_path: str,
                 independently after usage
     """
 
-    n_digits = [4, 2, 2, 3, 3, 3, 2, 2]
+    seq = Sequence()
+    seq.read(file_path)
+    n_rf = len(seq.block_events)
+    n_digits = [len(str(n_rf)), 2, 2, 3, 3, 3, 2, 2]
 
     # create a temp file
     tmp, abs_path = mkstemp(suffix='_temp')
@@ -85,8 +92,7 @@ def convert_seq_13_to_12(file_path: str,
                 else:
                     if in_blocks and line.strip() != '' and len(line.strip().split()) == 8:
                         block_list = line.strip().split()[:-1]  # remove last entry
-                        block_list.append('\n')  # append line ending
-                        new_file.write(' '.join([f'{x:>{n_digits[n]}}' for n, x in enumerate(block_list)]))
+                        new_file.write(' '.join([f'{x:>{n_digits[n]}}' for n, x in enumerate(block_list)]) + '\n')
                     else:
                         new_file.write(line)
                         in_blocks = False
