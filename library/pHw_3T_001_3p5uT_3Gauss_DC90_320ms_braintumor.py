@@ -1,5 +1,10 @@
 # pHw_3T_001_3p5uT_3Gauss_DC90_320ms_braintumor
 # Creates a sequence file for an ph weighted protocol according to
+# https://doi.org/10.1002/mrm.27204
+#
+# This is a multi-slice method with repeating saturation between slices.
+# There is an ADC event for each slice, which means, each frequency offset
+# contains nSlices (25) ADC events
 #
 # Patrick Schuenke 2020
 # patrick.schuenke@ptb.de
@@ -30,14 +35,13 @@ seq_defs['b0'] = 3  # B0 [T]
 seq_defs['n_pulses'] = 3  # number of pulses  #
 seq_defs['tp'] = 100e-3  # pulse duration [s]
 seq_defs['td'] = 10e-3  # interpulse delay [s]
-seq_defs['trec'] = 10  # recovery time [s]
-seq_defs['trec_m0'] = 10  # recovery time before M0 [s]
 seq_defs['m0_offset'] = np.array([])  # m0 offset [ppm]; empty because M0 is unsaturated
 seq_defs['offsets_ppm'] = np.append(np.append(np.linspace(-3.5, -2.5, 11), np.linspace(-0.3, 0.3, 7)),
                                     np.linspace(2.5, 3.5, 11))  # offset vector [ppm]
 
 seq_defs['dcsat'] = (seq_defs['tp']) / (seq_defs['tp'] + seq_defs['td'])  # duty cycle
 seq_defs['num_meas'] = seq_defs['offsets_ppm'].size + 1  # number of repetition; +1 for unsaturated M0
+seq_defs['n_slices'] = 25
 seq_defs['tsat'] = seq_defs['n_pulses'] * (seq_defs['tp'] + seq_defs['td']) - seq_defs['td']  # saturation time [s]
 seq_defs['seq_id_string'] = seqid  # unique seq id
 
@@ -75,8 +79,7 @@ pseudo_adc = make_adc(num_samples=1, duration=1e-3)  # (not played out; just use
 # DELAYS
 post_spoil_delay = make_delay(50e-6)
 td_delay = make_delay(seq_defs['td'])
-trec_delay = make_delay(seq_defs['trec'])
-m0_delay = make_delay(seq_defs['trec_m0'])
+tsat_delay = make_delay(seq_defs['tsat'])
 
 # Sequence object
 seq = Sequence()
@@ -88,31 +91,31 @@ seq = Sequence()
 offsets_hz = seq_defs['offsets_ppm'] * gamma_hz * seq_defs['b0']  # convert from ppm to Hz
 
 # add unsaturated M0 image
-seq.add_block(m0_delay)
-seq.add_block(pseudo_adc)
+for n_sl in range(seq_defs['n_slices']):
+    seq.add_block(tsat_delay)
+    seq.add_block(gx_spoil, gy_spoil, gz_spoil)
+    seq.add_block(pseudo_adc)
 
 for m, offset in enumerate(offsets_hz):
     # print progress/offset
     print(f' {m + 1} / {len(offsets_hz)} : offset {offset}')
 
-    # reset accumulated phase
-    accum_phase = 0
-
-    # add delay
-    seq.add_block(trec_delay)
-
     # set sat_pulse
     sat_pulse.freq_offset = offset
 
-    for n in range(seq_defs['n_pulses']):
-        sat_pulse.phase_offset = accum_phase % (2 * np.pi)
-        seq.add_block(sat_pulse)
-        accum_phase = (accum_phase + offset * 2 * np.pi * np.sum(np.abs(sat_pulse.signal) > 0) * 1e-6) % (2 * np.pi)
-        if n < seq_defs['n_pulses']-1:
-            seq.add_block(td_delay)
+    for n_sl in range(seq_defs['n_slices']):
+        # reset accumulated phase
+        accum_phase = 0
 
-    seq.add_block(gy_spoil)
-    seq.add_block(pseudo_adc)
+        for n in range(seq_defs['n_pulses']):
+            sat_pulse.phase_offset = accum_phase % (2 * np.pi)
+            seq.add_block(sat_pulse)
+            accum_phase = (accum_phase + offset * 2 * np.pi * np.sum(np.abs(sat_pulse.signal) > 0) * 1e-6) % (2 * np.pi)
+            if n < seq_defs['n_pulses']-1:
+                seq.add_block(td_delay)
+
+        seq.add_block(gx_spoil, gy_spoil, gz_spoil)
+        seq.add_block(pseudo_adc)
 
 write_seq(seq=seq,
           seq_defs=seq_defs,
