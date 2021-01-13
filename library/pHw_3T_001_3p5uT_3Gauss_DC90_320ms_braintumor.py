@@ -1,5 +1,5 @@
-# APTw_3T_001_2uT_36SincGauss_DC90_2s_braintumor
-# Creates a sequence file for an APTw protocol with Sinc-Gaussian pulses, 90% DC and tsat of 2 s
+# pHw_3T_001_3p5uT_3Gauss_DC90_320ms_braintumor
+# Creates a sequence file for an ph weighted protocol according to
 #
 # Patrick Schuenke 2020
 # patrick.schuenke@ptb.de
@@ -10,7 +10,7 @@ from pypulseq.Sequence.sequence import Sequence
 from pypulseq.make_adc import make_adc
 from pypulseq.make_delay import make_delay
 from pypulseq.make_trap_pulse import make_trapezoid
-from pypulseq.make_sinc_pulse import make_sinc_pulse
+from pypulseq.make_gauss_pulse import make_gauss_pulse
 from pypulseq.opts import Opts
 from sim.utils.calc_power_equivalents import calc_power_equivalent
 from sim.utils.seq.write_seq import write_seq
@@ -24,19 +24,20 @@ plot_sequence = False  # plot preparation block?
 convert_to_1_3 = True  # convert seq-file to a pseudo version 1.3 file?
 
 # sequence definitions (everything in seq_defs will be written to definitions of the .seq-file)
-b1: float = 1.78  # B1 peak amplitude [µT] (the cw power equivalent will be calculated and written to seq_defs below)
+b1: float = 6  # B1 peak amplitude [µT] (the cw power equivalent will be calculated and written to seq_defs below)
 seq_defs:dict = {}
 seq_defs['b0'] = 3  # B0 [T]
-seq_defs['n_pulses'] = 36  # number of pulses  #
-seq_defs['tp'] = 50e-3  # pulse duration [s]
-seq_defs['td'] = 5e-3  # interpulse delay [s]
-seq_defs['trec'] = 3.5  # recovery time [s]
-seq_defs['trec_m0'] = 3.5  # recovery time before M0 [s]
-seq_defs['m0_offset'] = -1560  # m0 offset [ppm]
-seq_defs['offsets_ppm'] = np.append(seq_defs['m0_offset'], np.linspace(-4, 4, 33))  # offset vector [ppm]
+seq_defs['n_pulses'] = 3  # number of pulses  #
+seq_defs['tp'] = 100e-3  # pulse duration [s]
+seq_defs['td'] = 10e-3  # interpulse delay [s]
+seq_defs['trec'] = 10  # recovery time [s]
+seq_defs['trec_m0'] = 10  # recovery time before M0 [s]
+seq_defs['m0_offset'] = np.array([])  # m0 offset [ppm]; empty because M0 is unsaturated
+seq_defs['offsets_ppm'] = np.append(np.append(np.linspace(-3.5, -2.5, 11), np.linspace(-0.3, 0.3, 7)),
+                                    np.linspace(2.5, 3.5, 11))  # offset vector [ppm]
 
 seq_defs['dcsat'] = (seq_defs['tp']) / (seq_defs['tp'] + seq_defs['td'])  # duty cycle
-seq_defs['num_meas'] = seq_defs['offsets_ppm'].size  # number of repetition
+seq_defs['num_meas'] = seq_defs['offsets_ppm'].size + 1  # number of repetition; +1 for unsaturated M0
 seq_defs['tsat'] = seq_defs['n_pulses'] * (seq_defs['tp'] + seq_defs['td']) - seq_defs['td']  # saturation time [s]
 seq_defs['seq_id_string'] = seqid  # unique seq id
 
@@ -61,9 +62,10 @@ gx_spoil, gy_spoil, gz_spoil = [make_trapezoid(channel=c, system=sys, amplitude=
                                                rise_time=rise_time) for c in ['x', 'y', 'z']]
 
 # RF pulses
-flip_angle_sat = b1 * gamma_hz * 2 * np.pi * seq_defs['tp']
-sat_pulse, _, _ = make_sinc_pulse(flip_angle=flip_angle_sat, duration=seq_defs['tp'], system=sys,
-                                  time_bw_product=2, apodization=0.15)  # philips-like sinc
+flip_angle_sat = gamma_hz * 2 * np.pi * seq_defs['tp']
+sat_pulse, _, _ = make_gauss_pulse(flip_angle=flip_angle_sat, duration=seq_defs['tp'], system=sys,
+                                   time_bw_product=0.2, apodization=0.5)
+sat_pulse.signal *= (1/np.max(sat_pulse.signal)) * b1 * gamma_hz
 
 seq_defs['b1cwpe'] = calc_power_equivalent(rf_pulse=sat_pulse, tp=seq_defs['tp'], td=seq_defs['td'], gamma_hz=gamma_hz)
 
@@ -85,6 +87,10 @@ seq = Sequence()
 
 offsets_hz = seq_defs['offsets_ppm'] * gamma_hz * seq_defs['b0']  # convert from ppm to Hz
 
+# add unsaturated M0 image
+seq.add_block(m0_delay)
+seq.add_block(pseudo_adc)
+
 for m, offset in enumerate(offsets_hz):
     # print progress/offset
     print(f' {m + 1} / {len(offsets_hz)} : offset {offset}')
@@ -93,15 +99,11 @@ for m, offset in enumerate(offsets_hz):
     accum_phase = 0
 
     # add delay
-    if offset == seq_defs['m0_offset'] * gamma_hz * seq_defs['b0']:
-        if seq_defs['trec_m0'] > 0:
-            seq.add_block(m0_delay)
-    else:
-        if seq_defs['trec'] > 0:
-            seq.add_block(trec_delay)
+    seq.add_block(trec_delay)
 
     # set sat_pulse
     sat_pulse.freq_offset = offset
+
     for n in range(seq_defs['n_pulses']):
         sat_pulse.phase_offset = accum_phase % (2 * np.pi)
         seq.add_block(sat_pulse)
@@ -109,7 +111,7 @@ for m, offset in enumerate(offsets_hz):
         if n < seq_defs['n_pulses']-1:
             seq.add_block(td_delay)
 
-    seq.add_block(gx_spoil, gy_spoil, gz_spoil)
+    seq.add_block(gy_spoil)
     seq.add_block(pseudo_adc)
 
 write_seq(seq=seq,

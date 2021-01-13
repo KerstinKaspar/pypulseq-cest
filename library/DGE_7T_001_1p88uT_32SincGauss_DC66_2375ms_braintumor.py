@@ -87,18 +87,24 @@ seq = Sequence()
 offsets_hz = seq_defs['offsets_ppm'] * gamma_hz * seq_defs['b0']  # convert from ppm to Hz
 
 for m, offset in enumerate(offsets_hz):
+    # print progress/offset
+    print(f' {m + 1} / {len(offsets_hz)} : offset {offset}')
+
+    # reset accumulated phase
+    accum_phase = 0
+
     # add delay
     seq.add_block(trec_delay)
+
     # set sat_pulse
     sat_pulse.freq_offset = offset
-    accum_phase = 0
     for n in range(seq_defs['n_pulses']):
         sat_pulse.phase_offset = accum_phase % (2 * np.pi)
         seq.add_block(sat_pulse)
-        accum_phase = (accum_phase + offset * 2 * np.pi * np.sum(sat_pulse.signal > 0) * 1e-6) % (2 * np.pi)
+        accum_phase = (accum_phase + offset * 2 * np.pi * np.sum(np.abs(sat_pulse.signal) > 0) * 1e-6) % (2 * np.pi)
         if n < seq_defs['n_pulses']-1:
             seq.add_block(td_delay)
-    print(f' {m+1} / {len(offsets_hz)} : offset {offset}')
+
     seq.add_block(gx_spoil, gy_spoil, gz_spoil)
     seq.add_block(pseudo_adc)
 

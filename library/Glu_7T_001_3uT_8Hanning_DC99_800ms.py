@@ -36,7 +36,7 @@ seq_defs['offsets_ppm'] = np.concatenate([[-100, -20], np.arange(-4.2, -1.8, 0.2
                                           np.arange(1.8, 4.2, 0.2), [20, 100]])  # offset vector [ppm]
 seq_defs['dcsat'] = seq_defs['tp'] / (seq_defs['tp'] + seq_defs['td'])  # duty cycle
 seq_defs['num_meas'] = seq_defs['offsets_ppm'].size  # number of repetition
-# seq_defs['tsat'] = seq_defs['n_pulses'] * (seq_defs['tp'] + seq_defs['td']) - seq_defs['td'][1]  # saturation time [s]
+seq_defs['tsat'] = seq_defs['n_pulses'] * (seq_defs['tp'] + seq_defs['td']) - seq_defs['td']  # saturation time [s]
 seq_defs['seq_id_string'] = seqid  # unique seq id
 
 seq_filename = seq_defs['seq_id_string'] + '.seq'
@@ -74,6 +74,7 @@ trec_delay = make_delay(seq_defs['trec'])
 
 # Sequence object
 seq = Sequence()
+seq.shape_library
 
 # ===
 # RUN
@@ -81,20 +82,26 @@ seq = Sequence()
 
 offsets_hz = seq_defs['offsets_ppm'] * gamma_hz * seq_defs['b0']  # convert from ppm to Hz
 
-for offset in offsets_hz:
+for m, offset in enumerate(offsets_hz):
+    # print progress/offset
+    print(f' {m + 1} / {len(offsets_hz)} : offset {offset}')
+
+    # reset accumulated phase
+    accum_phase = 0
+
     # add delay
     if seq_defs['trec'] > 0:
         seq.add_block(trec_delay)
+
     # set sat_pulse
     sat_pulse.freq_offset = offset
-    accum_phase = 0
+
     for n in range(seq_defs['n_pulses']):
         sat_pulse.phase_offset = accum_phase % (2 * np.pi)
         seq.add_block(sat_pulse)
-        accum_phase = (accum_phase + offset * 2 * np.pi * np.sum(sat_pulse.signal) * 1e-6) % (2 * np.pi)
+        accum_phase = (accum_phase + offset * 2 * np.pi * np.sum(np.abs(sat_pulse.signal) > 0) * 1e-6) % (2 * np.pi)
         if n < seq_defs['n_pulses']-1:
             seq.add_block(td_delay)
-    print(np.where(offsets_hz == offset)[0][0], '/', len(offsets_hz), ': offset ', offset)
     seq.add_block(gx_spoil, gy_spoil, gz_spoil)
     seq.add_block(pseudo_adc)
 
