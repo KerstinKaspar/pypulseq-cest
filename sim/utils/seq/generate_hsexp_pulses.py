@@ -48,7 +48,8 @@ def generate_hsexp_pulses(amp: float = 1.0,
                           bandwidth: float = 2500,
                           t_window: float = 3.5e-3,
                           ef: float = 3.5,
-                          system: Opts = Opts()) \
+                          system: Opts = Opts(),
+                          gamma_hz: float = 42.5764) \
         -> dict:
     """
     Creates a radio-frequency pulse event with arbitrary pulse shape and phase modulation
@@ -59,6 +60,7 @@ def generate_hsexp_pulses(amp: float = 1.0,
     :param t_window: duration of window function
     :param ef: dimensionless parameter to control steepness of the exponential curve
     :param system: system limits of the MR scanner
+    :param gamma_hz: gyromagnetic ratio [Hz]
     :return:
     """
 
@@ -91,7 +93,7 @@ def generate_hsexp_pulses(amp: float = 1.0,
 
     # create pypulseq rf pulse object
     signal = w1 * np.exp(1j * dphase)  # create complex array with amp and phase
-    flip_angle = amp * 1e-6 * system.gamma * 2 * np.pi  # factor 1e-6 converts from µT to T
+    flip_angle = gamma_hz * 2 * np.pi
     hsexp, _ = make_arbitrary_rf_with_phase(signal=signal, flip_angle=flip_angle, system=system)
 
     pulse_dict.update({'pre_pos': hsexp})
@@ -121,43 +123,13 @@ def generate_hsexp_pulses(amp: float = 1.0,
 
     # create pypulseq rf pulse object
     signal = w1 * np.exp(1j * dphase)  # create complex array with amp and phase
-    flip_angle = amp * 1e-6 * system.gamma * 2 * np.pi  # factor 1e-6 converts from µT to T
+    flip_angle = gamma_hz * 2 * np.pi
     hsexp, _ = make_arbitrary_rf_with_phase(signal=signal, flip_angle=flip_angle, system=system)
 
     pulse_dict.update({'pre_neg': hsexp})
 
     ############################
     # tip-up positive offset
-    ############################
-    t0 = 0
-    idx_window = np.argmin(np.abs(t_pulse - t_window))  # find start index for window
-
-    # calculate amplitude of hyperbolic secant (HS) pulse
-    w1 = hypsec_amp(t_pulse, t0, amp, mu, bandwidth)
-
-    # calculate and apply modulation function to convert HS into HSExp pulse
-    window_mod = calculate_window_modulation(t_pulse[:idx_window], t_pulse[idx_window])
-    w1[-idx_window:] = w1[-idx_window:] * np.flip(window_mod)
-
-    # calculate freq modulation of pulse
-    dfreq = calculate_hsexp_freq(np.flip(t_pulse), t_pulse[-1], bandwidth, ef, -1)
-
-    # make freq modulation end (pre-pulse) or start (post-pulse) with dw = 0
-    diff_idx = np.argmin(np.abs(dfreq))
-    dfreq -= dfreq[diff_idx]
-
-    # calculate phase (= integrate over dfreq)
-    dphase = calculate_phase(dfreq, t_p, samples, shift_idx=0, pos_offsets=True)
-
-    # create pypulseq rf pulse object
-    signal = w1 * np.exp(1j * dphase)  # create complex array with amp and phase
-    flip_angle = amp * 1e-6 * system.gamma * 2 * np.pi  # factor 1e-6 converts from µT to T
-    hsexp, _ = make_arbitrary_rf_with_phase(signal=signal, flip_angle=flip_angle, system=system)
-
-    pulse_dict.update({'post_pos': hsexp})
-
-    ############################
-    # tip-up negative offset
     ############################
     t0 = 0
     idx_window = np.argmin(np.abs(t_pulse - t_window))  # find start index for window
@@ -177,11 +149,41 @@ def generate_hsexp_pulses(amp: float = 1.0,
     dfreq -= dfreq[diff_idx]
 
     # calculate phase (= integrate over dfreq)
+    dphase = calculate_phase(dfreq, t_p, samples, shift_idx=0, pos_offsets=True)
+
+    # create pypulseq rf pulse object
+    signal = w1 * np.exp(1j * dphase)  # create complex array with amp and phase
+    flip_angle = gamma_hz * 2 * np.pi
+    hsexp, _ = make_arbitrary_rf_with_phase(signal=signal, flip_angle=flip_angle, system=system)
+
+    pulse_dict.update({'post_pos': hsexp})
+
+    ############################
+    # tip-up negative offset
+    ############################
+    t0 = 0
+    idx_window = np.argmin(np.abs(t_pulse - t_window))  # find start index for window
+
+    # calculate amplitude of hyperbolic secant (HS) pulse
+    w1 = hypsec_amp(t_pulse, t0, amp, mu, bandwidth)
+
+    # calculate and apply modulation function to convert HS into HSExp pulse
+    window_mod = calculate_window_modulation(t_pulse[:idx_window], t_pulse[idx_window])
+    w1[-idx_window:] = w1[-idx_window:] * np.flip(window_mod)
+
+    # calculate freq modulation of pulse
+    dfreq = calculate_hsexp_freq(np.flip(t_pulse), t_pulse[-1], bandwidth, ef, -1)
+
+    # make freq modulation end (pre-pulse) or start (post-pulse) with dw = 0
+    diff_idx = np.argmin(np.abs(dfreq))
+    dfreq -= dfreq[diff_idx]
+
+    # calculate phase (= integrate over dfreq)
     dphase = calculate_phase(dfreq, t_p, samples, shift_idx=0, pos_offsets=False)
 
     # create pypulseq rf pulse object
     signal = w1 * np.exp(1j * dphase)  # create complex array with amp and phase
-    flip_angle = amp * 1e-6 * system.gamma * 2 * np.pi  # factor 1e-6 converts from µT to T
+    flip_angle = gamma_hz * 2 * np.pi
     hsexp, _ = make_arbitrary_rf_with_phase(signal=signal, flip_angle=flip_angle, system=system)
 
     pulse_dict.update({'post_neg': hsexp})
