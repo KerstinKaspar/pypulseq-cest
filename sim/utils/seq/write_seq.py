@@ -76,6 +76,7 @@ def write_seq_defs(seq: Sequence,
                       'b1cwpe': 'B1cwpe',
                       'dcsat': 'DCsat',
                       'm0_offset': 'M0_offset',
+                      'n_slices': 'nSlices',
                       'trec': 'Trec',
                       'trec_m0': 'Trec_M0',
                       'tsat': 'Tsat'
