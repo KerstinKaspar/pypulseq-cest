@@ -2,7 +2,7 @@
 
 This repository contains the necessary code and tools to build CEST saturation blocks with 
 [pypulseq](https://github.com/imr-framework/pypulseq), which is a python adaption of the matlab-based 
-[pulseq](https://github.com/pulseq/pulseq) project. The documentation of the **pulseq** open file format for MR 
+[pulseq](https://github.com/pulseq/pulseq) project. Please visit [https://pulseq-cest.github.io/](https://pulseq-cest.github.io/) for more information on the project. The documentation of the **pulseq** open file format for MR 
 sequences can be found [here](https://pulseq.github.io/specification.pdf). 
 
 ## INSTALLATION
