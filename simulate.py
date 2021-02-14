@@ -23,5 +23,8 @@ SimPulseqSBB(sim_params, seq_file)
 m_out = sim_params.GetFinalMagnetizationVectors()
 mz = get_zspec(m_out=m_out, sp=sp, noise=(0, 0))
 
-# plot
-plot_z(mz=mz, offsets=sp.offsets, plot_mtr_asym=True)
+# plot raw spectrum
+plot_z(mz=mz, offsets=sp.offsets)
+
+# plot normalized spectrum and asymmetry
+plot_z(mz=mz[2:-1]/mz[0], offsets=sp.offsets[2:-1], plot_mtr_asym=True)
