@@ -12,6 +12,11 @@ from sim.utils.eval import get_zspec, plot_z
 sim_config = 'library/config_example.yaml'
 seq_file = 'library/seq_example.seq'
 
+# if pulse library is installed try this
+# sim_config = '../pulseq-cest-library/sim-library/GM_3T_001_bmsim.yaml'
+# seq_file = '../pulseq-cest-library/seq-library/APTw_3T_003_2uT_8block_DC95_834ms_braintumor/APTw_3T_003_2uT_8block_DC95_834ms_braintumor.seq'
+
+
 # load the parameters
 sp = load_params(sim_config)
 # parse for C++ handling
@@ -27,4 +32,4 @@ mz = get_zspec(m_out=m_out, sp=sp, noise=(0, 0))
 plot_z(mz=mz, offsets=sp.offsets)
 
 # plot normalized spectrum and asymmetry
-plot_z(mz=mz[2:-1]/mz[0], offsets=sp.offsets[2:-1], plot_mtr_asym=True)
+plot_z(mz=mz[1:]/mz[0], offsets=sp.offsets[1:], plot_mtr_asym=True)
