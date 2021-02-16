@@ -33,7 +33,7 @@ seq_defs['trec'] = 3  # recovery time [s]
 seq_defs['trec_m0'] = 12  # recovery time before M0 [s]
 
 seq_defs['m0_offset'] = -300  # m0 offset [ppm]
-seq_defs['offsets_ppm'] = np.append(seq_defs['m0_offset'], np.linspace(-10, 10, 51))  # offset vector [ppm]
+seq_defs['offsets_ppm'] = np.append(seq_defs['m0_offset'], np.linspace(-10, 10, 101))  # offset vector [ppm]
 
 seq_defs['dcsat'] = (seq_defs['tp']) / (seq_defs['tp'] + seq_defs['td'])  # duty cycle
 seq_defs['num_meas'] = seq_defs['offsets_ppm'].size  # number of repetition
