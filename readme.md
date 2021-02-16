@@ -6,9 +6,19 @@ This repository contains the necessary code and tools to build CEST saturation b
 sequences can be found [here](https://pulseq.github.io/specification.pdf). 
 
 ## INSTALLATION
-### IMPORTANT 
+MORE INFO ON INSTALLATIONS CAN BE FOUND IN THE [sim/src/readme](sim/src/readme.md)
+If your system requirements match the file, you can simply install the precompiled distributions. Should you not find a matching distribution, please refer to the system indeendent installation guide below.
+### Windows precompiled installation
+- from the [sim/src/compile/dist](sim/src/compile/dist) folder run the following command in the terminal to install into your current python environment:
+    - choose the correct executable for your operating system (32 or 64 bit) and python version and replace the filename in the following code
+    - if you don't find a suitable executable, please follow the instructions in the **Compilation guide** section below
+```
+    # example for installation
+    easy_install pySimPulseqSBB-1.0.win-amd64-py3.7.exe
+``` 
+### SYSTEM INDEPENDENT INSTALLATION 
 The following installation is recommended. If it should fail or you cannot run it, please follow both instructions in the [sim/src/readme](sim/src/readme.md) and [library/readme](library/readme.md) individually.
-### Prerequisites
+### Prerequisites for the system independent installation
 To be able to create and simulate your own CEST saturation blocks using [pypulseq-cest](.), you need to install the following python packages:
 - [pypulseq](https://github.com/imr-framework/pypulseq)
 - [pyYaml](https://yaml.org/) for .yaml file handling 
