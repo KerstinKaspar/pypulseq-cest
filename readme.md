@@ -8,7 +8,7 @@ sequences can be found [here](https://pulseq.github.io/specification.pdf).
 ## INSTALLATION
 MORE INFO ON INSTALLATIONS CAN BE FOUND IN THE [sim/src/readme](sim/src/readme.md)
 If your system requirements match the file, you can simply install the precompiled distributions. Should you not find a matching distribution, please refer to the system indendent installation guide below.
-### Prerequisites for the system independent installation
+### Prerequisites 
 To be able to create and simulate your own CEST saturation blocks using [pypulseq-cest](.), you need to install the following python packages:
 - [pypulseq](https://github.com/imr-framework/pypulseq)
 - [pyYaml](https://yaml.org/) for .yaml file handling 
