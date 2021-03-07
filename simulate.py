@@ -15,6 +15,11 @@ from bmctool.utils.eval import plot_z
 sim_config = 'library/config_example.yaml'
 seq_file = 'library/seq_example.seq'
 
+# if pulse library is installed try this
+# sim_config = '../pulseq-cest-library/sim-library/GM_3T_001_bmsim.yaml'
+# seq_file = '../pulseq-cest-library/seq-library/APTw_3T_003_2uT_8block_DC95_834ms_braintumor/APTw_3T_003_2uT_8block_DC95_834ms_braintumor.seq'
+
+
 # load the parameters
 sp = load_params(sim_config)
 # parse for C++ handling
@@ -26,5 +31,9 @@ SimPulseqSBB(sim_params, seq_file)
 m_out = sim_params.GetFinalMagnetizationVectors()
 offsets, mz = get_zspec(m_out=m_out, sp=sp, seq_file=seq_file)
 
-# plot
-plot_z(mz=mz, offsets=offsets, plot_mtr_asym=True)
+
+# plot raw spectrum
+plot_z(mz=mz, offsets=soffsets)
+
+# plot normalized spectrum and asymmetry
+plot_z(mz=mz[1:]/mz[0], offsets=sp.offsets[1:], plot_mtr_asym=True)

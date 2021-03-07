@@ -1,19 +1,37 @@
 """
     write_seq.py
 """
-
+import math
 from os import fdopen, remove
 from shutil import move, copymode
 from tempfile import mkstemp
 from datetime import datetime
 from pathlib import Path
 import numpy as np
-from pypulseq.Sequence import sequence
+from pypulseq.Sequence.sequence import Sequence
 from sim.utils.seq.conversion import convert_seq_12_to_pseudo_13
+
+
+def round_number(number, significant_digits):
+    """
+    Rounds a number to the specified number of significant digits
+    :param number: number to be rounded
+    :param significant_digits: number of significant digits
+    :return:
+    """
+    if number != 0:
+        return round(number, significant_digits - int(math.floor(math.log10(abs(number)))) - 1)
+    else:
+        return 0
 
 
 def insert_seq_file_header(filepath: (Path, str),
                            author: str):
+    """
+    Inserts header information into seq-file
+    :param filepath: path to the sequence file
+    :param author: name of the author of the file
+    """
     # create a temp file
     tmp, abs_path = mkstemp()
 
@@ -44,17 +62,16 @@ def insert_seq_file_header(filepath: (Path, str),
     move(abs_path, filepath)
 
 
-def write_seq_defs(seq: sequence,
+def write_seq_defs(seq: Sequence,
                    seq_defs: dict,
                    use_matlab_names: bool) \
-        -> sequence:
+        -> Sequence:
     """
-
-    Parameters
-    ----------
-    seq
-    seq_defs
-    use_matlab_names
+    Writes seq-file 'Definitions' from dictionary
+    :param seq: pypulseq Sequence object
+    :param seq_defs: dictionary with all entries that should be written into 'Definitions' of the seq-file
+    :param use_matlab_names: set to True to use the same variable names as in Matlab
+    :return:
     """
     if use_matlab_names:
         # define MATLAB names
@@ -62,6 +79,7 @@ def write_seq_defs(seq: sequence,
                       'b1cwpe': 'B1cwpe',
                       'dcsat': 'DCsat',
                       'm0_offset': 'M0_offset',
+                      'n_slices': 'nSlices',
                       'trec': 'Trec',
                       'trec_m0': 'Trec_M0',
                       'tsat': 'Tsat'
@@ -82,21 +100,32 @@ def write_seq_defs(seq: sequence,
     # write definitions in alphabetical order and convert to correct value types
     for k, v in sorted(dict_.items()):
         # convert value types
-        if type(v) != np.ndarray:
+        if type(v) == np.ndarray:
+            pass
+        elif type(v) in [int, float, np.float32, np.float64, np.float]:
+            v = str(round_number(v, 6))
+        else:
             v = str(v)
         seq.set_definition(key=k, val=v)
 
     return seq
 
 
-
-def write_seq(seq: sequence,
+def write_seq(seq: Sequence,
               seq_defs: dict,
               filename: (Path, str),
               author: str,
               use_matlab_names: bool,
               convert_to_1_3: bool):
-
+    """
+    Writes the seq-file according to given arguments
+    :param seq: pypulseq Sequence object
+    :param seq_defs: dictionary with all entries that should be written into 'Definitions' of the seq-file
+    :param filename: Path or string with the filename
+    :param author: name of the author of the file
+    :param use_matlab_names: set to True to use the same variable names as in Matlab
+    :param convert_to_1_3: set to True to convert a version 1.2 seq-file to a pseudo version 1.3 file
+    """
     # write definitions
     write_seq_defs(seq, seq_defs, use_matlab_names)
 
@@ -109,4 +138,3 @@ def write_seq(seq: sequence,
     # convert to pseudo 1.3 version
     if convert_to_1_3:
         convert_seq_12_to_pseudo_13(filename)
-
