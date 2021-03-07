@@ -1,14 +1,16 @@
 """
 function fedinitions to pars the parameters into the C++ class
 """
-
+from pathlib import Path
+from typing import Union
 from pySimPulseqSBB import SimulationParameters, WaterPool, MTPool, CESTPool
-from sim.params import Params
 from pySimPulseqSBB import Lorentzian, SuperLorentzian, NoLineshape
+from bmctool.params import Params
+from sim.utils.utils import get_num_adc_events
 
 
 def parse_params(sp: Params,
-                 seq_file: str) -> SimulationParameters:
+                 seq_file: Union[str, Path]) -> SimulationParameters:
     """
     parsing python parameters into the according C++ functions
     :param sp: simulation parameter object
@@ -16,10 +18,8 @@ def parse_params(sp: Params,
     :return: SWIG object for C++ object handling
     """
     sp_sim = SimulationParameters()
-    # pass offsets to sp
-    sp.set_definitions(seq_file=seq_file)
     # init magnetization vector
-    sp_sim.InitMagnetizationVectors(sp.m_vec, sp.get_num_adc_events())
+    sp_sim.InitMagnetizationVectors(sp.m_vec, get_num_adc_events(seq_file=seq_file))
     # constructwater pool
     water_pool = WaterPool(sp.water_pool['r1'], sp.water_pool['r2'], sp.water_pool['f'])
     sp_sim.SetWaterPool(water_pool)

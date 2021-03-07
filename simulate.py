@@ -5,10 +5,13 @@ simulate.py
 """
 from pySimPulseqSBB import SimPulseqSBB
 from sim.parse_params import parse_params
-from sim.set_params import load_params
-from sim.utils.eval import get_zspec, plot_z
+from sim.utils.utils import get_zspec
+from bmctool.set_params import load_params
+from bmctool.utils.eval import plot_z
+
 
 # set the necessary filepaths
+
 sim_config = 'library/config_example.yaml'
 seq_file = 'library/seq_example.seq'
 
@@ -21,7 +24,7 @@ SimPulseqSBB(sim_params, seq_file)
 
 # retrieve the calculated magnetization
 m_out = sim_params.GetFinalMagnetizationVectors()
-mz = get_zspec(m_out=m_out, sp=sp, noise=(0, 0))
+offsets, mz = get_zspec(m_out=m_out, sp=sp, seq_file=seq_file)
 
 # plot
-plot_z(mz=mz, offsets=sp.offsets, plot_mtr_asym=True)
+plot_z(mz=mz, offsets=offsets, plot_mtr_asym=True)

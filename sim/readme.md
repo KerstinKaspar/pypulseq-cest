@@ -17,5 +17,5 @@ This [sim folder](.) contains the python code necessary for simulation. The C++-
 - [sim.utils.seq.read](utils/seq/read.py): contains functions to read different sequence file versions
 
 ### Source code (C++)
-The [src folder](src) ontains C++ code for simulations and SWIG code for installation. Please refer to that folders [readme](src/readme.md)
+The [src folder](src) contains C++ code for simulations and SWIG code for installation. Please refer to that folders [readme](src/readme.md)
 for further information.

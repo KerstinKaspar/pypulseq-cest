@@ -10,7 +10,7 @@ sequences can be found [here](https://pulseq.github.io/specification.pdf).
 The following installation is recommended. If it should fail or you cannot run it, please follow both instructions in the [sim/src/readme](sim/src/readme.md) and [library/readme](library/readme.md) individually.
 ### Prerequisites
 To be able to create and simulate your own CEST saturation blocks using [pypulseq-cest](.), you need to install the following python packages:
-- [pypulseq](https://github.com/imr-framework/pypulseq)
+- [bmctool](https://github.com/schuenke/BMCTool), including [pypulseq](https://github.com/imr-framework/pypulseq), for simulation parameter and pypulseq-handling
 - [pyYaml](https://yaml.org/) for .yaml file handling 
 
 You also need to have the following installed on your machine:
