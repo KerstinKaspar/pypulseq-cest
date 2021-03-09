@@ -1,12 +1,57 @@
 """
 function fedinitions to pars the parameters into the C++ class
 """
+import numpy as np
 from pathlib import Path
 from typing import Union
 from pySimPulseqSBB import SimulationParameters, WaterPool, MTPool, CESTPool
 from pySimPulseqSBB import Lorentzian, SuperLorentzian, NoLineshape
 from bmctool.params import Params
-from sim.utils.utils import get_num_adc_events
+from bmctool.utils.seq.auxiliary import get_offsets, get_num_adc_events
+
+
+def get_zspec(m_out: np.ndarray,
+              sp: Params,
+              offsets: np.ndarray = None,
+              seq_file: Union[str, Path] = None,
+              return_abs: bool = False) \
+        -> [np.ndarray, np.ndarray]:
+    """
+    returns the offsets and Z- spectra and optionally simulates noise
+    :param m_out: Output magnetization from the simulation
+    :param sp: Params object containing the simulation parameters
+    :param offsets: array of offsets, if not given, offsets are retrieved from seq_file
+    :param return_abs: Toggle to return np.abs(mz)
+    :param seq_file: seq_file to get the offsets from. If not given and no offsets given, an array of ints in the range of len(mz) is returned as offsets
+    :param noise: bool or tuple, toggle to simulate standard gaussian noise on the spectra or set values (mean, std)
+    :return: offsets and Z-spectra as np.ndarrays of the same size
+    """
+    offsets = np.array(offsets)
+    if not offsets and not seq_file:
+        offsets = np.array([])
+    elif not offsets:
+        offsets = get_offsets(seq_file=seq_file)
+
+    if offsets[np.abs(offsets) > 190].any():
+        m0 = m_out[sp.mz_loc, np.where(np.abs(offsets) > 190)[0]]
+        m_ = m_out[sp.mz_loc, np.where(np.abs(offsets) <= 190)[0]]
+        if m0.size > 1:
+            mz = m_ / np.mean(m0)
+        else:
+            mz = m_ / m0
+        offsets = offsets[np.abs(offsets) <= 190]
+    else:
+        mz = m_out[sp.mz_loc, :]
+
+    if offsets.size != mz.size:
+        offsets = np.arange(0, mz.size)
+
+    if return_abs:
+        mz = np.abs(mz)
+    else:
+        mz = np.array(mz)
+
+    return offsets, mz
 
 
 def parse_params(sp: Params,
