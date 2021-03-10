@@ -16,7 +16,7 @@ def check_sim_package_exists() -> bool:
 
 def sim_setup(sim_path: Union[str, Path], setup_filepath: Union[str, Path]):
     if check_sim_package_exists():
-        print(f'pySimPulseqSBB already installed. You can start ypipour simulations.')
+        print(f'pySimPulseqSBB already installed. You can start your simulations.')
     else:
         print(f'Starting pySimPulseqSBB setup. Please refer to sim/src/readme.md and check the prerequisites.')
         if not setup_filepath.exists():
