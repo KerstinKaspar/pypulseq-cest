@@ -4,6 +4,7 @@ This repository contains the necessary code and tools to build CEST saturation b
 [pypulseq](https://github.com/imr-framework/pypulseq), which is a python adaption of the matlab-based 
 [pulseq](https://github.com/pulseq/pulseq) project. Please visit [https://pulseq-cest.github.io/](https://pulseq-cest.github.io/) for more information on the project. The documentation of the **pulseq** open file format for MR 
 sequences can be found [here](https://pulseq.github.io/specification.pdf). 
+Python-specific sequence and parameter handling is done using the pure python simulation tool [bmctool](https://github.com/schuenke/BMCTool), which are then parsed for the C++ implementation in this tool.
 
 ## INSTALLATION
 MORE INFO ON INSTALLATIONS CAN BE FOUND IN THE [sim/src/readme](sim/src/readme.md)
@@ -14,7 +15,7 @@ To be able to create and simulate your own CEST saturation blocks using [pypulse
 - [pyYaml](https://yaml.org/) for .yaml file handling 
 You can install them with your favoured workflow or by running
 ```
-    pip install pypulseq
+    pip install bmctool
     pip install pyyaml
 ```
 ### Windows precompiled installation
@@ -25,16 +26,16 @@ You can install them with your favoured workflow or by running
     # example for installation
     easy_install pySimPulseqSBB-1.0.win-amd64-py3.7.exe
 ``` 
-### SYSTEM INDEPENDENT INSTALLATION 
+### System independent installation
 The following installation is recommended. If it should fail or you cannot run it, please follow both instructions in the [sim/src/readme](sim/src/readme.md) and [library/readme](library/readme.md) individually.
-## Additional Prerequisites
+#### Additional Prerequisites
 You also need to have the following installed on your machine:
 - [Git](https://git-scm.com/)
 - [SWIG](http://www.swig.org/exec.html) (Installation for [Windows link](http://www.swig.org/Doc1.3/Windows.html))
 - a working C++ compiler
     - for Windows, you need Visual C++ v.12.0 or higher, e.g. [Microsoft Visual C++ Redistributable](https://visualstudio.microsoft.com/downloads/)
 
-### Installation
+#### Installation
 If you fulfill the prerequisites, you just need to run the [install.py](install.py) file.
 You can do this from the terminal (from this [pypulseq-cest folder](.)):
 ```
@@ -42,6 +43,10 @@ python install.py
 ```
 To avoid permission problems, run it with administrative rights (Windows: start the terminal with administrative rights, Linux: ```sudo python install.py```)
 You might need to adapt your python executable, e.g. ```python3```
+
+### FAQ: I can't get any of this to work, what shall I do?
+An alternative, pure python based tool that can handle the same input is the [bmctool](https://github.com/schuenke/BMCTool).
+You will find the same functionalities, but with lower performance (simulation speed).
 
 ## Config and seq-file library
 All simulations in [pypulseq-cest]() require a *yaml file* that includes all simulation settings and a *seq file*, which
@@ -53,19 +58,3 @@ You will find further pre-defined and approved pre-saturation schemes and simula
 If you have not successfully used the above installation, please read the subfolders [readme file](library/readme.md) to learn how to
 download from the [pulseq-cest-library repository](https://github.com/kherz/pulseq-cest-library).
 
-## Pulseq version compatibility
-Since [pypulseq](https://github.com/imr-framework/pypulseq) is producing files of version 1.2, we provide functions 
-to create pseudo version 1.3 files and to load files of either of these versions in the 
-[sim/utils/seq](sim/utils/seq) subfolder.
-
-You can use the following code to change the 1.2 file into a pseudo 1.3 file:
-````python
-from sim.utils.seq.conversion import convert_seq_12_to_pseudo_13
-convert_seq_12_to_pseudo_13(file_path)
-````
-
-To load any sequence file of version 1.2 or 1.3, use:
-````python
-from sim.utils.seq.read import read_any_version
-seq = read_any_version(file_path)
-````
