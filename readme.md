@@ -1,23 +1,25 @@
 # Simulation tool and seq-file preparation for CEST saturation blocks
 
-This repository contains the necessary code and tools to build CEST saturation blocks with 
+This repository contains the code and tools to build CEST saturation blocks with 
 [pypulseq](https://github.com/imr-framework/pypulseq), which is a python adaption of the matlab-based 
-[pulseq](https://github.com/pulseq/pulseq) project. Please visit [https://pulseq-cest.github.io/](https://pulseq-cest.github.io/) for more information on the project. The documentation of the **pulseq** open file format for MR 
-sequences can be found [here](https://pulseq.github.io/specification.pdf). 
-Python-specific sequence and parameter handling is done using the pure python simulation tool [bmctool](https://github.com/schuenke/BMCTool), which are then parsed for the C++ implementation in this tool.
+[pulseq](https://github.com/pulseq/pulseq) project. 
+Please visit [https://pulseq-cest.github.io/](https://pulseq-cest.github.io/) for more information on the pulseq-cest 
+project. The documentation of the **pulseq** open file format for MR sequences can be found 
+[here](https://pulseq.github.io/specification.pdf). Pulseq-cest specific seq file and parameter handling is done using the 
+[bmctool](https://github.com/schuenke/BMCTool)  python package.
 
 ## INSTALLATION
-MORE INFO ON INSTALLATIONS CAN BE FOUND IN THE [sim/src/readme](sim/src/readme.md)
+MORE INFO ON INSTALLATIONS CAN BE FOUND IN THE [sim/src/readme](sim/src/readme.md).
 If your system requirements match the file, you can simply install the precompiled distributions. Should you not find a matching distribution, please refer to the system indendent installation guide below.
 ### Prerequisites 
-To be able to create and simulate your own CEST saturation blocks using [pypulseq-cest](.), you need to install the following python packages:
-- [bmctool](https://github.com/schuenke/BMCTool), including [pypulseq](https://github.com/imr-framework/pypulseq), for simulation parameter and pypulseq-handling
-- [pyYaml](https://yaml.org/) for .yaml file handling 
-You can install them with your favoured workflow or by running
+To be able to create and simulate your own CEST saturation blocks using [pypulseq-cest](.), you need to install the
+[bmctool package](https://pypi.org/project/BMCTool/). You can install it with your favoured workflow or by running
 ```
     pip install bmctool
-    pip install pyyaml
 ```
+The installation using pip ensures that the required [pypulseq package](https://pypi.org/project/pypulseq/)
+and [pyYaml package](https://pypi.org/project/PyYAML/) are installed automatically.
+
 ### Windows precompiled installation
 - from the [sim/src/compile/dist](sim/src/compile/dist) folder run the following command in the terminal to install into your current python environment:
     - choose the correct executable for your operating system (32 or 64 bit) and python version and replace the filename in the following code
