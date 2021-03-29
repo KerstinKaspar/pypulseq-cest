@@ -9,18 +9,17 @@ project. The documentation of the **pulseq** open file format for MR sequences c
 [bmctool](https://github.com/schuenke/BMCTool)  python package.
 
 ## INSTALLATION
-MORE INFO ON INSTALLATIONS CAN BE FOUND IN THE [sim/src/readme](sim/src/readme.md).
-If your system requirements match the file, you can simply install the precompiled distributions. Should you not find a matching distribution, please refer to the system indendent installation guide below.
+We provide pre-compiled versions of this tool, or you can compile and install the tool with SWIG yourself. Please refer to the operating system specific installation steps.
 ### Prerequisites 
 To be able to create and simulate your own CEST saturation blocks using [pypulseq-cest](.), you need to install the
-[bmctool package](https://pypi.org/project/BMCTool/). You can install it with your favoured workflow or by running
+[BMCTool package](https://pypi.org/project/BMCTool/). You can install it with your favoured workflow or by running
 ```
     pip install bmctool
 ```
 The installation using pip ensures that the required [pypulseq package](https://pypi.org/project/pypulseq/)
 and [pyYaml package](https://pypi.org/project/PyYAML/) are installed automatically.
-
-### Windows precompiled installation
+### Windows
+#### Simple installation of the precompiled versions
 - from the [sim/src/compile/dist](sim/src/compile/dist) folder run the following command in the terminal to install into your current python environment:
     - choose the correct executable for your operating system (32 or 64 bit) and python version and replace the filename in the following code
     - if you don't find a suitable executable, please follow the instructions in the **Compilation guide** section below
@@ -28,22 +27,41 @@ and [pyYaml package](https://pypi.org/project/PyYAML/) are installed automatical
     # example for installation
     easy_install pySimPulseqSBB-1.0.win-amd64-py3.7.exe
 ``` 
-### System independent installation
-The following installation is recommended. If it should fail or you cannot run it, please follow both instructions in the [sim/src/readme](sim/src/readme.md) and [library/readme](library/readme.md) individually.
+#### Alternative: Compilation guide
+Please refer to the system independent compilation guide below.
+### Linux
+Please refer to the system independent compilation guide below.
+### Mac OS
+Please refer to the system independent compilation guide below.
+
+### Alternative: System Independent Compilation Guide
+If you can't find any matching distribution for your operating system, this compilation guide compiles and installs the tool directy with SWIG.
+If it should fail or you cannot run it, please follow both instructions in the [sim/src/readme](sim/src/readme.md) and [library/readme](library/readme.md) individually.
 #### Additional Prerequisites
-You also need to have the following installed on your machine:
+You now need to have the following installed on your machine:
 - [Git](https://git-scm.com/)
 - [SWIG](http://www.swig.org/exec.html) (Installation for [Windows link](http://www.swig.org/Doc1.3/Windows.html))
 - a working C++ compiler
-    - for Windows, you need Visual C++ v.12.0 or higher, e.g. [Microsoft Visual C++ Redistributable](https://visualstudio.microsoft.com/downloads/)
-
+    - for **Linux**, this comes with your operating system
+    - for **Windows**, you need Visual C++ v.12.0 or higher, e.g. [Microsoft Visual C++ Redistributable](https://visualstudio.microsoft.com/downloads/)
 #### Installation
 If you fulfill the prerequisites, you just need to run the [install.py](install.py) file.
 You can do this from the terminal (from this [pypulseq-cest folder](.)):
 ```
 python install.py
 ```
-To avoid permission problems, run it with administrative rights (Windows: start the terminal with administrative rights, Linux: ```sudo python install.py```)
+To avoid permission problems, run it with administrative rights:
+
+**Windows**: start the terminal with administrative rights
+
+**Linux**: Depending on the environment you want to install into, use ```sudo``` or the ```--user``` flag: 
+```
+sudo python install.py
+```
+or
+```
+python install.py --user
+```
 You might need to adapt your python executable, e.g. ```python3```
 
 ### FAQ: I can't get any of this to work, what shall I do?

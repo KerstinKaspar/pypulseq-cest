@@ -26,7 +26,7 @@ def linux_setup(eigen_path: Path, np_path: Path):
     SimPulseqSBB_module = Extension(name='_pySimPulseqSBB',
                                     sources=['pySimPulseqSBB.i', 'SimPulseqSBB.cpp', 'SimulationParameters.cpp',
                                              'ExternalSequence.cpp'],
-                                    extra_compile_args=['-Xpreprocessor', '-fopenmp', '-fPIC', '-fpermissive'],
+                                    extra_compile_args=['-fPIC', '-fpermissive'],
                                     include_dirs=[np_path, np_path_np, eigen_path],
                                     extra_link_args=['-lgomp'],
                                     swig_opts=['-c++'],

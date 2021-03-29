@@ -25,7 +25,7 @@ SimPulseqSBB_module = Extension(name='_pySimPulseqSBB',
                                 sources=['pySimPulseqSBB.i', 'SimPulseqSBB.cpp', 'SimulationParameters.cpp',
                                          'ExternalSequence.cpp'],
                                 include_dirs=[eigen_path, np_path, np_path_np],
-                                extra_compile_args=['-Xpreprocessor', '-fopenmp'],
+                                #extra_compile_args=['-fPIC', '-fpermissive'],
                                 swig_opts=['-c++'],
                                 language='c++'
                                 )

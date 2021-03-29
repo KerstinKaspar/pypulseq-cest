@@ -14,7 +14,8 @@ def check_sim_package_exists() -> bool:
         return False
 
 
-def sim_setup(sim_path: Union[str, Path], setup_filepath: Union[str, Path]):
+#def sim_setup(sim_path: Union[str, Path], setup_filepath: Union[str, Path]):
+def sim_setup(sim_path: Union[str, Path], setup_filepath: Union[str, Path], str_options: str = None):
     if check_sim_package_exists():
         print(f'pySimPulseqSBB already installed. You can start your simulations.')
     else:
@@ -26,7 +27,12 @@ def sim_setup(sim_path: Union[str, Path], setup_filepath: Union[str, Path]):
             raise Exception(f'SWIG is not installed on your system. Please refer to sim/src/readme.md, then install '
                             f'SWIG and re-run this file or use a precompiled installation.')
         check_build = subprocess.call([sys.executable, 'setup.py', 'build_ext', '--inplace'], cwd=sim_path)
-        check_install = subprocess.call([sys.executable, 'setup.py', 'install'], cwd=sim_path)
+        if not str_options:
+            check_install = subprocess.call([sys.executable, 'setup.py', 'install'], cwd=sim_path)
+        else:
+            check_install = subprocess.call([sys.executable, 'setup.py', 'install', str_options], cwd=sim_path)
+        #check_install = subprocess.call([sys.executable, 'setup.py', 'install', '--user'], cwd=sim_path)
+        #check_install = subprocess.call([sys.executable, 'setup.py', 'install'], cwd=sim_path)
         if 1 in [check_build, check_install]:
             print(f'Could not install pySimPulseqSBB automatically. Please check the prerequisites and refer to '
                   f'sim/src/readme.md.')
@@ -89,4 +95,7 @@ if __name__ == '__main__':
 
     print('Starting automatic setup. Please refer to the readme.md for further information.')
     clone_library(library_path=library_path)
-    sim_setup(sim_path=sim_path, setup_filepath=setup_filepath)
+    str_options = None
+    if len(sys.argv) > 1:
+        str_options = str(sys.argv[1])
+    sim_setup(sim_path=sim_path, setup_filepath=setup_filepath, str_options=str_options)
