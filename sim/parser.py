@@ -14,6 +14,8 @@ def get_zspec(m_out: np.ndarray,
               sp: Params,
               offsets: np.ndarray = None,
               seq_file: Union[str, Path] = None,
+              normalize_if_m0: bool = False,
+              m0_offset_min: float = 190,
               return_abs: bool = False) \
         -> [np.ndarray, np.ndarray]:
     """
@@ -22,8 +24,9 @@ def get_zspec(m_out: np.ndarray,
     :param sp: Params object containing the simulation parameters
     :param offsets: array of offsets, if not given, offsets are retrieved from seq_file
     :param return_abs: Toggle to return np.abs(mz)
+    :param normalize_if_m0: normalize the spectrum (Msat/M0) if an offset larger than m0_offset_min is found
+    :param m0_offset_min: Offset minimum [ppm] to look for the M0 scan in the offsets
     :param seq_file: seq_file to get the offsets from. If not given and no offsets given, an array of ints in the range of len(mz) is returned as offsets
-    :param noise: bool or tuple, toggle to simulate standard gaussian noise on the spectra or set values (mean, std)
     :return: offsets and Z-spectra as np.ndarrays of the same size
     """
     offsets = np.array(offsets)
@@ -31,15 +34,15 @@ def get_zspec(m_out: np.ndarray,
         offsets = np.array([])
     elif not offsets:
         offsets = get_offsets(seq_file=seq_file)
-
-    if offsets[np.abs(offsets) > 190].any():
-        m0 = m_out[sp.mz_loc, np.where(np.abs(offsets) > 190)[0]]
-        m_ = m_out[sp.mz_loc, np.where(np.abs(offsets) <= 190)[0]]
-        if m0.size > 1:
-            mz = m_ / np.mean(m0)
-        else:
-            mz = m_ / m0
-        offsets = offsets[np.abs(offsets) <= 190]
+    if normalize_if_m0:
+        if offsets[np.abs(offsets) >= m0_offset_min].any():
+            m0 = m_out[sp.mz_loc, np.where(np.abs(offsets) >= m0_offset_min)[0]]
+            m_ = m_out[sp.mz_loc, np.where(np.abs(offsets) < m0_offset_min)[0]]
+            if m0.size > 1:
+                mz = m_ / np.mean(m0)
+            else:
+                mz = m_ / m0
+            offsets = offsets[np.abs(offsets) < m0_offset_min]
     else:
         mz = m_out[sp.mz_loc, :]
 
