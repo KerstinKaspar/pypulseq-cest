@@ -23,12 +23,13 @@ You now need to have the following installed on your machine:
     python setup.py install
 ```
 
-- to build an executable for your windows distribution and python version:
+- to build a wheel distribution for your operating system and python version:
 ```
-    python setup.py bdist
+    python setup.py build_ext --inplace
+    python setup.py bdist_wheel
 ```
-
-- to build a compressed "dumb" distribution folder (compiled python packages that hav to be unpacked into the environment library):
+- to build a zipped distribution for your operating system and python version:
 ```
+    python setup.py build_ext --inplace
     python setup.py bdist
 ```

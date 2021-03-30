@@ -8,19 +8,45 @@ project. The documentation of the **pulseq** open file format for MR sequences c
 [here](https://pulseq.github.io/specification.pdf). Pulseq-cest specific seq file and parameter handling is done using the 
 [bmctool](https://github.com/schuenke/BMCTool)  python package.
 
-## INSTALLATION
-### Prerequisites:
-- [Git](https://git-scm.com/)
-- [pip](https://pypi.org/project/pip/)
-###Installation
-If you fulfill the prerequisites, you just need to run the [install.py](install.py) file.
+## Installation
+For this installation, you need [Git](https://git-scm.com/), you just need to run the [install.py](install.py) file.
 You can do this from the terminal (from this [pypulseq-cest folder](.)):
 ```
 python install.py
 ```
 If you run into any troubles, please refer to the **Troubleshooting** section below.
 
-## Config and seq-file library
+## Quick Start
+You can run the [simulate.py](simulate.py) file for an example simulation. The steps are explained below.
+
+1. You need a simulation configuration file in the YAML format and a sequence file in the seq format (see **Configuration and sequence file library** below). For example:
+````python
+sim_config = 'library/config_example.yaml'
+seq_file = 'library/seq_example.seq'
+````
+2. You load and parse the parameters defined in the .yaml and .seq file with the following functions:
+````python
+sp = load_params(sim_config)
+sim_params = parse_params(sp=sp, seq_file=seq_file)
+````
+3. You run the simulation using the SimPulseqSBB function. Note: Due to C++ handling, some functionalities are named in CamelCase.
+````python
+SimPulseqSBB(sim_params, seq_file)
+````
+4. You can retrieve the magnetization vector with the following function:
+````python
+m_out = sim_params.GetFinalMagnetizationVectors()
+````
+5. To get the correct magnetization in z-direction, you can use the following function.
+````python
+offsets, mz = get_zspec(m_out=m_out, sp=sp, seq_file=seq_file)
+````
+6. You can plot the magnetization with the following function:
+````python
+plot_z(mz=mz, offsets=offsets)
+````
+
+### Configuration and sequence file library
 All simulations in [pypulseq-cest]() require a *yaml file* that includes all simulation settings and a *seq file*, which
 defines the pre-saturation block. An [example seq-file](library/seq_example.seq), an [example yaml file]() as well as an 
 [example script](library/write_seq_example.py) to create the [seq_example.seq](library/seq_example.seq) file can be 
@@ -31,7 +57,9 @@ If you have not successfully used the above installation, please read the subfol
 download from the [pulseq-cest-library repository](https://github.com/kherz/pulseq-cest-library).
 
 
-### Troubleshooting
+
+
+## Installation Troubleshooting
 To avoid permission problems, you can run it with administrative rights:
 
 **Windows**: start the terminal with administrative rights
@@ -56,15 +84,6 @@ To be able to create and simulate your own CEST saturation blocks using [pypulse
 ```
 The installation using pip ensures that the required [pypulseq package](https://pypi.org/project/pypulseq/)
 and [pyYaml package](https://pypi.org/project/PyYAML/) are installed automatically.
-#### Windows
-##### Simple installation of the precompiled versions
-- from the [sim/src/compile/dist](sim/src/compile/dist) folder run the following command in the terminal to install into your current python environment:
-    - choose the correct executable for your operating system (32 or 64 bit) and python version and replace the filename in the following code
-    - if you don't find a suitable executable, please follow the instructions in the **Compilation guide** section below
-```
-    # example for installation
-    easy_install pySimPulseqSBB-1.0.win-amd64-py3.7.exe
-```
 ##### Alternative: System Independent Compilation Guide
 Please refer to the system independent installation guide below
 #### System independent Compilation Guide

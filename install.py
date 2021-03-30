@@ -28,6 +28,7 @@ def sim_setup(sim_path: Union[str, Path], setup_filepath: Union[str, Path], str_
     if check_prerequisites:
         print('There was an error when we tried to install your prerequisites. Please refer to the readme.md and try '
               'to install the tool manually.')
+        return
     if check_sim_package_exists():
         print(f'pySimPulseqSBB already installed. You can start your simulations.')
     else:

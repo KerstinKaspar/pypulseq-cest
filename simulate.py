@@ -13,11 +13,6 @@ from bmctool.utils.eval import plot_z
 sim_config = 'library/config_example.yaml'
 seq_file = 'library/seq_example.seq'
 
-# if pulse library is installed try this
-# sim_config = '../pulseq-cest-library/sim-library/GM_3T_001_bmsim.yaml'
-# seq_file = '../pulseq-cest-library/seq-library/APTw_3T_003_2uT_8block_DC95_834ms_braintumor/APTw_3T_003_2uT_8block_DC95_834ms_braintumor.seq'
-
-
 # load the parameters
 sp = load_params(sim_config)
 
