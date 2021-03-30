@@ -14,19 +14,31 @@ def check_sim_package_exists() -> bool:
         return False
 
 
-#def sim_setup(sim_path: Union[str, Path], setup_filepath: Union[str, Path]):
-def sim_setup(sim_path: Union[str, Path], setup_filepath: Union[str, Path], str_options: str = ''):
+def call_subprocess(call: list, str_options: str = None, **kwargs):
+    if str_options:
+        call += [str_options]
+        return subprocess.call(call, **kwargs)
+    else:
+        return subprocess.call(call, **kwargs)
+
+
+def sim_setup(sim_path: Union[str, Path], setup_filepath: Union[str, Path], str_options: str = None):
+    print('Checking and installing prerequisites')
+    check_prerequisites = call_subprocess(['pip', 'install', 'bmctool'], str_options=str_options, cwd=sim_path)
+    if check_prerequisites:
+        print('There was an error when we tried to install your prerequisites. Please refer to the readme.md and try '
+              'to install the tool manually.')
     if check_sim_package_exists():
         print(f'pySimPulseqSBB already installed. You can start your simulations.')
     else:
         print(f'Starting pySimPulseqSBB setup. Please refer to sim/src/readme.md and check the prerequisites.')
-        all_dists = Path(r'C:\Users\akrio\Desktop\Test').glob('*pySimPulseqSBB*')
+        dist_path = sim_path / 'dist'
         check_dist = 1
-        for dist in [d for d in all_dists if d.is_file()]:
+        for dist in [d.name for d in dist_path.iterdir()]:
             if not str_options:
-                check_dist = subprocess.call([sys.executable, 'pip', 'install', dist], cwd=sim_path/'dist')
+                check_dist = subprocess.call(['pip', 'install', dist], cwd=dist_path)
             else:
-                check_dist = subprocess.call([sys.executable, 'pip', 'install', dist, str_options], cwd=sim_path/'dist')
+                check_dist = subprocess.call(['pip', 'install', dist, str_options], cwd=dist_path)
             if check_dist == 0:
                 print('Successfully installed pySimPulseqSBB.')
                 return
