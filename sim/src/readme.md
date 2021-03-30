@@ -25,7 +25,7 @@ You now need to have the following installed on your machine:
 
 - to build an executable for your windows distribution and python version:
 ```
-    python setup.py bdist --format=wininst
+    python setup.py bdist
 ```
 
 - to build a compressed "dumb" distribution folder (compiled python packages that hav to be unpacked into the environment library):
