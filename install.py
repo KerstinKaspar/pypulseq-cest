@@ -15,11 +15,22 @@ def check_sim_package_exists() -> bool:
 
 
 #def sim_setup(sim_path: Union[str, Path], setup_filepath: Union[str, Path]):
-def sim_setup(sim_path: Union[str, Path], setup_filepath: Union[str, Path], str_options: str = None):
+def sim_setup(sim_path: Union[str, Path], setup_filepath: Union[str, Path], str_options: str = ''):
     if check_sim_package_exists():
         print(f'pySimPulseqSBB already installed. You can start your simulations.')
     else:
         print(f'Starting pySimPulseqSBB setup. Please refer to sim/src/readme.md and check the prerequisites.')
+        all_dists = Path(r'C:\Users\akrio\Desktop\Test').glob('*pySimPulseqSBB*')
+        check_dist = 1
+        for dist in [d for d in all_dists if d.is_file()]:
+            if not str_options:
+                check_dist = subprocess.call([sys.executable, 'pip', 'install', dist], cwd=sim_path/'dist')
+            else:
+                check_dist = subprocess.call([sys.executable, 'pip', 'install', dist, str_options], cwd=sim_path/'dist')
+            if check_dist == 0:
+                print('Successfully installed pySimPulseqSBB.')
+                return
+        print('No matching distribution found. Trying to install via SWIG and distutils.')
         if not setup_filepath.exists():
             raise Exception(f'Setup file for pySimPulseqSBB not found. Please check you have the latest pypulseq-cest '
                             f'version. \n See also sim/src/readme.md')
