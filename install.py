@@ -17,16 +17,14 @@ def check_sim_package_exists() -> bool:
 def call_subprocess(call: list, str_options: str = None, **kwargs):
     if str_options:
         call += [str_options]
-        return subprocess.call(call, **kwargs)
-    else:
-        return subprocess.call(call, **kwargs)
+    return subprocess.call(call, **kwargs)
 
 
 def sim_setup(sim_path: Union[str, Path], setup_filepath: Union[str, Path], str_options: str = None):
     print('Checking and installing prerequisites')
-    check_prerequisites = call_subprocess(['pip', 'install', 'bmctool'], str_options=str_options, cwd=sim_path)
+    check_prerequisites = call_subprocess(['pip', 'install', 'bmctool'], str_options=str_options, cwd=sim_path, stderr=subprocess.DEVNULL)
     if check_prerequisites:
-        print('There was an error when we tried to install your prerequisites. Please refer to the readme.md and try '
+        print('ERROR: There was an error when we tried to install your prerequisites. Please refer to the readme.md and try '
               'to install the tool manually.')
         return
     if check_sim_package_exists():
@@ -37,9 +35,11 @@ def sim_setup(sim_path: Union[str, Path], setup_filepath: Union[str, Path], str_
         check_dist = 1
         for dist in [d.name for d in dist_path.iterdir()]:
             if not str_options:
-                check_dist = subprocess.call(['pip', 'install', dist], cwd=dist_path)
+                check_dist = subprocess.call(['pip', 'install', dist], cwd=dist_path, stdout=subprocess.DEVNULL,
+                                             stderr=subprocess.STDOUT)
             else:
-                check_dist = subprocess.call(['pip', 'install', dist, str_options], cwd=dist_path)
+                check_dist = subprocess.call(['pip', 'install', dist, str_options], cwd=dist_path,
+                                             stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
             if check_dist == 0:
                 print('Successfully installed pySimPulseqSBB.')
                 return
@@ -50,15 +50,16 @@ def sim_setup(sim_path: Union[str, Path], setup_filepath: Union[str, Path], str_
         if not shutil.which('swig'):
             raise Exception(f'SWIG is not installed on your system. Please refer to sim/src/readme.md, then install '
                             f'SWIG and re-run this file or use a precompiled installation.')
-        check_build = subprocess.call([sys.executable, 'setup.py', 'build_ext', '--inplace'], cwd=sim_path)
+        check_build = subprocess.call([sys.executable, 'setup.py', 'build_ext', '--inplace'], cwd=sim_path,
+                                      stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
         if not str_options:
-            check_install = subprocess.call([sys.executable, 'setup.py', 'install'], cwd=sim_path)
+            check_install = subprocess.call([sys.executable, 'setup.py', 'install'], cwd=sim_path,
+                                            stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
         else:
-            check_install = subprocess.call([sys.executable, 'setup.py', 'install', str_options], cwd=sim_path)
-        #check_install = subprocess.call([sys.executable, 'setup.py', 'install', '--user'], cwd=sim_path)
-        #check_install = subprocess.call([sys.executable, 'setup.py', 'install'], cwd=sim_path)
+            check_install = subprocess.call([sys.executable, 'setup.py', 'install', str_options], cwd=sim_path,
+                                            stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
         if 1 in [check_build, check_install]:
-            print(f'Could not install pySimPulseqSBB automatically. Please check the prerequisites and refer to '
+            print(f'PROBLEM: Could not install pySimPulseqSBB automatically. Please check the prerequisites and refer to '
                   f'sim/src/readme.md.')
         else:
             print('Successfully installed pySimPulseqSBB.')
