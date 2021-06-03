@@ -8,7 +8,7 @@ setup(
     # description='A python tool to perform Bloch-McConnell (BMC) simulations.',
     #url='https://github.com/schuenke/BMCTool',
     install_requires=[
-        'bmctool'
+        'bmctool>=0.4.0'
     ],
     keywords='MRI, Bloch, CEST, simulations',
     packages=['pypulseq_cest'],
