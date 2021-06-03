@@ -7,15 +7,12 @@ setup(
     version='0.1',
     # description='A python tool to perform Bloch-McConnell (BMC) simulations.',
     #url='https://github.com/schuenke/BMCTool',
-    # install_requires=[
-    #     'numpy',
-    #     'matplotlib',
-    #     'tqdm',
-    #     'PyYAML',
-    #     'pypulseq>=1.3.1post1',
-    # ],
+    install_requires=[
+        'bmctool'
+    ],
     keywords='MRI, Bloch, CEST, simulations',
     packages=['pypulseq_cest'],
+    package_dir={'pypulseq_cest': '..'},
     #include_package_data=True,
     classifiers=[
         'Programming Language :: Python :: 3',

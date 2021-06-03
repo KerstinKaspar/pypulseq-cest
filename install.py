@@ -22,11 +22,11 @@ def call_subprocess(call: list, str_options: str = None, **kwargs):
 
 def sim_setup(sim_path: Union[str, Path], setup_filepath: Union[str, Path], str_options: str = None):
     print('Checking and installing prerequisites')
-    check_prerequisites = call_subprocess(['pip', 'install', 'bmctool'], str_options=str_options, cwd=sim_path, stderr=subprocess.DEVNULL)
-    if check_prerequisites:
-        print('ERROR: There was an error when we tried to install your prerequisites. Please refer to the readme.md and try '
-              'to install the tool manually.')
-        return
+    #check_prerequisites = call_subprocess(['pip', 'install', 'bmctool'], str_options=str_options, cwd=sim_path, stderr=subprocess.DEVNULL)
+    # if check_prerequisites:
+    #     print('ERROR: There was an error when we tried to install your prerequisites. Please refer to the readme.md and try '
+    #           'to install the tool manually.')
+    #     return
     if check_sim_package_exists():
         print(f'pySimPulseqSBB already installed. You can start your simulations.')
     else:
@@ -135,4 +135,4 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         str_options = str(sys.argv[1])
     sim_setup(sim_path=sim_path, setup_filepath=setup_filepath, str_options=str_options)
-    pypulseq_cest_setup(setup_filepath=root_path, str_options=str_options)
+    pypulseq_cest_setup(setup_filepath=root_path / 'src', str_options=str_options)
