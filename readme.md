@@ -1,4 +1,4 @@
-# Simulation tool and seq-file preparation for CEST saturation blocks
+# PyPulseq-CEST: Simulation tool and seq-file preparation for CEST saturation blocks
 
 This repository contains the code and tools to build CEST saturation blocks with 
 [pypulseq](https://github.com/imr-framework/pypulseq), which is a python adaption of the matlab-based 
@@ -6,18 +6,41 @@ This repository contains the code and tools to build CEST saturation blocks with
 Please visit [https://pulseq-cest.github.io/](https://pulseq-cest.github.io/) for more information on the pulseq-cest 
 project. The documentation of the **pulseq** open file format for MR sequences can be found 
 [here](https://pulseq.github.io/specification.pdf). Pulseq-cest specific seq file and parameter handling is done using the 
-[bmctool](https://github.com/schuenke/BMCTool)  python package.
+[BMCTool](https://github.com/schuenke/BMCTool)  python package.
 
 ## Installation
-For this installation, you need [Git](https://git-scm.com/), you just need to run the [install.py](install.py) file.
-You can do this from the terminal (from this [pypulseq-cest folder](.)):
-```
-python install.py
-```
-If you run into any troubles, please refer to the **Troubleshooting** section below.
+For the installation of pulseq-CEST you need to have [Git](https://git-scm.com/) installed. If this is the case, just
+perform the following steps:
+
+#### 1) Download the code:
+Simply clone the GitHub repository **OR** download the latest version as a 
+   [ZIP file](https://github.com/KerstinHut/pypulseq-cest/archive/refs/heads/master.zip) and extract it into a folder on
+   you computer.
+
+#### 2) Install the code:
+We recommend using a clean python/anaconda environment with python version >= 3.7. Two convenient ways to start the 
+installation are:
+   * Open a terminal in the _pypulseq-cest_ folder, activate your environment and excute ``python setup.py``
+   * Open the _pypulseq-cest_ folder as a project in your favorite IDE (e.g. PyCharm), select your environment and
+   execute the [setup.py](setup.py) file in your IDE.
+     
+The installation installs the following packages into your local python environment:
+   * **pySimPulseSBB**: package containing the C++ based simulation code
+   * **pypulseq_cest**: package containing the python based parser functions
+   * **BMCTool**: package for pulseq-cest specific seq file and config file handling
+   * **pypulseq**: package for general seq file writing/reading
+   * all other required packages like PyYAML, numpy, matplotlib, etc...  
+
+#### 3 Download the pulseq-cest-library:
+During the installation, a folder named _**pulseq-cest-library**_ should have been created in the _**library**_ 
+subfolder. If this is not the case, download the latest version as a 
+[ZIP file](https://github.com/kherz/pulseq-cest-library/archive/refs/heads/master.zip) and add it to the _**library**_ 
+folder manually.  
+   
+If you run into any troubles during installation, please refer to the **Troubleshooting** section below.
 
 ## Quick Start
-You can run the [simulate.py](simulate.py) file for an example simulation. The steps are explained below.
+You can run the [simulate.py](simulate.py) file for an example simulation. The individual steps/lines are explained below.
 
 1. You need a simulation configuration file in the YAML format and a sequence file in the seq format (see **Configuration and sequence file library** below). For example:
 ````python
