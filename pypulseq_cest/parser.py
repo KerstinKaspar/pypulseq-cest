@@ -4,6 +4,7 @@ function fedinitions to pars the parameters into the C++ class
 import numpy as np
 from pathlib import Path
 from typing import Union
+from setuptools import setup
 from pySimPulseqSBB import SimulationParameters, WaterPool, MTPool, CESTPool
 from pySimPulseqSBB import Lorentzian, SuperLorentzian, NoLineshape
 from bmctool.params import Params

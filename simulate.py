@@ -4,7 +4,7 @@ simulate.py
     You need to define the path to a config file ('sim_config') and to a seq file ('seq_file').
 """
 from pySimPulseqSBB import SimPulseqSBB
-from sim.parser import parse_params, get_zspec
+from sim.src.compile.parser import parse_params, get_zspec
 from bmctool.set_params import load_params
 from bmctool.utils.eval import plot_z
 

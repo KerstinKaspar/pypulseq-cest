@@ -65,6 +65,17 @@ def sim_setup(sim_path: Union[str, Path], setup_filepath: Union[str, Path], str_
             print('Successfully installed pySimPulseqSBB.')
 
 
+def pypulseq_cest_setup(setup_filepath: Union[str, Path], str_options: str = None):
+    if not str_options:
+        check_install = subprocess.call([sys.executable, 'setup_pypulseq_cest.py', 'install'], cwd=setup_filepath)
+                                        #stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+    else:
+        check_install = subprocess.call([sys.executable, 'setup_pypulseq_cest.py', 'install', str_options],
+                                        cwd=setup_filepath, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+    if check_install == 0:
+        print('Successfully installed pypulseq_cest.')
+
+
 def check_library_exists(library_path: Union[str, Path]):
     ext_library_path = library_path / 'pulseq-cest-library'
     if ext_library_path.exists():
@@ -115,7 +126,7 @@ if __name__ == '__main__':
     library_path = root_path / 'library'
     ext_library_path = library_path / 'pulseq-cest-library'
     seq_library_readme = ext_library_path / 'seq-library/readme.md'
-    sim_path = root_path / 'sim/src/compile'
+    sim_path = root_path / 'src/compile'
     setup_filepath = sim_path / 'setup.py'
 
     print('Starting automatic setup. Please refer to the readme.md for further information.')
@@ -124,3 +135,4 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         str_options = str(sys.argv[1])
     sim_setup(sim_path=sim_path, setup_filepath=setup_filepath, str_options=str_options)
+    pypulseq_cest_setup(setup_filepath=root_path, str_options=str_options)
