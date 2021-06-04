@@ -36,7 +36,7 @@ def check_sim_package_exists() -> bool:
 
 def clone_library(library_path: Union[str, Path] = None):
     if not library_path:
-        library_path = Path('library')
+        library_path = Path('pypulseq_cest/library')
     if not check_library_exists(library_path=library_path):
         print(f'Starting to clone pulseq-cest-library automatically. Please refer to library/readme.md.')
         clone_pulseq_cest_library(directory=library_path)
@@ -53,7 +53,7 @@ def clone_pulseq_cest_library(repo_url: str = 'https://github.com/kherz/pulseq-c
     :param repo_url: URL of the pulseq-cest-library repository
     """
     if not directory:
-        directory = Path('library')
+        directory = Path('pypulseq_cest/library')
     if not (shutil.which('git')):
         print(f'Git is not installed on your system. Please install Git and re-run this file or download the'
               f'pulseq-cest-library manually from {repo_url}.')
@@ -119,7 +119,7 @@ def sim_setup(sim_path: Union[str, Path], setup_filepath: Union[str, Path], str_
 
 if __name__ == '__main__':
     root_path = Path(os.path.abspath(__file__)).parent
-    library_path = root_path / 'library'
+    library_path = root_path
     ext_library_path = library_path / 'pulseq-cest-library'
     seq_library_readme = ext_library_path / 'seq-library/readme.md'
     sim_path = root_path / 'src/compile'

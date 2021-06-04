@@ -51,8 +51,8 @@ def sim_example():
     """
     Function to run an example simulation.
     """
-    seq_file = Path(__file__).parents[1] / 'library' / 'seq_example.seq'
-    config_file = Path(__file__).parents[1] / 'library' / 'config_example.yaml'
+    seq_file = Path(__file__).parent / 'example_library' / 'seq_example.seq'
+    config_file = Path(__file__).parent / 'example_library' / 'config_example.yaml'
 
     simulate(config_file=config_file,
              seq_file=seq_file,

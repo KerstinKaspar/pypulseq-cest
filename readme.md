@@ -40,43 +40,40 @@ folder manually.
 If you run into any troubles during installation, please refer to the **Troubleshooting** section below.
 
 ## Quick Start
+For an example, you can run the following from any script at any location with pypulseq_cest installed:
+````python
+from pypulseq_cest.simulate import sim_example
+
+sim_example()
+````
+
 You can run the [simulate.py](simulate.py) file for an example simulation. The individual steps/lines are explained below.
 
-1. You need a simulation configuration file in the YAML format and a sequence file in the seq format (see **Configuration and sequence file library** below). For example:
+1. Import the simulate function
 ````python
-sim_config = 'library/config_example.yaml'
-seq_file = 'library/seq_example.seq'
+from pypulseq_cest.simulate import simulate
 ````
-2. You load and parse the parameters defined in the .yaml and .seq file with the following functions:
+
+2.  You need a simulation configuration file in the YAML format and a sequence file in the seq format (see **Configuration and sequence file library** below). For example:
 ````python
-sp = load_params(sim_config)
-sim_params = parse_params(sp=sp, seq_file=seq_file)
+sim_config = 'pypulseq_cest/example_library/config_example.yaml'
+seq_file = 'pypulseq_cest/example_library/seq_example.seq'
 ````
-3. You run the simulation using the SimPulseqSBB function. Note: Due to C++ handling, some functionalities are named in CamelCase.
+
+2. Run the simulations with
 ````python
-SimPulseqSBB(sim_params, seq_file)
+sim = simulate(config_file=sim_config, seq_file=seq_file)
 ````
-4. You can retrieve the magnetization vector with the following function:
-````python
-m_out = sim_params.GetFinalMagnetizationVectors()
-````
-5. To get the correct magnetization in z-direction, you can use the following function.
-````python
-offsets, mz = get_zspec(m_out=m_out, sp=sp, seq_file=seq_file)
-````
-6. You can plot the magnetization with the following function:
-````python
-plot_z(mz=mz, offsets=offsets)
-````
+
 
 ### Configuration and sequence file library
 All simulations in [pypulseq-cest]() require a *yaml file* that includes all simulation settings and a *seq file*, which
-defines the pre-saturation block. An [example seq-file](library/seq_example.seq), an [example yaml file]() as well as an 
-[example script](library/write_seq_example.py) to create the [seq_example.seq](library/seq_example.seq) file can be 
-found in the [library](library) subfolder. 
+defines the pre-saturation block. An [example seq-file](pypulseq_cest/library/seq_example.seq), an [example yaml file]() as well as an 
+[example script](pypulseq_cest/library/write_seq_example.py) to create the [seq_example.seq](pypulseq_cest/library/seq_example.seq) file can be 
+found in the [library](pypulseq_cest/library) subfolder. 
 
-You will find further pre-defined and approved pre-saturation schemes and simulation configs in the [pulseq-cest-library](library/pulseq-cest-library)
-If you have not successfully used the above installation, please read the subfolders [readme file](library/readme.md) to learn how to
+You will find further pre-defined and approved pre-saturation schemes and simulation configs in the [pulseq-cest-library](pulseq-cest-library)
+If you have not successfully used the above installation, please read the subfolders [readme file](pypulseq_cest/library/readme.md) to learn how to
 download from the [pulseq-cest-library repository](https://github.com/kherz/pulseq-cest-library).
 
 
@@ -110,7 +107,7 @@ and [pyYaml package](https://pypi.org/project/PyYAML/) are installed automatical
 Please refer to the system independent installation guide below
 #### System independent Compilation Guide
 If you can't find any matching distribution for your operating system, this compilation guide compiles and installs the tool directy with SWIG.
-Please follow both instructions in the [sim/src/readme](sim/src/readme.md) and [library/readme](library/readme.md) individually.
+Please follow both instructions in the [sim/src/readme](sim/src/readme.md) and [library/readme](pypulseq_cest/library/readme.md) individually.
 ##### Additional Prerequisites
 You now need to have the following installed on your machine:
 - [Git](https://git-scm.com/)
