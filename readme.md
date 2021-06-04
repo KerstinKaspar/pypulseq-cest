@@ -67,20 +67,16 @@ sim = simulate(config_file=sim_config, seq_file=seq_file)
 
 
 ### Configuration and sequence file library
-All simulations in [pypulseq-cest]() require a *yaml file* that includes all simulation settings and a *seq file*, which
-defines the pre-saturation block. An [example seq-file](pypulseq_cest/library/seq_example.seq), an [example yaml file]() as well as an 
-[example script](pypulseq_cest/library/write_seq_example.py) to create the [seq_example.seq](pypulseq_cest/library/seq_example.seq) file can be 
-found in the [library](pypulseq_cest/library) subfolder. 
+All simulations in [pypulseq-cest](.) require a *yaml file* that includes all simulation settings and a *seq file*, which
+defines the pre-saturation block. An [example seq-file](pypulseq_cest/example_library/seq_example.seq), and an [example yaml file](pypulseq_cest/example_library/config_example.seq) file can be 
+found in the [library](pypulseq_cest/example_library) subfolder. 
 
 You will find further pre-defined and approved pre-saturation schemes and simulation configs in the [pulseq-cest-library](pulseq-cest-library)
-If you have not successfully used the above installation, please read the subfolders [readme file](pypulseq_cest/library/readme.md) to learn how to
-download from the [pulseq-cest-library repository](https://github.com/kherz/pulseq-cest-library).
-
-
+If you have not successfully used the above installation, please download it from the [pulseq-cest-library repository](https://github.com/kherz/pulseq-cest-library).
 
 
 ## Installation Troubleshooting
-To avoid permission problems, you can run it with administrative rights:
+To avoid permission problems, you can run the setup with administrative rights:
 
 **Windows**: start the terminal with administrative rights
 **Linux**: Depending on the environment you want to install into, use ```sudo``` or the hand the ```--user``` flag like 
@@ -95,6 +91,8 @@ python install.py --user
 You might need to adapt your python executable, e.g. ```python3```
 
 ### Manual installation
+If you can't install pypulseq-cest with the installation guide above, you can manually install the pySimPulseqSBB C++ code with the following instructions.
+It is then possible, to use all functionalities from this working directory.
 #### Prerequisites 
 To be able to create and simulate your own CEST saturation blocks using [pypulseq-cest](.), you need to install the
 [BMCTool package](https://pypi.org/project/BMCTool/). You can install it with your favoured workflow or by running
