@@ -131,4 +131,4 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         str_options = str(sys.argv[1])
     sim_setup(sim_path=sim_path, setup_filepath=setup_filepath, str_options=str_options)
-    pypulseq_cest_setup(setup_filepath=root_path, str_options=str_options)
+    pypulseq_cest_setup(setup_filepath=root_path / 'src', str_options=str_options)

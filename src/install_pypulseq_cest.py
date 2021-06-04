@@ -12,6 +12,7 @@ setup(
     ],
     keywords='MRI, Bloch, CEST, simulations',
     packages=['pypulseq_cest'],
+    package_dir={'': '..'},
     classifiers=[
         'Programming Language :: Python :: 3',
         'Natural Language :: English',

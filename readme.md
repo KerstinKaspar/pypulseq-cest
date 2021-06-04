@@ -86,7 +86,6 @@ download from the [pulseq-cest-library repository](https://github.com/kherz/puls
 To avoid permission problems, you can run it with administrative rights:
 
 **Windows**: start the terminal with administrative rights
-
 **Linux**: Depending on the environment you want to install into, use ```sudo``` or the hand the ```--user``` flag like 
 you would use for pip installations : 
 ```
