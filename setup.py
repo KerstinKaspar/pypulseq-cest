@@ -68,12 +68,14 @@ def clone_pulseq_cest_library(repo_url: str = 'https://github.com/kherz/pulseq-c
 def pypulseq_cest_setup(setup_filepath: Union[str, Path], str_options: str = None):
     print(f'pypulseq_cest: start installation')
     if not str_options:
-        check_install = subprocess.call([sys.executable, 'install_pypulseq_cest.py', 'install'], cwd=setup_filepath)
+        check_install = subprocess.call([sys.executable, 'setup_pypulseq_cest.py', 'install'], cwd=setup_filepath)
     else:
-        check_install = subprocess.call([sys.executable, 'install_pypulseq_cest.py', 'install', str_options],
+        check_install = subprocess.call([sys.executable, 'setup_pypulseq_cest.py', 'install', str_options],
                                         cwd=setup_filepath, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
     if check_install == 0:
         print('pypulseq_cest: package successfully installed.')
+    else:
+        print('Something went wrong during your pypulseq_cest imstallation. Please check your environment.')
 
 
 def sim_setup(sim_path: Union[str, Path], setup_filepath: Union[str, Path], str_options: str = None):
@@ -124,6 +126,7 @@ if __name__ == '__main__':
     seq_library_readme = ext_library_path / 'seq-library/readme.md'
     sim_path = root_path / 'src/compile'
     setup_filepath = sim_path / 'setup.py'
+    pypulseq_cest_setup_filepath = root_path / 'src'
 
     print('Starting automatic setup. Please refer to the readme.md for further information.')
     clone_library(library_path=library_path)
@@ -131,4 +134,4 @@ if __name__ == '__main__':
     if len(sys.argv) > 1:
         str_options = str(sys.argv[1])
     sim_setup(sim_path=sim_path, setup_filepath=setup_filepath, str_options=str_options)
-    pypulseq_cest_setup(setup_filepath=root_path / 'src', str_options=str_options)
+    pypulseq_cest_setup(setup_filepath=pypulseq_cest_setup_filepath, str_options=str_options)
