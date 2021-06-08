@@ -1,0 +1,4 @@
+# MANIFEST.in
+include ../pypulseq_cest/example_library/config_example.yaml
+include ../pypulseq_cest/example_library/seq_example.seq
+

@@ -1,35 +1,22 @@
-"""
-simulate.py
-    Script to run the C++ SimPulseqSBB simulation based on the defined parameters.
-    You need to define the path to a config file ('sim_config') and to a seq file ('seq_file').
-"""
-from pySimPulseqSBB import SimPulseqSBB
-from sim.parser import parse_params, get_zspec
-from bmctool.set_params import load_params
 from bmctool.utils.eval import plot_z
 
-
-# set the necessary file paths
-sim_config = 'library/config_example.yaml'
-seq_file = 'library/seq_example.seq'
-
-# if pulse library is installed try this
-# sim_config = '../pulseq-cest-library/sim-library/GM_3T_001_bmsim.yaml'
-# seq_file = '../pulseq-cest-library/seq-library/APTw_3T_003_2uT_8block_DC95_834ms_braintumor/APTw_3T_003_2uT_8block_DC95_834ms_braintumor.seq'
+from pypulseq_cest.parser import get_zspec
+from pypulseq_cest.simulate import simulate
 
 
-# load the parameters
-sp = load_params(sim_config)
+# You need a simulation configuration file in the YAML format and a sequence file in the seq format (see **Configuration and sequence file library** below). For example:
+sim_config = 'pypulseq_cest/example_library/config_example.yaml'
+seq_file = 'pypulseq_cest/example_library/seq_example.seq'
 
-# parse for C++ handling
-sim_params = parse_params(sp=sp, seq_file=seq_file)
+# Run the simulateions with a
+sim = simulate(config_file=sim_config, seq_file=seq_file, show_plot=False)
 
-# run the simulation
-SimPulseqSBB(sim_params, seq_file)
+# If you need additional processing, you can access the sunctions directly from the simulation object:
+# For example, you can retrieve the magnetization vector with the following function:
+m_out = sim.GetFinalMagnetizationVectors()
 
-# retrieve the calculated magnetization
-m_out = sim_params.GetFinalMagnetizationVectors()
-offsets, mz = get_zspec(m_out=m_out, sp=sp, seq_file=seq_file)
+# To get the correct magnetization in z-direction, you can use the following function.
+offsets, mz = get_zspec(m_out=m_out, sp=sim, seq_file=seq_file, normalize_if_m0=True)
 
-# plot raw spectrum
+# You can plot the magnetization with the following function from the bmctool:
 plot_z(mz=mz, offsets=offsets)
