@@ -36,7 +36,8 @@ setup(name='pySimPulseqSBB',
       author_email='k.heinecke@campus.tu-berlin.de',
       description="Python package to use the C++ code SimPulseqSBB for pulseq-CEST simulations.",
       ext_modules=[SimPulseqSBB_module],
-      py_modules=["pySimPulseqSBB"],
+      py_modules=["pySimPulseqSBB", 'parser'],
+      #packages=['parser']
       )
 
 

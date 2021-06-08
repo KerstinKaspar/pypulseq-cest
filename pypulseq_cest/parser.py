@@ -7,11 +7,11 @@ from typing import Union
 from pySimPulseqSBB import SimulationParameters, WaterPool, MTPool, CESTPool
 from pySimPulseqSBB import Lorentzian, SuperLorentzian, NoLineshape
 from bmctool.params import Params
-from bmctool.utils.seq.auxiliary import get_offsets, get_num_adc_events
+from bmctool.utils.seq.auxiliary import get_definition, get_num_adc_events
 
 
 def get_zspec(m_out: np.ndarray,
-              sp: Params,
+              sp: Union[Params, SimulationParameters],
               offsets: np.ndarray = None,
               seq_file: Union[str, Path] = None,
               normalize_if_m0: bool = False,
@@ -29,22 +29,26 @@ def get_zspec(m_out: np.ndarray,
     :param seq_file: seq_file to get the offsets from. If not given and no offsets given, an array of ints in the range of len(mz) is returned as offsets
     :return: offsets and Z-spectra as np.ndarrays of the same size
     """
+    if isinstance(sp, Params):
+        mz_loc = sp.mz_loc
+    elif isinstance(sp, SimulationParameters):
+        mz_loc = (sp.GetNumberOfCESTPools() + 1) * 2
     offsets = np.array(offsets)
     if not offsets and not seq_file:
         offsets = np.array([])
     elif not offsets:
-        offsets = get_offsets(seq_file=seq_file)
+        offsets = get_definition(seq_file=seq_file, key='offsets_ppm')
     if normalize_if_m0:
         if offsets[np.abs(offsets) >= m0_offset_min].any():
-            m0 = m_out[sp.mz_loc, np.where(np.abs(offsets) >= m0_offset_min)[0]]
-            m_ = m_out[sp.mz_loc, np.where(np.abs(offsets) < m0_offset_min)[0]]
+            m0 = m_out[mz_loc, np.where(np.abs(offsets) >= m0_offset_min)[0]]
+            m_ = m_out[mz_loc, np.where(np.abs(offsets) < m0_offset_min)[0]]
             if m0.size > 1:
                 mz = m_ / np.mean(m0)
             else:
                 mz = m_ / m0
             offsets = offsets[np.abs(offsets) < m0_offset_min]
     else:
-        mz = m_out[sp.mz_loc, :]
+        mz = m_out[mz_loc, :]
 
     if offsets.size != mz.size:
         offsets = np.arange(0, mz.size)
