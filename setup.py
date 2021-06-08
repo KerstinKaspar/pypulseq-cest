@@ -90,7 +90,14 @@ def sim_setup(sim_path: Union[str, Path], setup_filepath: Union[str, Path], str_
                 check_dist = subprocess.call(['pip', 'install', dist], cwd=dist_path, stdout=subprocess.DEVNULL,
                                              stderr=subprocess.STDOUT)
             else:
-                check_dist = subprocess.call(['pip', 'install', dist, str_options], cwd=dist_path,
+                if '--proxy' in str_options:
+                    opt_list = str_options.split(' ')
+                    idx_proxy = opt_list.index('--proxy')
+                    del opt_list[idx_proxy:idx_proxy+2]
+                    sim_str_options = ' '.join(opt_list)
+                else:
+                    sim_str_options = str_options
+                check_dist = subprocess.call(['pip', 'install', dist, sim_str_options], cwd=dist_path,
                                              stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
             if check_dist == 0:
                 print('pySimPulseqSBB: package successfully installed.')
