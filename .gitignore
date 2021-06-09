@@ -1,5 +1,4 @@
 # project specific files
-*temp*
 pulseq-cest-library/
 pySimPulseqSBB.py
 pySimPulseqSBB_wrap.cpp
