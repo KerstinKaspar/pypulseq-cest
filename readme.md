@@ -101,6 +101,7 @@ If you have not successfully used the above installation, please download it fro
 To avoid permission problems, you can run the setup with administrative rights:
 
 **Windows**: start the terminal with administrative rights
+
 **Linux**: Depending on the environment you want to install into, use ```sudo``` or hand the ```--user``` flag like 
 you would use for pip installations : 
 ```
