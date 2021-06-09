@@ -18,18 +18,18 @@ and [pyYaml package](https://pypi.org/project/PyYAML/) are installed as well.
 ### Manual Installation
 To manually install the pypulseq-cest code, please follow these steps:
 
-1) switch to the **[src/compile](compile)** folder
-2) install the *pySimPulseqSBB* package by running the following commands in the terminal (*linux users might need to 
+1) From this (**[src](.)**) directory, install the *pypulseq_cest* package by running by running the following commands in the terminal (*linux users might 
+   need to add the `sudo` pre-command or `--user` post-command*)
+```
+    python setup_pypulseq_cest.py. install
+```
+
+2) switch to the **[src/compile](compile)** directory
+3) install the *pySimPulseqSBB* package by running the following commands in the terminal (*linux users might need to 
    add the `sudo` pre-command or `--user` post-command*)
 
 ```
     python setup.py build_ext --inplace
     python setup.py install
 ```
-**PLEASE NOTE THAT THIS IS NOT THE _setup.py_ FILE FROM THE MAIN FOLDER**
-3) switch to the **[src]()** folder
-4) install the *pypulseq_cest* package by running by running the following commands in the terminal (*linux users might 
-   need to add the `sudo` pre-command or `--user` post-command*)
-```
-    python setup_pypulseq_cest.py. install
-```
+**PLEASE NOTE THAT THIS IS NOT THE _setup.py_ FILE FROM THE ROOT DIRECTORY**
