@@ -73,37 +73,32 @@ def pypulseq_cest_setup(setup_filepath: Union[str, Path], str_options: str = Non
         check_install = subprocess.call([sys.executable, 'setup_pypulseq_cest.py', 'install', str_options],
                                         cwd=setup_filepath, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
     if check_install == 0:
-        print('pypulseq_cest: package successfully installed.')
+        return True
     else:
-        print('Something went wrong during your pypulseq_cest imstallation. Please check your environment.')
+        print('Something went wrong during your pypulseq_cest installation. Please check your environment.')
+        return False
 
 
 def sim_setup(sim_path: Union[str, Path], setup_filepath: Union[str, Path], str_options: str = None):
     print(f'pySimPulseqSBB: start installation')
     if check_sim_package_exists():
         print(f'pySimPulseqSBB: package already installed. Proceeding to next step.')
+        return True
     else:
         dist_path = sim_path / 'dist'
         check_dist = 1
         for dist in [d.name for d in dist_path.iterdir()]:
-            if not str_options:
-                check_dist = subprocess.call(['pip', 'install', dist], cwd=dist_path, stdout=subprocess.DEVNULL,
-                                             stderr=subprocess.STDOUT)
-            else:
-                if '--proxy' in str_options:
-                    opt_list = str_options.split(' ')
-                    idx_proxy = opt_list.index('--proxy')
-                    del opt_list[idx_proxy:idx_proxy+2]
-                    sim_str_options = ' '.join(opt_list)
-                else:
-                    sim_str_options = str_options
-                check_dist = subprocess.call(['pip', 'install', dist, sim_str_options], cwd=dist_path,
-                                             stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
-            if check_dist == 0:
-                print('pySimPulseqSBB: package successfully installed.')
-                return
+            check_dist = subprocess.call(['pip', 'install', dist], cwd=dist_path, stdout=subprocess.DEVNULL,
+                                         stderr=subprocess.STDOUT)
 
-        print('pySimPulseqSBB: no matching pre-compiled distribution found. Trying to install via SWIG and distutils.')
+            if check_dist == 0:
+                print('pySimPulseqSBB: package successfully installed using a pre-compiled distribution.')
+                return True
+            else:
+                print('pySimPulseqSBB: searching a matching pre-compiled distribution.')
+
+        print('pySimPulseqSBB: no matching pre-compiled distribution found. Trying to install using SWIG.')
+
         if not setup_filepath.exists():
             raise Exception(f'pySimPulseqSBB: Setup file for pySimPulseqSBB not found. Please ensure you have the latest '
                             f'pypulseq-cest version. \n See "/src/readme.md" for more information.')
@@ -111,19 +106,28 @@ def sim_setup(sim_path: Union[str, Path], setup_filepath: Union[str, Path], str_
             raise Exception(f'pySimPulseqSBB: SWIG is not installed on your system. Please refer to "src/readme.md, '
                             f'install SWIG and re-run this file.')
 
+        print(f'pySimPulseqSBB: compiling pySimPulseqSBB package using SWIG...')
         check_build = subprocess.call([sys.executable, 'setup.py', 'build_ext', '--inplace'], cwd=sim_path,
                                       stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+        if check_build == 1:
+            print(f'pySimPulseqSBB: Could not build pySimPulseqSBB package. Please check the troubleshooting section '
+                  f'under https://github.com/KerstinHut/pypulseq-cest.')
+            return False
+
+        print(f'pySimPulseqSBB: installing pySimPulseqSBB package...')
         if not str_options:
             check_install = subprocess.call([sys.executable, 'setup.py', 'install'], cwd=sim_path,
                                             stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
         else:
             check_install = subprocess.call([sys.executable, 'setup.py', 'install', str_options], cwd=sim_path,
                                             stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
-        if 1 in [check_build, check_install]:
-            print(f'pySimPulseqSBB: Could not install pySimPulseqSBB. Please check the troubleshooting section under'
-                  f'https://github.com/KerstinHut/pypulseq-cest.')
+
+        if check_install == 1:
+            print(f'pySimPulseqSBB: Could not install pySimPulseqSBB package builed using SWIG. Please check the '
+                  f'troubleshooting section under https://github.com/KerstinHut/pypulseq-cest.')
+            return False
         else:
-            print('pySimPulseqSBB: package successfully installed.')
+            return True
 
 
 if __name__ == '__main__':
@@ -136,9 +140,22 @@ if __name__ == '__main__':
     pypulseq_cest_setup_filepath = root_path / 'src'
 
     print('Starting automatic setup. Please refer to the readme.md for further information.')
+    check_sim = False
+    check_ppcest = False
     clone_library(library_path=library_path)
     str_options = None
     if len(sys.argv) > 1:
         str_options = str(sys.argv[1])
-    sim_setup(sim_path=sim_path, setup_filepath=setup_filepath, str_options=str_options)
-    pypulseq_cest_setup(setup_filepath=pypulseq_cest_setup_filepath, str_options=str_options)
+
+    check_ppcest = pypulseq_cest_setup(setup_filepath=pypulseq_cest_setup_filepath, str_options=str_options)
+    check_sim = sim_setup(sim_path=sim_path, setup_filepath=setup_filepath, str_options=str_options)
+
+    if check_sim:
+        print(f'\n YEAH! pySimPulseqSBB package successfully installed')
+    if check_ppcest:
+        print(f'\n YEAH! pypulseq_cest package successfully installed \n')
+    if check_sim and check_ppcest:
+        print(f'#####################################################')
+        print(f'########### HAVE FUN USING PyPulseq-CEST ############')
+        print(f'#####################################################')
+        print(f'\n')
