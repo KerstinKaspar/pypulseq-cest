@@ -17,7 +17,7 @@ Clone the GitHub repository **OR** download the latest version as a
    [ZIP file](https://github.com/KerstinHut/pypulseq-cest/archive/refs/heads/master.zip) and unzip it into a folder.
 
 ### 2) Installation using *setup.py* file:
-We provide several pre-compiled distributions of the C++ based simulation code for Linux and Windows as well as python 
+We provide several pre-compiled distributions of the C++ based simulation code for Linux and Windows and python 
 versions between 3.6 and 3.9. Using these pre-compiled distributions is the recommended installation. We further 
 recommend using a clean python/anaconda environment. Two convenient ways to start the automatic installation via 
 *setup.py* file are:
@@ -40,31 +40,53 @@ folder manually.
 If you run into any troubles during installation, please refer to the **Troubleshooting** section below.
 
 ## Quick Start
-For an example, you can run the following from any script at any location with pypulseq_cest installed:
+
+To perform an example simulation, you can run the following code:
 ````python
 from pypulseq_cest.simulate import sim_example
-
 sim_example()
 ````
 
-As an alternative, you can run the [simulate.py](simulate.py) file for an example simulation. The individual steps/lines are explained below.
+As an alternative, we provide a [quick_start.py](quick_start.py) script. The individual steps/lines are explained below.:
 
 1. Import the simulate function
-````python
-from pypulseq_cest.simulate import simulate
-````
+    ````python
+    from pypulseq_cest.simulate import simulate
+    ````
 
-2.  You need a simulation configuration file in the YAML format and a sequence file in the seq format (see **Configuration and sequence file library** below). For example:
-````python
-sim_config = 'pypulseq_cest/example_library/config_example.yaml'
-seq_file = 'pypulseq_cest/example_library/seq_example.seq'
-````
+2.  Define a config and a sequence file
+    ````python
+    sim_config = 'pypulseq_cest/example_library/config_example.yaml'
+    seq_file = 'pypulseq_cest/example_library/seq_example.seq'
+    ````
+    For more information about the config and sequence files, check the **Configuration and sequence file library** 
+    section below or visit the [pulseq-cest-library](https://github.com/kherz/pulseq-cest-library) Github repository.
+    
 
-2. Run the simulations with
-````python
-sim = simulate(config_file=sim_config, seq_file=seq_file)
-````
+3. Start the simulation
+    ````python
+    sim = simulate(config_file=sim_config, seq_file=seq_file, show_plot=True, normalize=True)
+    ````
+   The simulate function requires a *config_file* and *seq_file* argument. The *show_plot* argument (default=False)
+   allows to toggle a plotting functionality. Furthermore, the simulate function accepts several additional keyword 
+   arguments (**kwargs), that allow to adjust the generated plot. These are for example *normalize* (bool: toggle 
+   normalization), *norm_threshold* (value/list/array: threshold for normalization offsets), *offsets* (list/array: 
+   manually defined x-values), *invert_ax* (bool: toggle invert ax), *plot_mtr_asym* (bool:toggle plot MTR_asym) and 
+   *title*, *x_label*, *y_label* to control the lables.
 
+
+4. Additional data processing:
+
+   The simulate functions returns a *SimulationParameters* object that allows further processing of the simulated data.
+   For example, you can retrieve the final magnetization vector of the water pool using:
+   ````python   
+   m_out = sim.GetFinalMagnetizationVectors()
+   ````
+   Afterwards, you can retrieve (and print) the offset values and the z-magnetization of the water pool using:
+      ````python   
+   offsets, mz = get_zspec(m_out=m_out, sp=sim, seq_file=seq_file)
+   print(f'The offsets used for simulation are: \n{offsets}')
+   ````
 
 ## Configuration and sequence file library
 All simulations in [pypulseq-cest](.) require a *yaml file* that includes all simulation settings and a *seq file*, which
