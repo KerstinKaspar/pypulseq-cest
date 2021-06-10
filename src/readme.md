@@ -19,10 +19,10 @@ and [pyYaml package](https://pypi.org/project/PyYAML/) are installed as well.
 To manually install the pypulseq-cest code, please follow these steps:
 
 
-1) From this (**[src](.)**) directory, install the *pypulseq_cest* package by running by running the following commands in the terminal (*linux users might 
+1) From this (**[src](.)**) directory, install the *pypulseq_cest* package by running the following commands in the terminal (*linux users might 
    need to add the `sudo` pre-command or `--user` post-command*)
 ```
-    python setup_pypulseq_cest.py. install
+    python setup_pypulseq_cest.py install
 ```
 
 2) switch to the **[src/compile](compile)** directory
