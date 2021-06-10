@@ -97,6 +97,47 @@ You will find further pre-defined and approved pre-saturation schemes and simula
 If you have not successfully used the above installation, please download it from the [pulseq-cest-library repository](https://github.com/kherz/pulseq-cest-library).
 
 
+# Project structure
+This project tree is supposed to clarify the project components, their functionality and the source.
+
+````text
+pypulseq-cest
+|
+| -- src: source code and code handling
+|     | -- compile (C++, SWIG): C++ code for simulation handling (SimPulseqSBB), SWIG for direct wrapping (pySimPulseqSBB)
+|     |     |
+|     |     | -- Eigen (C++): library for matrix handling in C++
+|     |     | -- dist: built distributions of pySimPulseqSBB for different environments
+|     |     |
+|     |     - BlochMcConnellSolver.h, ExternalSequence.cpp, ExternalSequence.h, SimPulseqSBB.cpp, SimPulseqSBB.h, 
+|     |         SimulationParameters.cpp, SimulationParameters.h, SimPulseqSBBTemplate.h (C++): simulation handling 
+|     |         (SimPulseqSBB)
+|     |     - pySimPulseqSBB.i, numpy.i, eigen.i (SWIG): SWIG wrapper handling
+|     |     - setup.py: installation of pySimPulseqSBB, the direct wrapped C++ code
+|     |  
+|     - readme.md: clarifying steps for manual setup
+|     - setup_pypulseq_cest.py: installation of the pypulseq_cest parser package
+|     - MANIFEST.in: defining the pypulseq_cest package for setup_pypulseq_cest
+|
+| -- pypulseq_cest (python): package with parser functions for pythonic use of pySimPulseqSBB functionalities
+|     |  
+|     | -- example_library (seq, yaml): input files for an exemplary simulation
+|     |     |
+|     |     - config_example.yaml: example file for simulation configurations
+|     |     - seq_example.seq: example sequence in the Pulseq format
+|     |  
+|     - parser.py: functions to parse simulation parameters to pySimPulseqSBB (SWIGged C++)
+|     - simulate.py: pythonic implementation of the simulation function to simplify parsing
+|
+|(-- after successful installation: pulseq-cest-library (python, matlab, seq, yaml): contains additional configuration  
+|     and sequence files > visit the repository or pulseq-cest.github.io/ for more information <)
+|
+- readme.md, CONTRIBUTING.md, LICENSE.md: project information
+- setup.py: complete installation (pypulseq_cest, pySimPulseqSBB, dependencies)
+- simulate.py: exemplary simulation script
+````
+
+
 ## Installation Troubleshooting
 To avoid permission problems, you can run the setup with administrative rights:
 
