@@ -75,7 +75,6 @@ def pypulseq_cest_setup(setup_filepath: Union[str, Path], str_options: str = Non
     if check_install == 0:
         return True
     else:
-        print('Something went wrong during your pypulseq_cest installation. Please check your environment.')
         return False
 
 
@@ -123,7 +122,7 @@ def sim_setup(sim_path: Union[str, Path], setup_filepath: Union[str, Path], str_
                                             stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
 
         if check_install == 1:
-            print(f'pySimPulseqSBB: Could not install pySimPulseqSBB package builed using SWIG. Please check the '
+            print(f'pySimPulseqSBB: Could not install pySimPulseqSBB package build using SWIG. Please check the '
                   f'troubleshooting section under https://github.com/KerstinHut/pypulseq-cest.')
             return False
         else:
@@ -139,7 +138,7 @@ if __name__ == '__main__':
     setup_filepath = sim_path / 'setup.py'
     pypulseq_cest_setup_filepath = root_path / 'src'
 
-    print('Starting automatic setup. Please refer to the readme.md for further information.')
+    print('Starting automatic setup.')
     check_sim = False
     check_ppcest = False
     clone_library(library_path=library_path)
@@ -151,11 +150,20 @@ if __name__ == '__main__':
     check_sim = sim_setup(sim_path=sim_path, setup_filepath=setup_filepath, str_options=str_options)
 
     if check_sim:
-        print(f'\n YEAH! pySimPulseqSBB package successfully installed')
+        print(f'\npySimPulseqSBB installation: SUCCESSFUL \n')
+    else:
+        print(f'\npySimPulseqSBB installation: FAILED \n')
+
     if check_ppcest:
-        print(f'\n YEAH! pypulseq_cest package successfully installed \n')
+        print(f'\npypulseq_cest installation: SUCCESSFUL \n')
+    else:
+        print(f'\npypulseq_cest installation: FAILED \n')
+
     if check_sim and check_ppcest:
         print(f'#####################################################')
         print(f'########### HAVE FUN USING PyPulseq-CEST ############')
         print(f'#####################################################')
         print(f'\n')
+    else:
+        print(f'Both packages, pySimPulseqSBB and pypulseq_cest need to be installed to run PyPulseq-CEST simulations. '
+              f'Please check the troubleshooting section under https://github.com/KerstinHut/pypulseq-cest.')
