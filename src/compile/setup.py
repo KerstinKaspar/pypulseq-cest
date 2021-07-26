@@ -2,12 +2,10 @@
 """
 setup.py
     Setup definitions for distutils package creation
-TODO write setup_ux, setup_os files for pure installation of precompiled shared libraries
 """
 
 from setuptools import setup, Extension
 import numpy
-from sys import platform
 from pathlib import Path
 
 try:
@@ -22,10 +20,9 @@ np_path_np = np_path / 'numpy'
 
 
 SimPulseqSBB_module = Extension(name='_pySimPulseqSBB',
-                                sources=['pySimPulseqSBB.i', 'SimPulseqSBB.cpp', 'SimulationParameters.cpp',
-                                         'ExternalSequence.cpp'],
+                                sources=['pySimPulseqSBB.i', 'SimulationParameters.cpp',
+                                         'ExternalSequence.cpp', 'BMCSim.cpp'],
                                 include_dirs=[eigen_path, np_path, np_path_np],
-                                #extra_compile_args=['-fPIC', '-fpermissive'],
                                 swig_opts=['-c++'],
                                 language='c++'
                                 )
@@ -37,7 +34,6 @@ setup(name='pySimPulseqSBB',
       description="Python package to use the C++ code SimPulseqSBB for pulseq-CEST simulations.",
       ext_modules=[SimPulseqSBB_module],
       py_modules=["pySimPulseqSBB", 'parser'],
-      #packages=['parser']
       )
 
 

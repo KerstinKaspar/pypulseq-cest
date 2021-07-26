@@ -16,30 +16,29 @@
 #include <cmath>
 #include "ExternalSequence.h"
 #include "SimulationParameters.h"
-#include "SimPulseqSBB.h"
-#include "SimPulseqSBBTemplate.h"
 #include "BlochMcConnellSolver.h"
+#include "BMCSim.h"
 %}
 
 %include <typemaps.i>
 %include <std_vector.i>
 %include <std_string.i>
-
 %include <eigen.i>
 
-%template(vectorMatrixXd) std::vector<Eigen::MatrixXd>;
-%template(vectorVectorXd) std::vector<Eigen::VectorXd>;
+//%template(vectorMatrixXd) std::vector<Eigen::MatrixXd>;
+//%template(vectorVectorXd) std::vector<Eigen::VectorXd>;
 
 // Since Eigen uses templates, we have to declare exactly which types we'd
 // like to generate mappings for.
 %eigen_typemaps(Eigen::VectorXd)
+%eigen_typemaps(Eigen::Matrix)
 %eigen_typemaps(Eigen::MatrixXd)
-//%eigen_typemaps(Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>)
+%eigen_typemaps(Eigen::Dynamic)
 
 %rename(NoLineshape) None;
 %include "SimulationParameters.h"
-//%include "SimPulseqSBBTemplate.h"
-%include "SimPulseqSBB.h"
-//%template(SimPulseqSBB) SimPulseqSBBTemplate<int>;
+%include "ExternalSequence.h"
+%include "BlochMcConnellSolver.h"
+%include "BMCSim.h"
 
 
