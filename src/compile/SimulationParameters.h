@@ -48,6 +48,21 @@ enum MTLineshape
 	None
 };
 
+//! A single pulse sample for simulation
+struct PulseSample
+{
+	double magnitude;  /*!< pulse sample amplitude [Hz]*/
+	double phase;      /*!< pulse sample phase [rad]*/
+	double timestep;   /*!< pulse sample duration [rad]*/
+};
+
+struct PulseEvent
+{
+	double length;
+	double deadTime;
+	std::vector<PulseSample> samples;
+};
+
 //!  Water Pool class. 
 /*!
   Class containing  relaxation parameters and fraction of Pools
@@ -234,6 +249,12 @@ public: // TODO: write get and set methods for member variables and make them pr
 	//! Get Scanner Gamma
 	double GetScannerGamma();
 
+	//! Set Scanner relative B1
+	void SetScannerRelB1(double rb1);
+
+	//! Set Scanner B0 inhomogeneity
+	void SetScannerB0Inhom(double db0);
+
 	//! Get bool if MT should be simulated
 	bool IsMTActive();
 
@@ -258,11 +279,16 @@ public: // TODO: write get and set methods for member variables and make them pr
 	//! Get number of max pulse samples
 	unsigned int GetMaxNumberOfPulseSamples();
 
+	//! Get unique pulse
+	PulseEvent* GetUniquePulse(std::pair<int, int> pair);
+
 
 	
 protected:
 
 	ExternalSequence sequence; /*!< pulseq sequence */
+	void DecodeSeqInfo();  /*!< decosed the info from the pulseq file */
+	std::map<std::pair<int, int>, PulseEvent>  uniquePulses; /*!< vector with unique pulse sample */
 
 	Eigen::MatrixXd Mvec;  /*!< Matrix containing all magnetization vectors */
 
