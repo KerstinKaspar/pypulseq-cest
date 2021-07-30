@@ -7,10 +7,23 @@ BMCSim::BMCSim(SimulationParameters &SimPars, const char * SeqName) {
     sp = &SimPars;
     seq.load(SeqName);
     sp->SetExternalSequence(seq);
+    InitSolver();
+}
+
+BMCSim::~BMCSim() {
+    delete solver;
 }
 
 void BMCSim::SetSimulationParameters(SimulationParameters &SimPars) {
     sp = &SimPars;
+}
+
+SimulationParameters BMCSim::GetSimulationParameters() {
+    return *sp;
+}
+
+Eigen::MatrixXd BMCSim::GetFinalMagnetizationVectors() {
+    return sp->GetFinalMagnetizationVectors();
 }
 
 void BMCSim::InitSolver() {
@@ -45,15 +58,7 @@ void BMCSim::InitSolver() {
     }
 }
 
-void BMCSim::UpdateSimulationParameters(SimulationParameters &SimPars) {
-    sp = &SimPars;
-    solver->UpdateSimulationParameters(*sp);
-}
-
 void BMCSim::RunSimulation() {
+    solver->UpdateSimulationParameters(*sp);
     solver->RunSimulation(*sp);
-}
-
-void BMCSim::EndSimulation() {
-    delete solver;
 }

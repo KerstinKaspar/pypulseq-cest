@@ -7,31 +7,29 @@ public:
     //! Default constructor
 	BMCSim() {}
 
-    //! Python constructor
+    //! Constructor
 	BMCSim(SimulationParameters &SimPars, const char * SeqName);
 
-	//! MATLAB constructor
-
 	//! Default destructor
-	~BMCSim() {}
+	~BMCSim();
 
-	//! Set external sequence object
+	//! Set simulations parameters object
 	void SetSimulationParameters(SimulationParameters &SimPars);
 
-	//! Init solver
-	void InitSolver();
+	//! Get simulations parameters object
+	SimulationParameters GetSimulationParameters();
 
-	//! Update SimulationParameters
-	void UpdateSimulationParameters(SimulationParameters &SimPars);
+	//! Get magnetization vector after simulation
+	Eigen::MatrixXd GetFinalMagnetizationVectors();
 
 	//! Run Simulation
 	void RunSimulation();
-
-	//! End Simulation
-	void EndSimulation();
 
 private:
 	ExternalSequence seq;
 	SimulationParameters* sp;
 	BlochMcConnellSolverBase* solver;
+
+	//! Init solver
+	void InitSolver();
 };
