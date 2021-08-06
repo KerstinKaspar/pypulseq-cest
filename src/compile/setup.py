@@ -28,9 +28,9 @@ SimPulseqSBB_module = Extension(name='_pySimPulseqSBB',
                                 )
 
 setup(name='pySimPulseqSBB',
-      version='0.1',
-      author="K. Heinecke",
-      author_email='k.heinecke@campus.tu-berlin.de',
+      version='0.2',
+      author='Kerstin Heinecke, Patrick Schuenke',
+      author_email='kerstin.heinecke@ptb.de',
       description="Python package to use the C++ code SimPulseqSBB for pulseq-CEST simulations.",
       ext_modules=[SimPulseqSBB_module],
       py_modules=["pySimPulseqSBB", 'parser'],
