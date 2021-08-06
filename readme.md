@@ -49,9 +49,12 @@ sim_example()
 
 As an alternative, we provide a [quick_start.py](quick_start.py) script. The individual steps/lines are explained below.:
 
-1. Import the simulate function
+1. Import all required classes and functions
     ````python
-    from pypulseq_cest.simulate import simulate
+    from pySimPulseqSBB import BMCSim
+    from pypulseq_cest.parser import parse_params, get_zspec
+    from bmctool.set_params import load_params
+    from bmctool.utils.eval import plot_z
     ````
 
 2.  Define a config and a sequence file
@@ -63,30 +66,44 @@ As an alternative, we provide a [quick_start.py](quick_start.py) script. The ind
     section below or visit the [pulseq-cest-library](https://github.com/kherz/pulseq-cest-library) Github repository.
     
 
-3. Start the simulation
+3. Prepare and start the simulation
+
     ````python
-    sim = simulate(config_file=sim_config, seq_file=seq_file, show_plot=True, normalize=True)
+    # load the simulation parameters
+    sp = load_params(config_file)
+    
+    # create SWIG object of type SimulationParameters (C++ class)
+    sim_params = parse_params(sp=sp)
+    
+    # create SWIG object of type BMCSim (C++ class)
+    sim = BMCSim(sim_params)
+    
+    # set external sequence (*.seq) file
+    sim.LoadExternalSequence(str(seq_file))
+    
+    # run simulation
+    sim.RunSimulation()
     ````
-   The simulate function requires a *config_file* and *seq_file* argument. The *show_plot* argument (default=False)
-   allows to toggle a plotting functionality. Furthermore, the simulate function accepts several additional keyword 
-   arguments (**kwargs), that allow to adjust the generated plot. These are for example *normalize* (bool: toggle 
-   normalization), *norm_threshold* (value/list/array: threshold for normalization offsets), *offsets* (list/array: 
+
+4. Data processing and plotting:
+   ````python   
+   # retrieve magnetization vectors (x, y and z component of all pools):
+    m_out = sim.GetMagnetizationVectors()
+    
+    # get offset values and z-magnetization of the water pool
+    offsets, mz = get_zspec(m_out=m_out, sp=sp, seq_file=seq_file)
+   ````
+   Afterwards a z-spectrum can be plotted using the provided *plot_z* function:
+    ````python
+    plot_z(mz=mz, offsets=offsets, normalize=True, plot_mtr_asym=True)
+    ````
+
+   The *plot_z* function accepts several additional keyword arguments that allow to adjust the generated plot. 
+   These are for example *normalize* (bool: toggle normalization), 
+   *norm_threshold* (value/list/array: threshold for normalization offsets), *offsets* (list/array: 
    manually defined x-values), *invert_ax* (bool: toggle invert ax), *plot_mtr_asym* (bool:toggle plot MTR_asym) and 
    *title*, *x_label*, *y_label* to control the lables.
-
-
-4. Additional data processing:
-
-   The simulate functions returns a *SimulationParameters* object that allows further processing of the simulated data.
-   For example, you can retrieve the final magnetization vector of the water pool using:
-   ````python   
-   m_out = sim.GetFinalMagnetizationVectors()
-   ````
-   Afterwards, you can retrieve (and print) the offset values and the z-magnetization of the water pool using:
-      ````python   
-   offsets, mz = get_zspec(m_out=m_out, sp=sim, seq_file=seq_file)
-   print(f'The offsets used for simulation are: \n{offsets}')
-   ````
+    
 
 ## Configuration and sequence file library
 All simulations in [pypulseq-cest](.) require a *yaml file* that includes all simulation settings and a *seq file*, which
