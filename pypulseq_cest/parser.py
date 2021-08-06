@@ -4,14 +4,15 @@ function fedinitions to pars the parameters into the C++ class
 import numpy as np
 from pathlib import Path
 from typing import Union
+from pySimPulseqSBB import BMCSim
 from pySimPulseqSBB import SimulationParameters, WaterPool, MTPool, CESTPool
 from pySimPulseqSBB import Lorentzian, SuperLorentzian, NoLineshape
 from bmctool.params import Params
-from bmctool.utils.seq.auxiliary import get_definition, get_num_adc_events
+from bmctool.utils.seq.auxiliary import get_definition
 
 
 def get_zspec(m_out: np.ndarray,
-              sp: Union[Params, SimulationParameters],
+              sp: Union[Params, SimulationParameters, BMCSim],
               offsets: np.ndarray = None,
               seq_file: Union[str, Path] = None,
               normalize_if_m0: bool = False,
@@ -32,6 +33,9 @@ def get_zspec(m_out: np.ndarray,
     if isinstance(sp, Params):
         mz_loc = sp.mz_loc
     elif isinstance(sp, SimulationParameters):
+        mz_loc = (sp.GetNumberOfCESTPools() + 1) * 2
+    elif isinstance(sp, BMCSim):
+        sp = sp.GetSimulationParameters()
         mz_loc = (sp.GetNumberOfCESTPools() + 1) * 2
     offsets = np.array(offsets)
     if not offsets and not seq_file:
@@ -61,35 +65,43 @@ def get_zspec(m_out: np.ndarray,
     return offsets, mz
 
 
-def parse_params(sp: Params,
-                 seq_file: Union[str, Path]) -> SimulationParameters:
+def parse_params(sp: Params) -> SimulationParameters:
     """
     parsing python parameters into the according C++ functions
     :param sp: simulation parameter object
-    :param seq_file: location of the seq-file to simulate
     :return: SWIG object for C++ object handling
     """
+    # create SWIG object of type SimulationParameters (C++ class)
     sp_sim = SimulationParameters()
+
     # init magnetization vector
-    sp_sim.InitMagnetizationVectors(sp.m_vec, get_num_adc_events(seq_file=seq_file))
-    # constructwater pool
+    sp_sim.SetInitialMagnetizationVector(sp.m_vec)
+
+    # set water pool
     water_pool = WaterPool(sp.water_pool['r1'], sp.water_pool['r2'], sp.water_pool['f'])
     sp_sim.SetWaterPool(water_pool)
+
+    # set MT pool
     if sp.mt_pool:
         lineshape = set_lineshape(sp.mt_pool['lineshape'])
         mt_pool = MTPool(sp.mt_pool['r1'], sp.mt_pool['r2'], sp.mt_pool['f'], sp.mt_pool['dw'], sp.mt_pool['k'], lineshape)
         sp_sim.SetMTPool(mt_pool)
+
+    # set CEST pools
     sp_sim.InitCESTPoolMemory(len(sp.cest_pools))
     for i in range(len(sp.cest_pools)):
         cest_pool = CESTPool(sp.cest_pools[i]['r1'], sp.cest_pools[i]['r2'], sp.cest_pools[i]['f'], sp.cest_pools[i]['dw'], sp.cest_pools[i]['k'])
         sp_sim.SetCESTPool(cest_pool, i)
     sp_sim.InitScanner(sp.scanner['b0'], sp.scanner['rel_b1'], sp.scanner['b0_inhomogeneity'], sp.scanner['gamma'])
+
+    # set additional options
     if 'verbose' in sp.options.keys():
         sp_sim.SetVerbose(sp.options['verbose'])
     if 'reset_init_mag' in sp.options.keys():
         sp_sim.SetUseInitMagnetization(sp.options['reset_init_mag'])
     if 'max_pulse_samples' in sp.options.keys():
         sp_sim.SetMaxNumberOfPulseSamples(sp.options['max_pulse_samples'])
+
     return sp_sim
 
 
