@@ -22,7 +22,6 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 
 #include "ExternalSequence.h"
 #include "Eigen"
-//using namespace Eigen;
 
 #define _USE_MATH_DEFINES
 #include <cmath>
@@ -46,21 +45,6 @@ enum MTLineshape
 	SuperLorentzian,
 	Lorentzian,
 	None
-};
-
-//! A single pulse sample for simulation
-struct PulseSample
-{
-	double magnitude;  /*!< pulse sample amplitude [Hz]*/
-	double phase;      /*!< pulse sample phase [rad]*/
-	double timestep;   /*!< pulse sample duration [rad]*/
-};
-
-struct PulseEvent
-{
-	double length;
-	double deadTime;
-	std::vector<PulseSample> samples;
 };
 
 //!  Water Pool class. 
@@ -198,20 +182,11 @@ public: // TODO: write get and set methods for member variables and make them pr
 	//! Destructor
 	~SimulationParameters();
 
-	//! Set external sequence object
-	void SetExternalSequence(ExternalSequence seq);
+	//! Set Magnetization vector
+	void SetInitialMagnetizationVector(Eigen::VectorXd MagVec);
 
-	//! Get external sequence object
-	ExternalSequence* GetExternalSequence();
-
-	//! Init Magnetitazion Vector Array
-	void InitMagnetizationVectors(Eigen::VectorXd &M, unsigned int numOutput);
-
-	//! Get Magnetization vectors
-	Eigen::MatrixXd* GetMagnetizationVectors();
-
-	//! Get Magnetization vectors as an object (not a pointer)
-	Eigen::MatrixXd GetFinalMagnetizationVectors();
+	//! Get Magnetization vector
+	Eigen::VectorXd* GetInitialMagnetizationVector();
 
 	//! Set Water Pool
 	void SetWaterPool(WaterPool waterPool);
@@ -279,22 +254,13 @@ public: // TODO: write get and set methods for member variables and make them pr
 	//! Get number of max pulse samples
 	unsigned int GetMaxNumberOfPulseSamples();
 
-	//! Get unique pulse
-	PulseEvent* GetUniquePulse(std::pair<int, int> pair);
 
-
-	
 protected:
-
-	ExternalSequence sequence; /*!< pulseq sequence */
-	void DecodeSeqInfo();  /*!< decosed the info from the pulseq file */
-	std::map<std::pair<int, int>, PulseEvent>  uniquePulses; /*!< vector with unique pulse sample */
-
-	Eigen::MatrixXd Mvec;  /*!< Matrix containing all magnetization vectors */
 
 	WaterPool waterPool; /*!< Water Pool */
 	MTPool mtPool;       /*!< MT Pool */
-	CESTPool* cestPools;  /*!< CEST Pool(s) */
+	CESTPool* cestPools; /*!< CEST Pool(s) */
+	Eigen::VectorXd M;   /*!< Initial Magnetization vector */
 
 	Scanner scanner;     /*!< Sruct with field related info */
 	
