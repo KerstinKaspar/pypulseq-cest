@@ -22,15 +22,14 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 
 //! Constructor
 /*!	\param SimPars initial SimulationParameters object */
-BMCSim::BMCSim(SimulationParameters &SimPars) {
-	sp = &SimPars;
+BMCSim::BMCSim(SimulationParameters &simPars) {
+	sp = &simPars;
 	InitSolver();
 	sequenceLoaded = false;
 }
 
 //! Destructor
 BMCSim::~BMCSim() {
-	delete solver;
 }
 
 //! Load external Pulseq sequence
@@ -56,11 +55,11 @@ bool BMCSim::LoadExternalSequence(std::string path)
 	\param SimPars new SimulationParameters object
 	\return true if SimPars hase the same amount of pool as the initial sp
 */
-bool BMCSim::SetSimulationParameters(SimulationParameters &SimPars) {
+bool BMCSim::SetSimulationParameters(SimulationParameters &simPars) {
 	// sim parameters can only be updated if number of pools did not change
-	bool newSimParamsValid = (sp->GetNumberOfCESTPools() == SimPars.GetNumberOfCESTPools() && sp->IsMTActive() == SimPars.IsMTActive());
+	bool newSimParamsValid = (sp->GetNumberOfCESTPools() == simPars.GetNumberOfCESTPools() && sp->IsMTActive() == simPars.IsMTActive());
 	if (newSimParamsValid)
-		sp = &SimPars;
+		sp = &simPars;
 	return newSimParamsValid;
 }
 
@@ -70,41 +69,49 @@ SimulationParameters BMCSim::GetSimulationParameters() {
 	return *sp;
 }
 
+//! Get pointer to magnetitazion vectors
+/*!	\return Magnetization vector at each adc event */
+Eigen::MatrixXd* BMCSim::GetMagnetizationVectors() {
+	return &Mvec;
+}
+
 //! Get magnetitazion vectors
 /*!	\return Magnetization vector at each adc event */
-Eigen::MatrixXd BMCSim::GetMagnetizationVectors() {
+Eigen::MatrixXd BMCSim::GetCopyOfMagnetizationVectors()
+{
 	return Mvec;
 }
+
 
 //! Init the solver
 void BMCSim::InitSolver() {
 	switch (sp->GetNumberOfCESTPools()) {
 	case 0: // only water
 		if (sp->IsMTActive())
-			solver = new  BlochMcConnellSolver<4>(*sp);
+			solver = std::unique_ptr<BlochMcConnellSolver<4> >(new BlochMcConnellSolver<4>(*sp));
 		else
-			solver = new BlochMcConnellSolver<3>(*sp);
+			solver = std::unique_ptr<BlochMcConnellSolver<3> >(new BlochMcConnellSolver<3>(*sp));
 		break;
 	case 1: // one cest pool
 		if (sp->IsMTActive())
-			solver = new  BlochMcConnellSolver<7>(*sp);
+			solver = std::unique_ptr<BlochMcConnellSolver<7> >(new BlochMcConnellSolver<7>(*sp));
 		else
-			solver = new BlochMcConnellSolver<6>(*sp);
+			solver = std::unique_ptr<BlochMcConnellSolver<6> >(new BlochMcConnellSolver<6>(*sp));
 		break;
 	case 2: // two cest pools
 		if (sp->IsMTActive())
-			solver = new  BlochMcConnellSolver<10>(*sp);
+			solver = std::unique_ptr<BlochMcConnellSolver<10> >(new BlochMcConnellSolver<10>(*sp));
 		else
-			solver = new BlochMcConnellSolver<9>(*sp);
+			solver = std::unique_ptr<BlochMcConnellSolver<9> >(new BlochMcConnellSolver<9>(*sp));
 		break;
 	case 3: // three cest pools
 		if (sp->IsMTActive())
-			solver = new  BlochMcConnellSolver<13>(*sp);
+			solver = std::unique_ptr<BlochMcConnellSolver<13> >(new BlochMcConnellSolver<13>(*sp));
 		else
-			solver = new BlochMcConnellSolver<12>(*sp);
+			solver = std::unique_ptr<BlochMcConnellSolver<12> >(new BlochMcConnellSolver<12>(*sp));
 		break;
 	default:
-		solver = new BlochMcConnellSolver<Eigen::Dynamic>(*sp); // > three pools
+		solver = std::unique_ptr<BlochMcConnellSolver<Eigen::Dynamic> >(new BlochMcConnellSolver<Eigen::Dynamic>(*sp)); // > three pools
 		break;
 	}
 }
@@ -113,9 +120,6 @@ void BMCSim::InitSolver() {
 //! Decode the unique pulses from the seq file
 void BMCSim::DecodeSeqRFInfo()
 {
-	float rfRaster = 1e-6;
-	if (seq.GetVersion() >= 1004000)
-		rfRaster = seq.GetRFRasterTime()*1e-6;
 	std::vector<PulseID> uniquePuleIDs;
 	for (unsigned int nSample = 0; nSample < seq.GetNumberOfBlocks(); nSample++)
 	{
@@ -123,18 +127,16 @@ void BMCSim::DecodeSeqRFInfo()
 		if (seqBlock->isRF())
 		{
 			RFEvent rf = seqBlock->GetRFEvent();
-			// make unique magnitude, phase and time tuple 
+			// make unique magnitude, phase and time tuple (time is placeholder for future Pulseq 1.4 support)
 			int timeID = 0;
-			if (seq.GetVersion() >= 1004000)
-				timeID = rf.timeShape;
 			PulseID p = std::make_tuple(rf.magShape, rf.phaseShape, timeID);
 			if (!(std::find(uniquePuleIDs.begin(), uniquePuleIDs.end(), p) != uniquePuleIDs.end())) {
 				// register pulse
 				PulseEvent pulse;
-				//std::vector<PulseSample> uniqueSamples;
 				// get rf and check its length
 				seq.decodeBlock(seqBlock);
 				unsigned int rfLength = seqBlock->GetRFLength();
+
 				// check arrays of uncompresed shape
 				std::vector<float> amplitudeArray(seqBlock->GetRFAmplitudePtr(), seqBlock->GetRFAmplitudePtr() + rfLength);
 				std::vector<float> phaseArray(seqBlock->GetRFPhasePtr(), seqBlock->GetRFPhasePtr() + rfLength);
@@ -145,10 +147,14 @@ void BMCSim::DecodeSeqRFInfo()
 					if (fabs(amplitudeArray[nEnd - 1]) > 1e-6)// because of the round-up errors in the ascii and derivative/integral reconstructuion
 						break;
 				}
+				// get ringdown time after the pulse
 				delayAfterPulse = rfLength - nEnd;
-				pulse.deadTime = delayAfterPulse;
+				pulse.ringdownTime = double(delayAfterPulse)*1e-6;
+				// set new pulse length
 				rfLength = nEnd;
 				pulse.length = rfLength;
+				// get dead time before pulse event
+				pulse.deadTime = double(seqBlock->GetRFEvent().delay)*1e-6;
 
 				amplitudeArray.erase(amplitudeArray.end() - delayAfterPulse, amplitudeArray.end());
 				phaseArray.erase(phaseArray.end() - delayAfterPulse, phaseArray.end());
@@ -165,7 +171,7 @@ void BMCSim::DecodeSeqRFInfo()
 				if (max_samples > sp->GetMaxNumberOfPulseSamples()) {
 					int sampleFactor = ceil(float(rfLength) / sp->GetMaxNumberOfPulseSamples());
 					float pulseSamples = rfLength / sampleFactor;
-					float timestep = float(sampleFactor) * rfRaster;
+					float timestep = float(sampleFactor) * 1e-6;
 					// resmaple the original pulse with max ssamples and run the simulation
 					pulse.samples.resize(pulseSamples);
 					for (int i = 0; i < pulseSamples; i++) {
@@ -197,7 +203,7 @@ void BMCSim::DecodeSeqRFInfo()
 					for (int i = 0; i < max_samples; i++) {
 						pulse.samples[i].magnitude = seqBlock->GetRFAmplitudePtr()[samplePositions[i]];
 						pulse.samples[i].phase = seqBlock->GetRFPhasePtr()[samplePositions[i]];
-						pulse.samples[i].timestep = (samplePositions[i + 1] - samplePositions[i])*rfRaster;
+						pulse.samples[i].timestep = (samplePositions[i + 1] - samplePositions[i]) * 1e-6;
 					}
 				}
 				uniquePuleIDs.push_back(p);
@@ -266,19 +272,25 @@ bool BMCSim::RunSimulation() {
 					M[i] = 0.0;
 			}
 			else if (seqBlock->isRF()) { // saturation pulse
-				int timeID = seq.GetVersion() >= 1004000 ? seqBlock->GetRFEvent().timeShape : 0;
-				BMCSim::PulseID p = std::make_tuple(seqBlock->GetRFEvent().magShape, seqBlock->GetRFEvent().phaseShape, timeID); // get the magnitude and phase pair
+				int timeID = 0; // timeID is placeholder for future Pulseq 1.4 support
+				BMCSim::PulseID p = std::make_tuple(seqBlock->GetRFEvent().magShape, seqBlock->GetRFEvent().phaseShape, timeID); // get the magnitude, phase and time tuple
 				PulseEvent* pulse = this->GetUniquePulse(p); // find the unque rf id in the previously decoded seq file library
+				// delay before pulse?
+				if (pulse->deadTime > 0) {
+					solver->UpdateBlochMatrix(*sp, 0, 0, 0);
+					solver->SolveBlochEquation(M, pulse->deadTime);
+				}
+				// loop trough pulse samples
 				std::vector<PulseSample>* pulseSamples = &(pulse->samples);
 				double rfFrequency = seqBlock->GetRFEvent().freqOffset;
 				for (int p = 0; p < pulseSamples->size(); p++) { // loop through pulse samples
 					solver->UpdateBlochMatrix(*sp, pulseSamples->at(p).magnitude*seqBlock->GetRFEvent().amplitude, rfFrequency, -pulseSamples->at(p).phase + seqBlock->GetRFEvent().phaseOffset - accummPhase);
 					solver->SolveBlochEquation(M, pulseSamples->at(p).timestep);
 				}
-				// delay at end of the pulse
+				// delay at end of the pulse?
 				if (pulse->deadTime > 0) {
 					solver->UpdateBlochMatrix(*sp, 0, 0, 0);
-					solver->SolveBlochEquation(M, pulse->deadTime*1e-6);
+					solver->SolveBlochEquation(M, pulse->deadTime);
 				}
 				int phaseDegree = pulse->length * 1e-6 * 360 * seqBlock->GetRFEvent().freqOffset;
 				phaseDegree %= 360;

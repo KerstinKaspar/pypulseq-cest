@@ -34,7 +34,8 @@ struct PulseSample
 struct PulseEvent
 {
 	double length;                     /*!< pulse duration [us]*/
-	double deadTime;                   /*!< pulse dead time [us]*/
+	double deadTime;                   /*!< pulse dead time [s]*/
+	double ringdownTime;               /*!< pulse ringdownTime time [s]*/
 	std::vector<PulseSample> samples;  /*!< vector with all pulse amplitude, phase and time samples*/
 };
 
@@ -50,7 +51,7 @@ public:
 	typedef std::tuple<int, int, int> PulseID;
 
 	//! Constructor
-	BMCSim(SimulationParameters &SimPars);
+	BMCSim(SimulationParameters &simPars);
 
 	//! Destructor
 	~BMCSim();
@@ -62,13 +63,16 @@ public:
 	PulseEvent* GetUniquePulse(PulseID id);
 
 	//! Set simulations parameters object
-	bool SetSimulationParameters(SimulationParameters &SimPars);
+	bool SetSimulationParameters(SimulationParameters &simPars);
 
 	//! Get simulations parameters object
 	SimulationParameters GetSimulationParameters();
 
-	//! Get magnetization vector after simulation
-	Eigen::MatrixXd GetMagnetizationVectors();
+	//! Get pointer to magnetization vector after simulation
+	Eigen::MatrixXd* GetMagnetizationVectors();
+
+	//! Get a copy of the magnetization vector object
+	Eigen::MatrixXd GetCopyOfMagnetizationVectors();
 
 	//! Run Simulation
 	bool RunSimulation();
@@ -83,7 +87,7 @@ private:
 
 	SimulationParameters* sp; /*!< Pointer to SimulationParameters object */
 
-	BlochMcConnellSolverBase* solver; /*!< Templated Bloch McConnell solver  */
+	std::unique_ptr<BlochMcConnellSolverBase> solver; /*!< Templated Bloch McConnell solver  */
 
 	Eigen::MatrixXd Mvec;  /*!< Matrix containing all magnetization vectors */
 

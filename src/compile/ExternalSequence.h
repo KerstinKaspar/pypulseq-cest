@@ -57,7 +57,7 @@ const MessageType MSG_LEVEL = NORMAL_MSG;
  * @brief Internal storage order
  */
 enum Event {
-//	DELAY,
+	DELAY,
 	RF,
 	GX,
 	GY,
@@ -80,7 +80,6 @@ struct RFEvent
 	float amplitude;     /**< @brief Amplitude of RF event (Hz) */
 	int magShape;        /**< @brief ID of shape for magnitude */
 	int phaseShape;      /**< @brief ID of shape for phase */
-	int timeShape;       /**< @brief ID of shape for time sampling points */
 	float freqOffset;    /**< @brief Frequency offset of transmitter (Hz) */
 	float phaseOffset;   /**< @brief Phase offset of transmitter (rad) */
 	int delay;           /**< @brief Delay prior to the pulse (us) */
@@ -104,8 +103,7 @@ struct GradEvent
 	long flatTime;        /**< @brief Flat-top time of trapezoid (us) */
 	long rampDownTime;    /**< @brief Ramp down time of trapezoid (us) */
 	// Arbitrary:
-	int waveShape;        /**< @brief whave shape ID for arbitrary gradient */
-	int timeShape;        /**< @brief time shaoeID for arbitrary gradient; 0 means regular sampling */
+	int shape;            /**< @brief ID of shape for arbitrary gradient */
 };
 
 
@@ -250,10 +248,7 @@ public:
 	/**
 	 * @brief Constructor
 	 */
-	SeqBlock() { 
-		gradWaveforms.resize(NUM_GRADS);
-		gradExtTrapForms.resize(NUM_GRADS);
-	}
+	SeqBlock() { gradWaveforms.resize(NUM_GRADS); }
 
 	/**
 	 * @brief Return `true` if block has RF event
@@ -271,11 +266,6 @@ public:
 	bool    isArbitraryGradient(int channel);
 
 	/**
-	 * @brief Return `true` if block has extended trapezoid event on given channel
-	 */
-	bool    isExtTrapGradient(int channel);
-
-	/**
 	 * @brief Return `true` if block has ADC readout event
 	 */
 	bool    isADC();
@@ -283,7 +273,7 @@ public:
 	/**
 	 * @brief Return `true` if block has delay
 	 */
-	//bool    isDelay();
+	bool    isDelay();
 
 	/**
 	 * @brief Return `true` if block has a trigger command
@@ -309,45 +299,28 @@ public:
 	/**
 	 * @brief Return delay of block
 	 */
-	//long    GetDelay();
+	long    GetDelay();
 
 	/**
-	 * @brief Return duration of block in units of us
+	 * @brief Return duration of block
 	 */
-	double GetDuration();
+	long    GetDuration();
 
 	/**
-	 * @brief Return duration of block in the units of duration raster
-	 */
-	long    GetDuration_ru();
-
-	/**
-	 * @brief Return the number of samples of the arbitrary gradient on the given gradient channel.
+	 * @brief Return the number of samples of the given gradient channel.
 	 * Only relevant for arbitrary gradients
 	 */
-	int     GetArbGradNumSamples(int channel);
-
-	/**
-	 * @brief Directly get a pointer to the samples of the arbitrary gradient
-	 */
-	float* GetArbGradShapePtr(int channel);
-
-	/**
-	 * @brief Return the timening and the shape of the ExtTrp grdient on the given gradient channel.
-	 * Only relevant for ExtTrap gradients
-	 */
-	const std::vector<long>& GetExtTrapGradTimes(int channel);
-
-	/**
-	 * @brief Return the timening and the shape of the ExtTrp grdient on the given gradient channel.
-	 * Only relevant for ExtTrap gradients
-	 */
-	const std::vector<float>& GetExtTrapGradShape(int channel);
+	int     GetGradientLength(int channel);
 
 	/**
 	 * @brief Return the gradient event of the given channel
 	 */
 	GradEvent& GetGradEvent(int channel);
+
+	/**
+	 * @brief Directly get a pointer to the samples of the arbitrary gradient
+	 */
+	float* GetGradientPtr(int channel);
 
 	/**
 	 * @brief Return the RF event
@@ -368,11 +341,6 @@ public:
 	 * @brief Directly get a pointer to the samples of the RF phase shape
 	 */
 	float* GetRFPhasePtr();
-
-	/**
-	 * @brief Get dwell time for the RF amplitude and phase shapes (in us)
-	 */
-	float GetRFDwellTime();
 
 	/**
 	 * @brief Return the ADC event
@@ -418,8 +386,8 @@ protected:
 	// Event array contains integer indices to events stored in the parent ExternalSequence object
 	int events[NUM_EVENTS];	/**< @brief list of event indices (RF, GX, GY, GZ, ADC) */
 
-	//long delay;         /**< @brief delay of this block (in us) */
-	long duration_ru;      /**< @brief duration of this block in raster units */
+	long delay;         /**< @brief delay of this block (in us) */
+	long duration;      /**< @brief duration of this block (in us) used for error checking */
 
 	RFEvent rf;                 /**< @brief RF event */
 	GradEvent grad[NUM_GRADS];  /**< @brief gradient events */
@@ -431,18 +399,12 @@ protected:
 	// Below is only valid once decompressed:
 
 	// RF
-	std::vector<float> rfAmplitude;    /**< @brief RF amplitude shape (uncompressed) */
-	std::vector<float> rfPhase;        /**< @brief RF phase shape (uncompressed) */
-	float              rfDwellTime_us; /**< @brief dwell time of the RF shapes (in us) */
+	std::vector<float> rfAmplitude;  /**< @brief RF amplitude shape (uncompressed) */
+	std::vector<float> rfPhase;      /**< @brief RF phase shape (uncompressed) */
 
 	// Gradient waveforms
 	std::vector< std::vector<float> > gradWaveforms;    /**< @brief Arbitrary gradient shapes for each channel (uncompressed) */
 
-	// ExtTrap waveforms
-	std::vector< std::pair< std::vector< long >, std::vector< float > > > gradExtTrapForms;    /**< @brief ExtTrap gradient shapes for each channel (uncompressed) */
-
-	// static for the duraton raster
-	static double s_blockDurationRaster;
 };
 
 // * ------------------------------------------------------------------ *
@@ -451,16 +413,14 @@ protected:
 inline int       SeqBlock::GetIndex() { return index; }
 
 inline bool      SeqBlock::isRF() { return (events[RF]>0); }
-inline bool      SeqBlock::isTrapGradient(int channel) { return ((events[channel+GX]>0) && (grad[channel].waveShape==0)); }
-inline bool      SeqBlock::isExtTrapGradient(int channel) { return ((events[channel+GX]>0) && (grad[channel].waveShape!=0) && (grad[channel].timeShape!=0)); }
-inline bool      SeqBlock::isArbitraryGradient(int channel) { return ((events[channel+GX]>0) && (grad[channel].waveShape!=0) && (grad[channel].timeShape==0)); }
+inline bool      SeqBlock::isTrapGradient(int channel) { return ((events[channel+GX]>0) & (grad[channel].shape==0)); }
+inline bool      SeqBlock::isArbitraryGradient(int channel) { return ((events[channel+GX]>0) & (grad[channel].shape>0)); }
 inline bool      SeqBlock::isADC() { return (events[ADC]>0); }
-//inline bool      SeqBlock::isDelay() { return (events[DELAY]>0); }
+inline bool      SeqBlock::isDelay() { return (events[DELAY]>0); }
 inline bool      SeqBlock::isRotation() { return (events[EXT]>0 && rotation.defined); }
 inline bool      SeqBlock::isTrigger() { return (events[EXT]>0) && trigger.triggerType!=0; }
-//inline long      SeqBlock::GetDelay() { return delay; }
-inline double    SeqBlock::GetDuration() { return duration_ru * SeqBlock::s_blockDurationRaster; }
-inline long      SeqBlock::GetDuration_ru() { return duration_ru; }
+inline long      SeqBlock::GetDelay() { return delay; }
+inline long      SeqBlock::GetDuration() { return duration; }
 
 inline int       SeqBlock::GetEventIndex(Event type) { return events[type]; }
 
@@ -480,37 +440,29 @@ inline std::string SeqBlock::GetTypeString() {
 	if (isTrapGradient(0)) type += " TrapX";
 	if (isTrapGradient(1)) type += " TrapY";
 	if (isTrapGradient(2)) type += " TrapZ";
-	if (isExtTrapGradient(0)) type += " ExtTrapX";
-	if (isExtTrapGradient(1)) type += " ExtTrapY";
-	if (isExtTrapGradient(2)) type += " ExtTrapZ";
 	if (isArbitraryGradient(0)) type += " ArbX";
 	if (isArbitraryGradient(1)) type += " ArbY";
 	if (isArbitraryGradient(2)) type += " ArbZ";
 	if (isADC()) type += " ADC";
-	//if (isDelay()) type += " Delay";
+	if (isDelay()) type += " Delay";
 	if (isRotation()) type = type + " Rot";
 	if (isTrigger()) type = type + " Trig";
 	
 	return type;
 }
 
-inline float*    SeqBlock::GetArbGradShapePtr(int channel) { return (gradWaveforms[channel].size()>0) ? &gradWaveforms[channel][0] : NULL; }
-inline int       SeqBlock::GetArbGradNumSamples(int channel) {	return gradWaveforms[channel].size(); }
-
-inline const std::vector<long>&  SeqBlock::GetExtTrapGradTimes(int channel) { return gradExtTrapForms[channel].first; }
-inline const std::vector<float>& SeqBlock::GetExtTrapGradShape(int channel) { return gradExtTrapForms[channel].second; }
+inline float*    SeqBlock::GetGradientPtr(int channel) { return (gradWaveforms[channel].size()>0) ? &gradWaveforms[channel][0] : NULL; }
+inline int       SeqBlock::GetGradientLength(int channel) {	return gradWaveforms[channel].size(); }
 
 inline float*    SeqBlock::GetRFAmplitudePtr() { return &rfAmplitude[0]; }
 inline float*    SeqBlock::GetRFPhasePtr() { return &rfPhase[0]; }
 inline int       SeqBlock::GetRFLength() { return rfAmplitude.size(); }
-inline float     SeqBlock::GetRFDwellTime() { return rfDwellTime_us; }
 
 inline void      SeqBlock::free() {
 	// Force the memory to be freed
 	std::vector<float>().swap(rfAmplitude);
 	std::vector<float>().swap(rfPhase);
 	std::vector<std::vector<float> >().swap(gradWaveforms);
-	std::vector<std::pair<std::vector<long>,std::vector<float> > >().swap(gradExtTrapForms);
  }
 
 
@@ -524,7 +476,6 @@ inline void      SeqBlock::free() {
 struct CompressedShape
 {
 	int numUncompressedSamples;    /**< @brief Number of samples *after* decompression */
-	bool isCompressed;             /**< @brief Flag whether the samples are compressed or not */
 	std::vector<float> samples;    /**< @brief Compressed samples */
 };
 
@@ -660,26 +611,6 @@ class ExternalSequence
 	 */
 	bool decodeBlock(SeqBlock *block);
 
-	/**
-	 * @brief Decode only the ext trap part of the block
-	 *
-	 * This involves decompressing extended gradient shapes.
-	 *
-	 * @return true if successful
-	 */
-	bool decodeExtTrapGradInBlock(SeqBlock *block);
-
-	/**
-	 * @brief Return RF raster time
-	 *
-	 * @return trf raster in us
-	 */
-	double GetRFRasterTime();
-
-	bool isSigned();
-	std::string getSignature();
-	std::string getSignatureType();
-
   private:
 
 	static const int MAX_LINE_SIZE;	/**< @brief Maximum length of line */
@@ -702,8 +633,7 @@ class ExternalSequence
 	 */
 	// MZ: VC2008 / VD13 do not seem to properly handle the errors streams
 	//static std::istream& 
-	enum gl_ret {gl_false=0, gl_true, gl_truncated};
-	static int getline(std::istream& stream, char *buffer, const int MAX_SIZE);
+	static bool getline(std::istream& stream, char *buffer, const int MAX_SIZE);
 
 	/**
 	 * @brief Search the file stream for section headers e.g. [RF], [GRAD] etc
@@ -793,8 +723,6 @@ class ExternalSequence
 	// Low level sequence blocks
 	std::vector<EventIDs> m_blocks;            /**< @brief List of sequence blocks */
 
-	std::vector<long> m_blockDurations_ru;     /**< @brief List of block durations expressed in duration raster units */
-
 	// extension list storage
 	//std::vector<ExtensionListEntry> m_extensions; /**< @brief the storage area of the extension list referenced by the enent table */
 
@@ -802,17 +730,11 @@ class ExternalSequence
 	std::map<std::string, std::string >m_definitions_str;  /**< @brief Custom definitions provided through [DEFINITIONS] section (stored as strings) */
 	std::map<std::string, std::vector<double> >m_definitions;  /**< @brief Custom definitions provided through [DEFINITIONS] section (converted to doubles) */
 
-	// pulseq file signature
-	std::map<std::string, std::string >m_signatureMap;  /**< @brief A hash of the internal sequence data structures stored in the [SIGNATURE] section along with auxilarz pieces of information */
-	bool m_bSignatureDefined;
-	std::string m_strSignature;
-	std::string m_strSignatureType;
-
 	// List of events (referenced by blocks)
 	std::map<int,RFEvent>      m_rfLibrary;       /**< @brief Library of RF events */
 	std::map<int,GradEvent>    m_gradLibrary;     /**< @brief Library of gradient events */
 	std::map<int,ADCEvent>     m_adcLibrary;      /**< @brief Library of ADC readouts */
-	//std::map<int,long>         m_delayLibrary;    /**< @brief Library of delays */
+	std::map<int,long>         m_delayLibrary;    /**< @brief Library of delays */
 	//std::map<int,ControlEvent> m_controlLibrary;  /**< @brief Library of control commands */
 	std::map<int,ExtensionListEntry> m_extensionLibrary;  /**< @brief Library of extension list entries */
 	std::map<int,std::pair<std::string,int> > m_extensionNameIDs; /**< @brief Map of extension IDs from the file to textIDs and internal known numeric IDs*/
@@ -822,11 +744,6 @@ class ExternalSequence
 	std::map<int, LabelEvent>	   m_labelincLibrary;	/**< @brief Library of labelinc events */	
 	// List of basic shapes (referenced by events)
 	std::map<int,CompressedShape> m_shapeLibrary;    /**< @brief Library of compressed shapes */
-	// raster times
-	double m_dAdcRasterTime_us; // Siemens default: 1e-07s 
-	double m_dGradientRasterTime_us; // Siemens default: 1e-05s 
-	double m_dRadiofrequencyRasterTime_us; // Siemens default: 1e-06s 
-	double m_dBlockDurationRaster_us; // Siemens default: 1e-05s 
 };
 
 // * ------------------------------------------------------------------ *
@@ -851,10 +768,6 @@ inline std::string	ExternalSequence::GetDefinitionStr(std::string key){
 inline void ExternalSequence::defaultPrint(const std::string &str) { std::cout << str << std::endl; }
 inline void ExternalSequence::SetPrintFunction(PrintFunPtr fun) { print_fun=fun; }
 
-inline double ExternalSequence::GetRFRasterTime() {	return m_dRadiofrequencyRasterTime_us;}
 
-inline bool ExternalSequence::isSigned() { return m_bSignatureDefined; }
-inline std::string ExternalSequence::getSignature() { return m_strSignature; }
-inline std::string ExternalSequence::getSignatureType() { return m_strSignatureType; }
 
 #endif	//_EXTERNAL_SEQUENCE_H_
