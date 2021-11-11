@@ -37,7 +37,7 @@ def simulate(config_file: Union[str, Path],
     sim.RunSimulation()
 
     # retrieve the calculated magnetization
-    m_out = sim.GetMagnetizationVectors()
+    m_out = sim.GetCopyOfMagnetizationVectors()
 
     if show_plot:
         if 'offsets' in kwargs:
@@ -48,7 +48,6 @@ def simulate(config_file: Union[str, Path],
 
         plot_z(mz=mz,
                offsets=offsets,
-               plot_mtr_asym=False,
                **kwargs)
 
     return sim
@@ -64,6 +63,7 @@ def sim_example():
     simulate(config_file=config_file,
              seq_file=seq_file,
              show_plot=True,
+             plot_mtr_asym=True,
              normalize=True,
              title='Example spectrum')
 

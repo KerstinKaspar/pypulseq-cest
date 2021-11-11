@@ -1,5 +1,5 @@
 """
-function fedinitions to pars the parameters into the C++ class
+function definitions to pars the parameters into the C++ class
 """
 import numpy as np
 from pathlib import Path
@@ -88,10 +88,12 @@ def parse_params(sp: Params) -> SimulationParameters:
         sp_sim.SetMTPool(mt_pool)
 
     # set CEST pools
-    sp_sim.InitCESTPoolMemory(len(sp.cest_pools))
+    sp_sim.SetNumberOfCESTPools(len(sp.cest_pools))
     for i in range(len(sp.cest_pools)):
         cest_pool = CESTPool(sp.cest_pools[i]['r1'], sp.cest_pools[i]['r2'], sp.cest_pools[i]['f'], sp.cest_pools[i]['dw'], sp.cest_pools[i]['k'])
         sp_sim.SetCESTPool(cest_pool, i)
+
+    # set Scanner properties
     sp_sim.InitScanner(sp.scanner['b0'], sp.scanner['rel_b1'], sp.scanner['b0_inhomogeneity'], sp.scanner['gamma'])
 
     # set additional options

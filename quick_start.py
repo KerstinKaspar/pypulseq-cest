@@ -24,7 +24,7 @@ sim.LoadExternalSequence(str(seq_file))
 sim.RunSimulation()
 
 # retrieve magnetization vectors (x, y and z component of all pools):
-m_out = sim.GetMagnetizationVectors()
+m_out = sim.GetCopyOfMagnetizationVectors()
 
 # retrieve offset values and z-magnetization of the water pool
 offsets, mz = get_zspec(m_out=m_out, sp=sp, seq_file=seq_file)
