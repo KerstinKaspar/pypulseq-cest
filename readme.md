@@ -1,15 +1,31 @@
-# PyPulseq-CEST: Simulation tool and seq-file preparation for CEST saturation blocks
+# PyPulseq-CEST
 
+Welcome to the python adaption of the **pulseq-cest** repository, a project to faciliate reproducibility in CEST MRI 
+research using the open [*Pulseq*](https://pulseq.github.io/) standard. The repository consists of two parts:
+1. [pulseq-cest-library](https://github.com/kherz/pulseq-cest-library):
+   Here, published and approved CEST preparation periods are made available. This allows exact comparison of CEST 
+   preparation periods with newly developed or adapted blocks for reproducible CEST research. All .seq-files can be 
+   loaded in python for plotting and detailed inspection. This library is maintained in a 
+   [separate repository](https://github.com/kherz/pulseq-cest-library) but is included in the **PyPulseq-CEST** 
+   installation.
+
+2. [pypulseq_cest](pypulseq_cest): In this folder you can find the Bloch-McConnell simulation that can be used to 
+   simulate and compare different .seq-files for different settings. (Py)Pulseq-CEST specific seq file and parameter 
+   handling is done using the [BMCTool](https://github.com/schuenke/BMCTool) python package.
+
+More information about both parts can be found in the corresponding repository or subfolder. 
+
+If you prefer **MATLAB** over Python, have a look at the MATLAB version of the project [here](https://github.com/kherz/pulseq-cest).
 This repository contains the code and tools to build CEST saturation blocks with 
-[pypulseq](https://github.com/imr-framework/pypulseq), which is a python adaption of the matlab-based 
-[pulseq](https://github.com/pulseq/pulseq) project. 
+[pulseq](https://github.com/pulseq/pulseq), the original MATLAB implementation of pulseq instead of 
+[pypulseq](https://github.com/imr-framework/pypulseq) that is used in **PyPulseq-CEST**.
+
 Please visit [https://pulseq-cest.github.io/](https://pulseq-cest.github.io/) for more information on the pulseq-cest 
 project. The documentation of the **pulseq** open file format for MR sequences can be found 
-[here](https://pulseq.github.io/specification.pdf). Pulseq-cest specific seq file and parameter handling is done using the 
-[BMCTool](https://github.com/schuenke/BMCTool)  python package.
+[here](https://pulseq.github.io/specification.pdf).
 
 ## Installation
-For the installation of pypulseq-CEST you need to have [Git](https://git-scm.com/) installed. If this is the case, just
+For the installation of PyPulseq-CEST you need to have [Git](https://git-scm.com/) installed. If this is the case, just
 perform the following steps:
 
 ### 1) Download the code:
@@ -59,7 +75,7 @@ As an alternative, we provide a [quick_start.py](quick_start.py) script. The ind
 
 2.  Define a config and a sequence file
     ````python
-    sim_config = 'pypulseq_cest/example_library/config_example.yaml'
+    config_file = 'pypulseq_cest/example_library/config_example.yaml'
     seq_file = 'pypulseq_cest/example_library/seq_example.seq'
     ````
     For more information about the config and sequence files, check the **Configuration and sequence file library** 
@@ -87,15 +103,18 @@ As an alternative, we provide a [quick_start.py](quick_start.py) script. The ind
 
 4. Data processing and plotting:
    ````python   
-   # retrieve magnetization vectors (x, y and z component of all pools):
-    m_out = sim.GetMagnetizationVectors()
+    # retrieve magnetization vectors (x, y and z component of all pools):
+    m_out = sim.GetCopyOfMagnetizationVectors()
     
-    # get offset values and z-magnetization of the water pool
+    # retrieve offset values and z-magnetization of the water pool
     offsets, mz = get_zspec(m_out=m_out, sp=sp, seq_file=seq_file)
    ````
    Afterwards a z-spectrum can be plotted using the provided *plot_z* function:
     ````python
-    plot_z(mz=mz, offsets=offsets, normalize=True, plot_mtr_asym=True)
+    plot_z(mz=mz,
+           offsets=offsets,
+           normalize=True,
+           plot_mtr_asym=True)
     ````
 
    The *plot_z* function accepts several additional keyword arguments that allow to adjust the generated plot. 
