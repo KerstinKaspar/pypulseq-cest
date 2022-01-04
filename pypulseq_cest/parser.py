@@ -37,11 +37,15 @@ def get_zspec(m_out: np.ndarray,
     elif isinstance(sp, BMCSim):
         sp = sp.GetSimulationParameters()
         mz_loc = (sp.GetNumberOfCESTPools() + 1) * 2
-    offsets = np.array(offsets)
-    if not offsets and not seq_file:
+    else:
+        raise ValueError(f"Unknown type {type(sp)} for simulation (parameter) object.")
+
+    if offsets is None and seq_file is None:
         offsets = np.array([])
-    elif not offsets:
+    elif offsets is None:
         offsets = get_definition(seq_file=seq_file, key='offsets_ppm')
+    offsets = np.array(offsets)
+
     if normalize_if_m0:
         if offsets[np.abs(offsets) >= m0_offset_min].any():
             m0 = m_out[mz_loc, np.where(np.abs(offsets) >= m0_offset_min)[0]]
