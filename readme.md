@@ -1,15 +1,31 @@
-# PyPulseq-CEST: Simulation tool and seq-file preparation for CEST saturation blocks
+# PyPulseq-CEST
 
+Welcome to the python adaption of the **pulseq-cest** repository, a project to faciliate reproducibility in CEST MRI 
+research using the open [*Pulseq*](https://pulseq.github.io/) standard. The repository consists of two parts:
+1. [pulseq-cest-library](https://github.com/kherz/pulseq-cest-library):
+   Here, published and approved CEST preparation periods are made available. This allows exact comparison of CEST 
+   preparation periods with newly developed or adapted blocks for reproducible CEST research. All .seq-files can be 
+   loaded in python for plotting and detailed inspection. This library is maintained in a 
+   [separate repository](https://github.com/kherz/pulseq-cest-library) but is included in the **PyPulseq-CEST** 
+   installation.
+
+2. [pypulseq_cest](pypulseq_cest): In this folder you can find the Bloch-McConnell simulation that can be used to 
+   simulate and compare different .seq-files for different settings. (Py)Pulseq-CEST specific seq file and parameter 
+   handling is done using the [BMCTool](https://github.com/schuenke/BMCTool) python package.
+
+More information about both parts can be found in the corresponding repository or subfolder. 
+
+If you prefer **MATLAB** over Python, have a look at the MATLAB version of the project [here](https://github.com/kherz/pulseq-cest).
 This repository contains the code and tools to build CEST saturation blocks with 
-[pypulseq](https://github.com/imr-framework/pypulseq), which is a python adaption of the matlab-based 
-[pulseq](https://github.com/pulseq/pulseq) project. 
+[pulseq](https://github.com/pulseq/pulseq), the original MATLAB implementation of pulseq instead of 
+[pypulseq](https://github.com/imr-framework/pypulseq) that is used in **PyPulseq-CEST**.
+
 Please visit [https://pulseq-cest.github.io/](https://pulseq-cest.github.io/) for more information on the pulseq-cest 
 project. The documentation of the **pulseq** open file format for MR sequences can be found 
-[here](https://pulseq.github.io/specification.pdf). Pulseq-cest specific seq file and parameter handling is done using the 
-[BMCTool](https://github.com/schuenke/BMCTool)  python package.
+[here](https://pulseq.github.io/specification.pdf).
 
 ## Installation
-For the installation of pypulseq-CEST you need to have [Git](https://git-scm.com/) installed. If this is the case, just
+For the installation of PyPulseq-CEST you need to have [Git](https://git-scm.com/) installed. If this is the case, just
 perform the following steps:
 
 ### 1) Download the code:
@@ -49,44 +65,64 @@ sim_example()
 
 As an alternative, we provide a [quick_start.py](quick_start.py) script. The individual steps/lines are explained below.:
 
-1. Import the simulate function
+1. Import all required classes and functions
     ````python
-    from pypulseq_cest.simulate import simulate
+    from pySimPulseqSBB import BMCSim
+    from pypulseq_cest.parser import parse_params, get_zspec
+    from bmctool.set_params import load_params
+    from bmctool.utils.eval import plot_z
     ````
 
 2.  Define a config and a sequence file
     ````python
-    sim_config = 'pypulseq_cest/example_library/config_example.yaml'
+    config_file = 'pypulseq_cest/example_library/config_example.yaml'
     seq_file = 'pypulseq_cest/example_library/seq_example.seq'
     ````
     For more information about the config and sequence files, check the **Configuration and sequence file library** 
     section below or visit the [pulseq-cest-library](https://github.com/kherz/pulseq-cest-library) Github repository.
     
 
-3. Start the simulation
+3. Prepare and start the simulation
+
     ````python
-    sim = simulate(config_file=sim_config, seq_file=seq_file, show_plot=True, normalize=True)
+    # load the simulation parameters
+    sp = load_params(config_file)
+    
+    # create SWIG object of type SimulationParameters (C++ class)
+    sim_params = parse_params(sp=sp)
+    
+    # create SWIG object of type BMCSim (C++ class)
+    sim = BMCSim(sim_params)
+    
+    # set external sequence (*.seq) file
+    sim.LoadExternalSequence(str(seq_file))
+    
+    # run simulation
+    sim.RunSimulation()
     ````
-   The simulate function requires a *config_file* and *seq_file* argument. The *show_plot* argument (default=False)
-   allows to toggle a plotting functionality. Furthermore, the simulate function accepts several additional keyword 
-   arguments (**kwargs), that allow to adjust the generated plot. These are for example *normalize* (bool: toggle 
-   normalization), *norm_threshold* (value/list/array: threshold for normalization offsets), *offsets* (list/array: 
+
+4. Data processing and plotting:
+   ````python   
+    # retrieve magnetization vectors (x, y and z component of all pools):
+    m_out = sim.GetCopyOfMagnetizationVectors()
+    
+    # retrieve offset values and z-magnetization of the water pool
+    offsets, mz = get_zspec(m_out=m_out, sp=sp, seq_file=seq_file)
+   ````
+   Afterwards a z-spectrum can be plotted using the provided *plot_z* function:
+    ````python
+    plot_z(mz=mz,
+           offsets=offsets,
+           normalize=True,
+           plot_mtr_asym=True)
+    ````
+
+   The *plot_z* function accepts several additional keyword arguments that allow to adjust the generated plot. 
+   These are for example *normalize* (bool: toggle normalization), 
+   *norm_threshold* (value/list/array: threshold for normalization offsets), *offsets* (list/array: 
    manually defined x-values), *invert_ax* (bool: toggle invert ax), *plot_mtr_asym* (bool:toggle plot MTR_asym) and 
    *title*, *x_label*, *y_label* to control the lables.
-
-
-4. Additional data processing:
-
-   The simulate functions returns a *SimulationParameters* object that allows further processing of the simulated data.
-   For example, you can retrieve the final magnetization vector of the water pool using:
-   ````python   
-   m_out = sim.GetFinalMagnetizationVectors()
-   ````
-   Afterwards, you can retrieve (and print) the offset values and the z-magnetization of the water pool using:
-      ````python   
-   offsets, mz = get_zspec(m_out=m_out, sp=sim, seq_file=seq_file)
-   print(f'The offsets used for simulation are: \n{offsets}')
-   ````
+    
 
 ## Configuration and sequence file library
 All simulations in [pypulseq-cest](.) require a *yaml file* that includes all simulation settings and a *seq file*, which

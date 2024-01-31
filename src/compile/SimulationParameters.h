@@ -22,7 +22,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 
 #include "ExternalSequence.h"
 #include "Eigen"
-//using namespace Eigen;
+#include <memory>
 
 #define _USE_MATH_DEFINES
 #include <cmath>
@@ -104,9 +104,6 @@ public:
 	//! Constructor
 	CESTPool(double nR1, double nR2, double nf, double ndw, double nk);
 
-	//! Copy Constructor
-	CESTPool(CESTPool* c);
-
 	//! Default destructor
 	~CESTPool();
 
@@ -183,29 +180,17 @@ public: // TODO: write get and set methods for member variables and make them pr
 	//! Destructor
 	~SimulationParameters();
 
-	//! Set external sequence object
-	void SetExternalSequence(ExternalSequence seq);
+	//! Set Magnetization vector
+	void SetInitialMagnetizationVector(Eigen::VectorXd MagVec);
 
-	//! Get external sequence object
-	ExternalSequence* GetExternalSequence();
-
-	//! Init Magnetitazion Vector Array
-	void InitMagnetizationVectors(Eigen::VectorXd &M, unsigned int numOutput);
-
-	//! Get Magnetization vectors
-	Eigen::MatrixXd* GetMagnetizationVectors();
-
-	//! Get Magnetization vectors as an object (not a pointer)
-	Eigen::MatrixXd GetFinalMagnetizationVectors();
+	//! Get Magnetization vector
+	Eigen::VectorXd* GetInitialMagnetizationVector();
 
 	//! Set Water Pool
 	void SetWaterPool(WaterPool waterPool);
 
 	//! Get Water Pool
 	WaterPool* GetWaterPool();
-
-	//! Init CEST pools
-	void InitCESTPoolMemory(unsigned int numPools);
 
 	//! Set CEST Pool
 	void SetCESTPool(CESTPool cp, unsigned int poolIdx);
@@ -219,8 +204,11 @@ public: // TODO: write get and set methods for member variables and make them pr
 	//! Get MT Pool
 	MTPool* GetMTPool();
 
-	//! Init Scanner variables
+	//! Init Scanner variables (old call for compat)
 	void InitScanner(double b0, double b1 = 1.0, double b0Inh = 0.0, double gamma = 42.577 * 2 * M_PI);
+
+	//! Init Scanner variables
+	void InitScanner(Scanner s);
 
 	//! Get Scanner B0
 	double GetScannerB0();
@@ -234,8 +222,17 @@ public: // TODO: write get and set methods for member variables and make them pr
 	//! Get Scanner Gamma
 	double GetScannerGamma();
 
+	//! Set Scanner relative B1
+	void SetScannerRelB1(double rb1);
+
+	//! Set Scanner B0 inhomogeneity
+	void SetScannerB0Inhom(double db0);
+
 	//! Get bool if MT should be simulated
 	bool IsMTActive();
+
+	//! Set Number of CEST Pools
+	void SetNumberOfCESTPools(unsigned int nPools);
 
 	//! Get Number of CEST Pools
 	unsigned int GetNumberOfCESTPools();
@@ -259,23 +256,16 @@ public: // TODO: write get and set methods for member variables and make them pr
 	unsigned int GetMaxNumberOfPulseSamples();
 
 
-	
 protected:
 
-	ExternalSequence sequence; /*!< pulseq sequence */
+	WaterPool waterPool;             /*!< Water Pool */
+	MTPool mtPool;                   /*!< MT Pool */
+	std::vector<CESTPool> cestPools; /*!< CEST Pool(s) */
+	Eigen::VectorXd M;               /*!< Initial Magnetization vector */
 
-	Eigen::MatrixXd Mvec;  /*!< Matrix containing all magnetization vectors */
-
-	WaterPool waterPool; /*!< Water Pool */
-	MTPool mtPool;       /*!< MT Pool */
-	CESTPool* cestPools;  /*!< CEST Pool(s) */
-
-	Scanner scanner;     /*!< Sruct with field related info */
+	Scanner scanner;                 /*!< Sruct with field related info */
 	
-	bool simulateMTPool;    /*!< true if MT should be simulated */
-
-	unsigned int numberOfCESTPools; /*!< number of CEST Pools */
-	bool cestMemAllocated;          /*!< true if memory for cest pools was allocated*/
+	bool simulateMTPool;             /*!< true if MT should be simulated */
 
 	bool verboseMode;                      /*!< true, if you want to have some output information */
 	bool useInitMagnetization;             /*!< true, if the magnetization vector should be reset to the initial magnetization after each adc */

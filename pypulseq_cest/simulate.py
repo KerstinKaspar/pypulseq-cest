@@ -3,7 +3,7 @@ simulate.py
 """
 from typing import Union
 from pathlib import Path
-from pySimPulseqSBB import SimPulseqSBB, SimulationParameters
+from pySimPulseqSBB import BMCSim
 from pypulseq_cest.parser import parse_params, get_zspec
 from bmctool.set_params import load_params
 from bmctool.utils.eval import plot_z
@@ -13,7 +13,7 @@ def simulate(config_file: Union[str, Path],
              seq_file: Union[str, Path],
              show_plot: bool = False,
              **kwargs) \
-        -> SimulationParameters:
+        -> BMCSim:
     """
     Function to run a pySimPulseqSBB based simulation for given seq and config files.
     :param config_file: Path of the config file (can be of type str or Path)
@@ -24,14 +24,20 @@ def simulate(config_file: Union[str, Path],
     # load the parameters
     sp = load_params(config_file)
 
-    # parse for C++ handling
-    sim_params = parse_params(sp=sp, seq_file=seq_file)
+    # create SWIG object of type SimulationParameters (C++ class)
+    sim_params = parse_params(sp=sp)
 
-    # run the simulation
-    SimPulseqSBB(sim_params, str(seq_file))
+    # create SWIG object of type BMCSim (C++ class)
+    sim = BMCSim(sim_params)
+
+    # set external sequence (*.seq) file
+    sim.LoadExternalSequence(str(seq_file))
+
+    # run simulation
+    sim.RunSimulation()
 
     # retrieve the calculated magnetization
-    m_out = sim_params.GetFinalMagnetizationVectors()
+    m_out = sim.GetCopyOfMagnetizationVectors()
 
     if show_plot:
         if 'offsets' in kwargs:
@@ -44,7 +50,7 @@ def simulate(config_file: Union[str, Path],
                offsets=offsets,
                **kwargs)
 
-    return sim_params
+    return sim
 
 
 def sim_example():
@@ -57,10 +63,10 @@ def sim_example():
     simulate(config_file=config_file,
              seq_file=seq_file,
              show_plot=True,
+             plot_mtr_asym=True,
              normalize=True,
              title='Example spectrum')
 
 
 if __name__ == '__main__':
     sim_example()
-

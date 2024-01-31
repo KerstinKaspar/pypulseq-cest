@@ -18,10 +18,42 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN 
 */
 
 #pragma once
+
 #include "SimulationParameters.h"
 
+// !BlochMcConnellSolverBase class.
+/*!
+  Abstract class that can be used for generic pointers to the solver class.
+*/
+class BlochMcConnellSolverBase
+{
+public:
 
-template <int size> class BlochMcConnellSolver
+	BlochMcConnellSolverBase() {}
+	~BlochMcConnellSolverBase() {}
+
+	// Vitual Update function that can be called from base class pointer
+	virtual void UpdateSimulationParameters(SimulationParameters &sp) {};
+
+	//! Update Matrix with pulse info 
+	virtual void UpdateBlochMatrix(SimulationParameters &sp, double rfAmplitude, double rfFrequency, double rfPhase) {};
+
+	//! Solve Bloch McConnell equation 
+	virtual void SolveBlochEquation(Eigen::VectorXd &M, double t) {};
+
+	//! Set number of steps for pade approximation 
+	virtual void SetNumStepsForPadeApprox(unsigned int nApprox) {};
+
+
+
+};
+
+
+// !BlochMcConnellSolver class.
+/*!
+  Template class that handles all the Bloch-McConnell equation stuff 
+*/
+template <int size> class BlochMcConnellSolver : public BlochMcConnellSolverBase
 {
 public:
 	typedef Eigen::Matrix<double, size, 1> VectorNd; // typedef for Magnetization Vector
@@ -33,17 +65,20 @@ public:
 	//! Destructor
 	~BlochMcConnellSolver();
 
+	//! Update Matrix with tissue and scanner infos
+	void UpdateSimulationParameters(SimulationParameters &sp);
+
 	//! Update Matrix with pulse info 
 	void UpdateBlochMatrix(SimulationParameters &sp, double rfAmplitude, double rfFrequency, double rfPhase);
 
 	//! Solve Bloch McConnell equation 
-	void SolveBlochEquation(VectorNd &M, float& t);
+	void SolveBlochEquation(Eigen::VectorXd &M, double t);
 
 	//! Set number of steps for pade approximation 
 	void SetNumStepsForPadeApprox(unsigned int nApprox);
 
-private:
 
+private:
 	Eigen::Matrix<double, size, size> A;               /*!< Matrix containing pool and pulse paramters   */
 	Eigen::Matrix<double, size, 1> C;               /*!< Vector containing pool relaxation parameters */
 	unsigned int N;           /*!< Number of CEST pools */
@@ -66,12 +101,28 @@ template<int size> BlochMcConnellSolver<size>::BlochMcConnellSolver(SimulationPa
 	// fill A matrix with constant pool exchange and concentration parameters ////
 	if (size == Eigen::Dynamic)
 	{
-		A.resize(sp.GetMagnetizationVectors()->rows(), sp.GetMagnetizationVectors()->rows()); // allocate space for dynamic matrices
+		A.resize(sp.GetInitialMagnetizationVector()->rows(), sp.GetInitialMagnetizationVector()->rows()); // allocate space for dynamic matrices
 	}
-	A.setConstant(0.0); // init A
 
 	// Get number of CEST pools for matrix size
 	N = sp.GetNumberOfCESTPools();
+
+	// set steps for pade approximation
+	numApprox = 6;
+
+	this->UpdateSimulationParameters(sp);
+}
+
+//! Desctuctor
+template<int size> BlochMcConnellSolver<size>::~BlochMcConnellSolver() {} 
+
+//! Update Matrix with tissue and scanner info 
+/*!
+	\param sp SimulationParamter object containing pool informations
+*/
+template<int size> void BlochMcConnellSolver<size>::UpdateSimulationParameters(SimulationParameters &sp)
+{
+	A.setConstant(0.0); // init A
 
 	// MT
 	double k_ac = 0.0; // init with 0 for late
@@ -85,7 +136,7 @@ template<int size> BlochMcConnellSolver<size>::BlochMcConnellSolver(SimulationPa
 
 	//WATER
 	double k1a = sp.GetWaterPool()->GetR1() + k_ac;
-	double k2a = sp.GetWaterPool()->GetR2();  
+	double k2a = sp.GetWaterPool()->GetR2();
 	for (int i = 0; i < N; i++)
 	{
 		double k_ai = sp.GetCESTPool(i)->GetFraction() * sp.GetCESTPool(i)->GetExchangeRateInHz();
@@ -122,7 +173,7 @@ template<int size> BlochMcConnellSolver<size>::BlochMcConnellSolver(SimulationPa
 
 	// Fill relaxation vector ////
 	if (size == Eigen::Dynamic) { // alocate space for dynamic matrices
-		C.resize(sp.GetMagnetizationVectors()->rows());
+		C.resize(sp.GetInitialMagnetizationVector()->rows());
 	}
 
 	// set entries
@@ -138,14 +189,8 @@ template<int size> BlochMcConnellSolver<size>::BlochMcConnellSolver(SimulationPa
 
 	// set inhomogeneity
 	w0 = sp.GetScannerB0()*sp.GetScannerGamma();
-	dw0 = w0 *sp.GetScannerB0Inhom();
-
-	// set steps for pade approximation
-	numApprox = 6;
+	dw0 = w0 * sp.GetScannerB0Inhom();
 }
-
-//! Desctuctor
-template<int size> BlochMcConnellSolver<size>::~BlochMcConnellSolver() {}
 
 //! Update Matrix with pulse info 
 /*!
@@ -156,8 +201,9 @@ template<int size> BlochMcConnellSolver<size>::~BlochMcConnellSolver() {}
 */
 template<int size> void BlochMcConnellSolver<size>::UpdateBlochMatrix(SimulationParameters &sp, double rfAmplitude, double rfFrequency, double rfPhase)
 {
-	A(0, 1 + N) = -dw0; // dephasing of water pool
-	A(1 + N, 0) = dw0;
+	A(0, 1 + N) = dw0; // dephasing of water pool
+	A(1 + N, 0) = -dw0;
+
 	// set omega 1
 	double rfAmplitude2pi = rfAmplitude*TWO_PI*sp.GetScannerRelB1();
 	double rfAmplitude2piCosPhi = rfAmplitude2pi * cos(rfPhase);
@@ -183,14 +229,14 @@ template<int size> void BlochMcConnellSolver<size>::UpdateBlochMatrix(Simulation
 	// set off-resonance terms
 	//water
 	double rfFreqOffset2pi = rfFrequency *TWO_PI;
-	A(0, 1 + N) -= rfFreqOffset2pi;
-	A(1 + N, 0) += rfFreqOffset2pi;
+	A(0, 1 + N) += rfFreqOffset2pi;
+	A(1 + N, 0) -= rfFreqOffset2pi;
 	//cest
 	for (int i = 1; i <= N; i++)
 	{
 		double dwi = sp.GetCESTPool(i - 1)->GetShiftinPPM()*w0 - (rfFreqOffset2pi + dw0);
-		A(i, i + N + 1) = dwi;
-		A(i + N + 1, i) = -dwi;
+		A(i, i + N + 1) = -dwi;
+		A(i + N + 1, i) = dwi;
 	}
 
 	//set MT term
@@ -204,7 +250,7 @@ template<int size> void BlochMcConnellSolver<size>::UpdateBlochMatrix(Simulation
 	\param M SimulationParamter VectorNd for which the equation should be solved
 	\param t timestep for which the equation should be solved
 */
-template<int size> void BlochMcConnellSolver<size>::SolveBlochEquation(VectorNd &M, float& t)
+template<int size> void BlochMcConnellSolver<size>::SolveBlochEquation(Eigen::VectorXd &M, double t)
 {
 	VectorNd AInvT = A.inverse()*C; // helper variable A^-1 * C
 	MatrixNd At = A * t;			// helper variable A * t
@@ -228,14 +274,11 @@ template<int size> void BlochMcConnellSolver<size>::SolveBlochEquation(VectorNd 
 	// run the approximation
 	for (int k = 2; k <= q; k++)
 	{
-		c = c * (q - k + 1) / (k*(2 * q - k + 1));
+		c *= (q - k + 1) / (k*(2 * q - k + 1));
 		X = At * X;
 		cX = c * X;
-		N = N + cX;
-		if (p)
-			D = D + cX;
-		else
-			D = D - cX;
+		N += cX;
+		p ? D += cX : D -= cX;
 		p = !p;
 	}
 	MatrixNd F = D.inverse()*N; // solve D*F = N for F
@@ -245,6 +288,7 @@ template<int size> void BlochMcConnellSolver<size>::SolveBlochEquation(VectorNd 
 	}
 	M = F * (M + AInvT) - AInvT;
 }
+
 
 //! Set number of steps for pade approximation 
 /*!
